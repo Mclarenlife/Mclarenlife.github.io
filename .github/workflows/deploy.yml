@@ -1,0 +1,45 @@
+# GitHub Actions 配置文件：用于自动部署 Hexo 博客
+name: Deploy Hexo
+
+# 当 main 分支被 push 时触发部署流程
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    # 使用最新版 Ubuntu 运行环境
+    runs-on: ubuntu-latest
+
+    # 允许对仓库内容进行写操作（git push）
+    permissions:
+      contents: write
+
+    steps:
+      # Step 1：检出仓库源码
+      - uses: actions/checkout@v4
+
+      # Step 2：设置 Node.js 环境
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      # Step 3：安装依赖
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4：生成 Hexo 静态文件
+      - name: Generate Hexo static files
+        run: npx hexo generate
+
+      # Step 5：部署到 gh-pages 分支
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.PERSONAL_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./public
+          user_name: 用户名
+          user_email: 邮箱
