@@ -39,7 +39,8 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
+          publish_repo: Mclarenlife/Hexo_Deploy
           publish_branch: gh-pages
           publish_dir: ./public
-          user_name: 用户名
-          user_email: 邮箱
+          user_name: Mclarenlife
+          user_email: 2457756671@qq.com
