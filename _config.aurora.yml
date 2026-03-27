@@ -17,12 +17,35 @@ menu:
   About: true
   Tags: true
   Archives: true
-  Friends: false
+  Links: true
 
 theme:
-  dark_mode: false
-  profile_shape: diamond
+  dark_mode: 'auto'
+  profile_shape: circle # support `circle`, `diamond`, `rounded`
   feature: true
+  gradient:
+    color_1: '#24c6dc'
+    color_2: '#5433ff'
+    color_3: '#ff0099'
+
+socials:
+  github: 'https://github.com/Mclarenlife'
+  customs:
+  ##! Example:
+  ##! --- Using SVG
+  # bilibili:
+  #   icon: http://localhost:4000/svg/bilibili.svg
+  #   link: https://live.bilibili.com/22619211
+
+  ##! --- Using IconFont
+  # baidu:
+  #   icon: iconfont icon-baidu
+  #   link: https://live.bilibili.com/22619211
+
+  ##! --- Using FontAwesome
+  # book:
+  #   icon: far fa-address-book
+  #   link: https://live.bilibili.com/22619211
 
 site_meta:
   cdn: cn
@@ -34,3 +57,4 @@ site_meta:
 shiki:
   enable: true
   backgroundColor: "#1a1a1a"
+
