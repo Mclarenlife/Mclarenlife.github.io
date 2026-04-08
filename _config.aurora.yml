@@ -70,7 +70,7 @@ gitalk:
   language: en
   distractionFreeMode: true
   recentComment: true
-  proxy: ''
+  proxy: 'https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token'
 
 # 开启 Aurora 机器人 Dia
 aurora_bot:

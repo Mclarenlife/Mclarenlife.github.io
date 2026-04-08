@@ -93,6 +93,7 @@ pagination_dir: page
 # Include / Exclude file(s)
 ## include:/exclude: options only apply to the 'source/' folder
 include:
+  - .nojekyll
 exclude:
 ignore:
 
@@ -110,5 +111,5 @@ server:
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://github.com/Mclarenlife/mclarenlife.github.io
+  repo: https://github.com/Mclarenlife/Mclarenlife.github.io
   branch: main
