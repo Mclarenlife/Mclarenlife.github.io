@@ -111,6 +111,6 @@ server:
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://github.com/Mclarenlife/Mclarenlife.github.io
+  repo: git@github.com:Mclarenlife/Mclarenlife.github.io.git
   branch: main
   force: true
