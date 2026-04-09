@@ -5,7 +5,7 @@
 site:
   subtitle: ""
   author: "Mclarenlife"
-  nick: "LXJ"
+  # nick: "LXJ"
   description: "..."
   language: en
   avatar: "https://ik.imagekit.io/n0ytbt1j3/avatar/%E9%AB%98%E6%B8%85%E9%87%8D%E5%88%B6%E5%8E%9F%E7%89%88.jpg?updatedAt=1728457808170"
@@ -24,9 +24,12 @@ theme:
   profile_shape: circle # support `circle`, `diamond`, `rounded`
   feature: true
   gradient:
-    color_1: '#24c6dc'
-    color_2: '#5433ff'
-    color_3: '#ff0099'
+    color_1: '#ff7f50' # 珊瑚橙
+    color_2: '#ff4500' # 橙红色
+    color_3: '#ffa500' # 橙色
+    # color_1: '#24c6dc'
+    # color_2: '#5433ff'
+    # color_3: '#ff0099'
 
 socials:
   github: 'https://github.com/Mclarenlife'
@@ -49,7 +52,7 @@ socials:
 
 site_meta:
   cdn: cn
-  favicon: ""
+  favicon: "https://ik.imagekit.io/n0ytbt1j3/avatar/%E6%9C%AA%E6%A0%87%E9%A2%98-1.png?updatedAt=1732620816093"
   description: ""
   keywords: ""
   author: ""
