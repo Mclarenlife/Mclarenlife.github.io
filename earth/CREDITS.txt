@@ -1,8 +1,8 @@
-Earth texture: NASA/Goddard Space Flight Center Scientific Visualization Studio.
-Blue Marble data: Reto Stockli (NASA/GSFC) and NASA's Earth Observatory.
-Source: https://svs.gsfc.nasa.gov/2915/
-Usage: https://www.nasa.gov/nasa-brand-center/images-and-media/
-Downloaded original 2048 x 1024 PNG; no image edits.
+World countries and regional context: Natural Earth 1:10m admin 0 countries, public domain.
+Source: https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_10m_admin_0_countries.geojson
+Terms: https://www.naturalearthdata.com/about/terms-of-use/
+World polygons simplified to 0.045 degrees; detailed local polygons clipped around selected regions.
+Monochrome colour, dotted oceans and edge shading are rendered by the site's own shader.
 
 Regional boundaries: geoBoundaries CHN ADM1, 2019; release 9469f09.
 Source: https://www.geoboundaries.org/api/current/gbOpen/CHN/ADM1/
