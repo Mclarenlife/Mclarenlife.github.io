@@ -1,7 +1,7 @@
 World countries and regional context: Natural Earth 1:10m admin 0 countries, public domain.
 Source: https://github.com/nvkelso/natural-earth-vector/blob/master/geojson/ne_10m_admin_0_countries.geojson
 Terms: https://www.naturalearthdata.com/about/terms-of-use/
-World polygons simplified to 0.045 degrees; detailed local polygons clipped around selected regions.
+World polygons simplified to 0.008 degrees; original unsimplified local polygons clipped around selected regions and the northern South China Sea flight path.
 Monochrome colour, dotted oceans and edge shading are rendered by the site's own shader.
 
 Regional boundaries: geoBoundaries CHN ADM1, 2019; release 9469f09.
