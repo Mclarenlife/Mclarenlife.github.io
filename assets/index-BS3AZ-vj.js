@@ -349,24 +349,33 @@ diffuseColor.rgb = mix(diffuseColor.rgb, ink.rgb, ink.a * contactReveal);`)},x.c
   uniform vec2 maskEdges;
   varying vec2 sheet;
   varying vec3 viewPosition;
-  vec4 softened(vec2 uv, vec2 blur) {
-    vec4 center = texture2D(atlas, uv);
-    vec4 a = texture2D(atlas, uv + blur);
-    vec4 b = texture2D(atlas, uv - blur);
-    vec4 c = texture2D(atlas, uv + blur * .45);
-    vec4 d = texture2D(atlas, uv - blur * .45);
+  vec4 sampleAtlas(vec2 uv, vec2 dx, vec2 dy) {
+    // Keep the mip footprint independent of effect offsets and fragment branches.
+    vec4 sampleColor = textureGrad(atlas, clamp(uv, 0., 1.), dx, dy);
+    float inside = step(0., uv.x) * step(uv.x, 1.) * step(0., uv.y) * step(uv.y, 1.);
+    sampleColor.a *= inside;
+    return sampleColor;
+  }
+  vec4 softened(vec2 uv, vec2 blur, vec2 dx, vec2 dy) {
+    vec4 center = sampleAtlas(uv, dx, dy);
+    vec4 a = sampleAtlas(uv + blur, dx, dy);
+    vec4 b = sampleAtlas(uv - blur, dx, dy);
+    vec4 c = sampleAtlas(uv + blur * .45, dx, dy);
+    vec4 d = sampleAtlas(uv - blur * .45, dx, dy);
     float alpha = center.a * .36 + (a.a + b.a) * .12 + (c.a + d.a) * .20;
     vec3 rgb = center.rgb * center.a * .36 + (a.rgb * a.a + b.rgb * b.a) * .12 + (c.rgb * c.a + d.rgb * d.a) * .20;
     return vec4(rgb / max(alpha, .0001), alpha);
   }
   void main() {
     float content = sheet.y - start + offset;
-    if (content < 0. || content >= contentHeight) discard;
     vec2 uv = vec2(sheet.x, 1. - content / contentHeight);
-    vec4 base = texture2D(atlas, uv);
-    if (base.a < .01) discard;
+    // Derivatives need every neighboring fragment, including transparent gaps.
     vec2 dx = vec2(dFdx(sheet.x), -dFdx(sheet.y) / contentHeight);
     vec2 dy = vec2(dFdy(sheet.x), -dFdy(sheet.y) / contentHeight);
+    vec3 normal = normalize(cross(dFdx(viewPosition), dFdy(viewPosition)));
+    if (content < 0. || content >= contentHeight) discard;
+    vec4 base = sampleAtlas(uv, dx, dy);
+    if (base.a < .01) discard;
     // The same phases drive the physical flutter and the tiny optical shift.
     float x = (sheet.x - .5) * sheetWidth;
     float wave = x * .005 + sheet.y * .0055 - time * 1.75;
@@ -392,19 +401,12 @@ diffuseColor.rgb = mix(diffuseColor.rgb, ink.rgb, ink.a * contactReveal);`)},x.c
     split += (dx * optical.x + dy * optical.y) * fringe * viewport.y;
     vec2 blur = (dx * (optical.x + .28) + dy * (optical.y + .45))
       * edge * (2.1 + dispersion) * breathing * viewport.y * mix(.22, 1., photo);
-    vec4 soft = base;
-    vec4 red;
-    vec4 blue;
-    if (edge > .015) {
-      soft = softened(uv, blur);
-      red = softened(uv + split, blur * .85);
-      blue = softened(uv - split, blur * .85);
-    } else {
-      red = texture2D(atlas, uv + split);
-      blue = texture2D(atlas, uv - split);
-    }
+    // One continuous sampling path: blur smoothly reaches zero in the center.
+    // A threshold here used to outline the optical field as a moving rectangle.
+    vec4 soft = softened(uv, blur, dx, dy);
+    vec4 red = softened(uv + split, blur * .85, dx, dy);
+    vec4 blue = softened(uv - split, blur * .85, dx, dy);
     vec4 color = vec4(mix(soft.rgb, vec3(red.r, soft.g, blue.b), min(red.a, blue.a)), soft.a);
-    vec3 normal = normalize(cross(dFdx(viewPosition), dFdy(viewPosition)));
     color.rgb *= .85 + .15 * abs(normal.z);
     // A broad, softly refracted highlight travels diagonally across the photos.
     vec2 cardUv = vec2(columnX / cardWidth, rowY / imageHeight);
