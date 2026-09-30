@@ -1,0 +1,8 @@
+Ocean sky: Kloppenheim 03 (Pure Sky)
+Original: Greg Zaal. Sky edits: Jarod Guest.
+Source: https://polyhaven.com/a/kloppenheim_03_puresky
+License: CC0 1.0 https://creativecommons.org/publicdomain/zero/1.0/
+Adaptation: 4096 x 2048 WebP, rendered with website color grading and slow advection.
+
+Marine models: original procedural models authored for McLary in Blender.
+Reproducible source: scripts/build-marine-assets.py
