@@ -1,0 +1,3 @@
+Tidal Notes — original 30-second ambient keyboard composition for McLary.
+64 BPM, eight bars, synthesized stereo keys with circular echo tails.
+No third-party samples or recordings. Rebuild with scripts/build-ambient-music.mjs.
