@@ -289,7 +289,8 @@ diffuseColor.rgb = mix(diffuseColor.rgb, ink.rgb, ink.a * contactReveal);`)},b.c
   vec3 bubbleSpectrum(vec4 lens) {
     float phase = atan(lens.y, lens.x) * 2. + waterTime * .3;
     vec3 spectrum = .5 + .5 * cos(phase + vec3(0., 2.1, 4.2));
-    return spectrum * pow(lens.w, 3.) * .042;
+    // Signed tint stays visible against light cards without whitening the core.
+    return (spectrum - .3) * lens.w * lens.w * .24;
   }
 `,L=10,Vt=`
   uniform float waveTime;
@@ -378,7 +379,7 @@ diffuseColor.rgb = mix(diffuseColor.rgb, ink.rgb, ink.a * contactReveal);`)},b.c
         void main() {
           vec4 lens = waterLens(vUv, resolution.x / resolution.y);
           vec2 uv = clamp(vUv + lens.xy / resolution, .001, .999);
-          vec2 split = lens.xy / resolution * .16 * lens.w;
+          vec2 split = lens.xy / resolution * .32 * lens.w;
           vec4 color = texture2D(tDiffuse, uv);
           color.r = texture2D(tDiffuse, clamp(uv + split, .001, .999)).r;
           color.b = texture2D(tDiffuse, clamp(uv - split, .001, .999)).b;
@@ -474,7 +475,7 @@ diffuseColor.rgb = mix(diffuseColor.rgb, ink.rgb, ink.a * contactReveal);`)},b.c
     // samples would cut letters against their original alpha mask.
     float legibility = photo;
     vec2 waterShift = (dx * lens.x + dy * lens.y) * viewport.y * legibility;
-    split += (dx * lens.x + dy * lens.y) * viewport.y * .16 * lens.w * legibility;
+    split += (dx * lens.x + dy * lens.y) * viewport.y * .32 * lens.w * legibility;
     // Strong lenses must not pull the transparent atlas gutter into a photo.
     // Keep the entire dispersed/softened footprint inside that image rectangle.
     vec2 imageMin = vec2((sheet.x * sheetWidth - columnX) / sheetWidth,
