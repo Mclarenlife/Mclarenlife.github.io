@@ -468,7 +468,9 @@ diffuseColor.rgb = mix(diffuseColor.rgb, ink.rgb, ink.a * contactReveal);`)},ee.
     vec2 screenUv = gl_FragCoord.xy / (viewport.x * viewport.y * vec2(waterAspect, 1.));
     vec4 lens = waterLens(screenUv, waterAspect);
     // Curved water edges displace and disperse the photo underneath, not a blur.
-    float legibility = mix(.22, 1., photo);
+    // Glyphs have transparent pixels around each stroke; displacing those atlas
+    // samples would cut letters against their original alpha mask.
+    float legibility = photo;
     uv += (dx * lens.x + dy * lens.y) * viewport.y * legibility;
     split += (dx * lens.x + dy * lens.y) * viewport.y * .024 * lens.w * legibility;
     // One continuous sampling path: blur smoothly reaches zero in the center.
