@@ -1,3 +1,8 @@
 Tidal Notes — original 60-second ambient keyboard composition for McLary.
 48 BPM, eight spacious phrases, 32 soft notes with circular echo tails.
 No third-party samples or recordings. Rebuild with scripts/build-ambient-music.mjs.
+
+Distant Orbit — original 72-second ambient space composition for McLary.
+Slow overlapping minor/add9 swells and sparse, softly detuned bell tones.
+Water Entry / Water Emerge — original synthesized filtered water and bubble effects.
+No external recordings. Rebuild with scripts/build-scene-audio.mjs.
