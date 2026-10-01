@@ -471,8 +471,16 @@ diffuseColor.rgb = mix(diffuseColor.rgb, ink.rgb, ink.a * contactReveal);`)},ee.
     // Glyphs have transparent pixels around each stroke; displacing those atlas
     // samples would cut letters against their original alpha mask.
     float legibility = photo;
-    uv += (dx * lens.x + dy * lens.y) * viewport.y * legibility;
+    vec2 waterShift = (dx * lens.x + dy * lens.y) * viewport.y * legibility;
     split += (dx * lens.x + dy * lens.y) * viewport.y * .024 * lens.w * legibility;
+    // Strong lenses must not pull the transparent atlas gutter into a photo.
+    // Keep the entire dispersed/softened footprint inside that image rectangle.
+    vec2 imageMin = vec2((sheet.x * sheetWidth - columnX) / sheetWidth,
+      1. - (floor(content / rowPitch) * rowPitch + imageHeight) / contentHeight);
+    vec2 imageMax = imageMin + vec2(cardWidth / sheetWidth, imageHeight / contentHeight);
+    vec2 guard = abs(blur) + abs(split) + vec2(1. / sheetWidth, 1. / contentHeight);
+    vec2 refracted = clamp(uv + waterShift, imageMin + guard, imageMax - guard);
+    uv = mix(uv, refracted, photo * smoothstep(0., .08, lens.w));
     // One continuous sampling path: blur smoothly reaches zero in the center.
     // A threshold here used to outline the optical field as a moving rectangle.
     vec4 soft = softened(uv, blur, dx, dy);
