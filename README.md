@@ -6,7 +6,7 @@ This repository contains the generated static output of https://github.com/Mclar
 Edit the source repository, run its build and checks, and replace this repository's root with the contents of build/.
 GitHub Pages publishes the main branch. Keep .nojekyll in the root.
 
-Source commit: f709046115b6dabc1e41bb2954afeb2ee84187d3
+Source commit: 1207cf00e4031b3ed65dded75ee28ed9921b51df
 
 
 
