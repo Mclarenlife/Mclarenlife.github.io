@@ -274,42 +274,48 @@ async function advanceFolder(seq,commit){
   const preview=main.querySelector('.next-folder-preview');
   const start=preview.getBoundingClientRect();
   const startTitle=preview.querySelector('.next-folder-title').getBoundingClientRect();
-  const startStyle=window.getComputedStyle(preview.querySelector('.next-folder-title'));
-  const startFont=parseFloat(startStyle.fontSize);
-  const startColor=startStyle.color;
+  const startFont=parseFloat(window.getComputedStyle(preview.querySelector('.next-folder-title')).fontSize);
   const outgoing=seq.node('folder-motion next-page-outgoing');
   const snapshot=main.cloneNode(true);
   snapshot.removeAttribute('id');
   snapshot.style.transform=`translateY(${main.getBoundingClientRect().top}px)`;
   snapshot.querySelector('.next-folder-preview').style.visibility='hidden';
+  // The fixed navigation belongs to the live page, never to its moving copy.
+  snapshot.querySelector('.collection-rail')?.remove();
   outgoing.append(snapshot);
   commit();
   const folder=main.querySelector('.open-folder');
-  const target=folderBounds();
+  const target=folder.getBoundingClientRect();
   const heading=main.querySelector('h1');
   const titleRect=heading.getBoundingClientRect();
   const font=window.getComputedStyle(heading);
-  const scene=seq.node('folder-motion next-folder-morph');scene.dataset.phase='expanding';
-  scene.style.setProperty('--case',window.getComputedStyle(folder).getPropertyValue('--case'));
-  scene.style.setProperty('--case-ink',window.getComputedStyle(folder).getPropertyValue('--case-ink'));
-  const block=seq.node('next-morph-block',scene);
-  block.style.background=window.getComputedStyle(folder).backgroundColor;
-  setBounds(block,start);
-  // Reveal the destination's live paper here too: a duplicate loses the
-  // collection's inherited tab sizing and requires a visible final swap.
-  const paper=folder;
-  seq.style(paper,'z-index','42');seq.style(paper,'visibility','visible');
-  const title=seq.node('next-morph-title',scene);title.textContent=heading.textContent;
-  Object.assign(title.style,{fontFamily:font.fontFamily,fontSize:font.fontSize,fontWeight:font.fontWeight,lineHeight:font.lineHeight,letterSpacing:font.letterSpacing,color:font.color,width:`${titleRect.width}px`});
-  seq.hide(main);
+  const showMain=seq.hide(main);
+  // Animate the actual folder and heading. Their final frame IS the resting
+  // page: no estimated-height color proxy, duplicate title, or layer swap.
+  seq.style(folder,'visibility','visible');seq.style(folder,'z-index','42');
+  seq.style(heading,'visibility','visible');seq.style(heading,'position','relative');
+  seq.style(heading,'z-index','43');seq.style(heading,'transform-origin','0 0');
+  const height=target.height||folderBounds().height;
   const duration=TIMING.advance;
-  // The title leaves the block: it travels farther and grows into the page heading.
+  const reveals=[...folder.children].map(node=>seq.animate(node,[
+    {opacity:0,transform:'translateY(24px)'},
+    {opacity:1,transform:'translateY(0)'}
+  ],{duration:450,delay:node.matches('.case-tabs')?600:500}));
   await Promise.all([
     seq.animate(outgoing,[{transform:'translateY(0)',opacity:1},{transform:`translateY(${-window.innerHeight}px)`,opacity:0}],{duration:700}),
-    seq.animate(block,[{left:`${start.left}px`,top:`${start.top}px`,width:`${start.width}px`,height:`${start.height}px`},{left:`${target.left}px`,top:`${target.top}px`,width:`${target.width}px`,height:`${target.height}px`}],{duration}),
-    seq.animate(title,[{transform:`translate(${startTitle.left}px,${startTitle.top}px) scale(${startFont/parseFloat(font.fontSize)||1})`,color:startColor},{transform:`translate(${titleRect.left}px,${titleRect.top}px) scale(1)`,color:font.color}],{duration}),
-    seq.animate(paper,[{opacity:0,clipPath:'inset(0 -70px 100% 0)'},{opacity:1,clipPath:'inset(0 -70px 0% 0)'}],{duration:650,delay:400})
+    seq.animate(folder,[
+      {transform:`translate(${start.left-target.left}px,${start.top-target.top}px)`,clipPath:`inset(0 -70px ${Math.max(0,height-start.height)}px 0 round 3px)`},
+      {transform:'translate(0px,0px)',clipPath:'inset(0 -70px 0px 0 round 3px)'}
+    ],{duration}),
+    seq.animate(heading,[
+      {transform:`translate(${startTitle.left-titleRect.left}px,${startTitle.top-titleRect.top}px) scale(${startFont/parseFloat(font.fontSize)||1})`},
+      {transform:'translate(0px,0px) scale(1)'}
+    ],{duration}),
+    ...reveals
   ]);
+  // Make the surrounding page visible while the live nodes still hold their
+  // identical final frame; cleanup only removes the old page and animations.
+  showMain();
 }
 
 export async function transitionFolder({from,to,source,commit,signal}){
