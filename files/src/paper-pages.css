@@ -1,0 +1,124 @@
+/* All files share a fixed paper format at a given viewport size. */
+.paged-folder{--sheet-height:clamp(1400px,calc(100svh + 620px),1620px);--sheet-inset:32px;min-height:0;height:calc(var(--sheet-height) + 212px);padding-bottom:22px}
+.dossier.paged-dossier{padding:0;min-height:0;height:var(--sheet-height);background:none;box-shadow:none;top:0;scroll-margin-top:84px}
+.paged-dossier:before{display:none}
+.paged-dossier:after{left:5px;right:-5px;bottom:-7px;height:var(--sheet-height);background:#d6d3c8;border:1px solid #c5c3b5;box-shadow:4px 4px 0 #e4e1d5;z-index:-1;pointer-events:none}
+.paper-stage{height:100%;position:relative;perspective:1900px;perspective-origin:35% 50%;isolation:isolate;clip-path:inset(-15px -20px -15px 0)}
+.paper-face{position:relative;height:100%;padding:48px 5% 44px 9%;background:#f0ecdf;color:#34413b;box-shadow:0 2px 7px #0002}
+.flight-dossier .paper-face{background-color:#eef0e7;background-image:linear-gradient(#51758a08 1px,transparent 1px),linear-gradient(90deg,#51758a08 1px,transparent 1px);background-size:28px 28px;color:#263f50}
+.racing-dossier .paper-face{background-color:#edeade;background-image:linear-gradient(#596c6008 1px,transparent 1px);background-size:100% 28px}
+.paper-face>.binding{width:5%;z-index:2;background-size:100% 130px;pointer-events:none}
+.paper-running-head,.paper-folio{position:absolute;left:9%;right:5%;display:flex;align-items:center;justify-content:space-between;gap:12px;font:9px/1.4 'Courier New',monospace;letter-spacing:.06em;color:#6f776d;white-space:nowrap}
+.paper-running-head{top:19px;border-bottom:1px solid #52644b33;padding-bottom:9px}
+.paper-folio{bottom:14px;border-top:1px solid #52644b33;padding-top:9px}
+.paper-viewport{height:100%;width:100%;overflow:hidden;overflow:clip;position:relative;touch-action:pan-y}
+.paper-flow{width:100%;height:100%;column-width:var(--column-width,600px);column-gap:48px;column-fill:auto;transform:translateX(0);font-family:'Segoe UI','Microsoft YaHei',sans-serif;overflow:visible}
+.paper-turn-leaf{position:absolute;inset:0;z-index:4;transform-origin:0 50%;backface-visibility:hidden;pointer-events:none;will-change:transform;box-shadow:12px 4px 28px #14231644}
+.paper-turn-leaf:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#2a302511,transparent 12%,#fff1 72%,#252f2820);pointer-events:none}
+.paper-turning .paper-viewport{pointer-events:none}
+.paper-pagination{height:54px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;font:12px/1.5 'Segoe UI','Microsoft YaHei',sans-serif}
+.paper-pagination button{display:flex;gap:12px;align-items:center;justify-content:center;border:1px solid #ffffff5c;color:inherit;background:#0000000a;padding:9px 15px;border-radius:3px;min-width:100px;transition:background .2s}
+.paper-pagination button:hover:not(:disabled){background:#ffffff20}
+.paper-pagination button:disabled{opacity:.36;cursor:default}
+.paper-pagination label{display:flex;align-items:center;gap:7px;white-space:nowrap}
+.paper-pagination select{font:inherit;color:inherit;background:#0002;border:1px solid #ffffff55;padding:5px;border-radius:3px;cursor:pointer}
+.paper-pagination option{background:#f0ecdf;color:#26362d}
+.paged-folder>.case-bottom{height:72px;padding:12px 0 18px;align-items:center}
+.paged-folder>.case-bottom .next-file{font-size:22px}
+.paged-folder>.case-bottom .next-file small{font-size:8px;margin-bottom:6px}
+.paged-folder>.archive-footer{padding:0;height:20px}
+/* Let the browser split prose at line boundaries, not at chapter boundaries. */
+.paper-flow :is(section,article,.works,.race-chapters,.chromatic-prose,.race-prose,.flight-prose,.biography-copy){break-inside:auto;min-height:0}
+.paper-flow :is(p,li){orphans:3;widows:3}
+.paper-flow :is(h2,h3,h4,dt){break-after:avoid}
+.paper-flow :is(figure,aside,details,blockquote,.chromatic-swatches,.chromatic-context-demo,.chromatic-balance-demo,.chromatic-specimen){break-inside:avoid}
+.paper-flow :is(.chromatic-chapter,.race-chapter,.flight-chapter){margin:26px 0 30px}
+.paper-flow :is(.chromatic-chapter,.race-chapter,.flight-chapter)>header{break-after:avoid;break-inside:avoid;padding-top:16px;margin-bottom:17px;gap:14px}
+.paper-flow :is(.chromatic-number,.race-section-number,.flight-chapter-number){font-size:35px;min-width:40px}
+.paper-flow :is(.chromatic-body,.race-chapter-grid,.flight-body){display:block}
+.paper-flow :is(.chromatic-prose,.race-prose,.flight-prose)>p{font-size:15px;line-height:1.85;margin-bottom:16px}
+.paper-flow :is(.chromatic-chapter,.race-chapter,.flight-chapter) h2{font-size:24px;line-height:1.45}
+.paper-flow :is(.chromatic-note,.race-sticky,.flight-note){max-width:none;margin:17px 8px 23px;padding:17px 20px;transform:none}
+.paper-flow :is(.chromatic-note,.chromatic-cover,.race-hero-plate,.flight-hero-plate):before,.paper-flow :is(.race-tape,.note-pin){position:relative;display:block;top:auto;left:auto;width:70px;height:17px;margin:-10px auto 10px;transform:rotate(-4deg)}
+.paper-flow :is(.chromatic-note,.race-sticky,.flight-note) p{font-size:18px;line-height:1.6;margin:12px 0}
+.paper-flow :is(.chromatic-hero,.race-hero,.flight-hero){display:grid;grid-template-columns:1.15fr 1fr;gap:22px;break-inside:avoid;margin:0;padding:12px 0 20px}
+.paper-flow :is(.chromatic-hero,.race-hero,.flight-hero) h2{font-size:25px;line-height:1.45;margin:12px 0 15px}
+.paper-flow :is(.chromatic-hero,.race-hero,.flight-hero) p{font-size:13px;line-height:1.8}
+.paper-flow :is(.chromatic-tags,.race-meta){margin-top:14px;margin-bottom:15px}
+.paper-flow :is(.chromatic-plate,.race-plate,.flight-plate){max-width:100%;margin:18px 5px 23px;transform:none;padding:7px 7px 0}
+.paper-flow :is(.chromatic-plate,.race-plate,.flight-plate) img{height:auto;max-height:230px;object-fit:contain}
+.paper-flow :is(.chromatic-plate,.race-plate,.flight-plate) figcaption{font-size:9px;padding:8px 3px}
+.paper-flow :is(.chromatic-folio,.race-topline,.flight-folio){display:none}
+.paper-flow :is(.chromatic-prep,.flight-brief){break-inside:avoid;padding:16px;gap:15px}
+.paper-flow :is(.chromatic-contents,.race-contents,.flight-contents){display:block;margin:18px 0}
+.paper-flow :is(.chromatic-contents,.race-contents,.flight-contents) a{break-inside:avoid;padding:11px 0;font-size:12px}
+.paper-flow :is(.chromatic-principle,.race-pullquote,.flight-principle){font-size:20px;line-height:1.7;margin:23px 0;padding:17px 0}
+.paper-flow :is(.chromatic-practice,.race-drill,.flight-exercise){break-inside:auto;margin:20px 0;padding:17px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.paper-flow :is(.race-drill,.flight-exercise) ol{display:block}
+.paper-flow :is(.race-drill,.flight-exercise) li{break-inside:avoid;margin:10px 0}
+.paper-flow .race-drill li:before{display:inline;margin-right:10px}
+.paper-flow :is(.chromatic-project,.chromatic-takeaway,.race-debrief,.flight-log){break-inside:auto;margin:24px 0;padding:21px;box-decoration-break:clone;-webkit-box-decoration-break:clone;box-shadow:none}
+.paper-flow :is(.chromatic-project,.chromatic-takeaway,.race-debrief,.flight-log) h2{font-size:23px;line-height:1.5}
+.paper-flow .chromatic-project ol{display:block}
+.paper-flow .chromatic-project li{break-inside:avoid;margin-top:17px}
+.paper-flow .chromatic-swatches figure>div{height:64px}
+.paper-flow :is(.chromatic-context-demo>div,.chromatic-balance-demo>div){height:150px}
+.paper-flow .chromatic-specimen{min-height:200px;padding:20px}
+.paper-flow .chromatic-specimen strong{font-size:28px}
+.paper-flow :is(.chromatic-takeaway,.race-debrief,.flight-log) dl>div{break-inside:avoid}
+.paper-flow :is(.color-lab,.grip-lab,.wind-lab){display:block;break-inside:auto;padding:20px;margin:24px 0;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.paper-flow :is(.color-lab,.grip-lab,.wind-lab) h2{font-size:23px;line-height:1.5}
+.paper-flow :is(.grip-plot,.wind-display){break-inside:avoid;max-width:210px;margin:15px auto}
+.paper-flow :is(.wind-lab-grid,.color-lab-grid){display:block}
+.paper-flow :is(.color-lab,.grip-lab,.wind-lab) :is(label,input,select){break-inside:avoid;touch-action:auto}
+.paper-flow .grip-lab>small{display:block}
+.paper-flow :is(.biography,.identity){display:block}
+.paper-flow .portrait{width:45%;margin:12px auto 20px;transform:none;break-inside:avoid}
+.paper-flow .portrait img{max-height:180px;object-fit:contain}
+.paper-flow .identity dl{display:block;font-size:11px;margin:16px 0;break-inside:avoid}.paper-flow .identity dt{margin-top:9px}.paper-flow .identity dd{margin-bottom:7px}
+.paper-flow .archive-stamp{display:none}
+.paper-flow .biography-copy{padding:0}
+.paper-flow .biography-copy p,.paper-flow .biography-copy p:not(.lead):not(.handwriting){font:15px/1.85 'Segoe UI','Microsoft YaHei',sans-serif;text-indent:0;margin:0 0 17px}
+.paper-flow .biography-copy .lead{font-size:21px}
+.paper-flow .biography-copy .lead:first-letter{float:none;font-size:inherit;line-height:inherit;margin:0}
+.paper-flow .biography-copy .handwriting{font-size:17px;transform:none}
+.paper-flow .works{padding:0}
+.paper-flow .work{display:block;margin:23px 0;padding:0}
+.paper-flow .work-index{position:static;display:block;margin:0 0 13px;break-after:avoid}
+.paper-flow .archive-photo,.paper-flow .work-1 .archive-photo{margin:12px 5px 23px;transform:none;max-width:100%;padding:8px}
+.paper-flow .archive-photo img{max-height:230px}
+.paper-flow .note-card,.paper-flow .work-1 .note-card,.paper-flow .work-2 .note-card{margin:17px 5px 25px;min-height:0;transform:none;padding:24px;break-inside:auto;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.paper-flow .note-card p{font:14px/1.85 'Segoe UI','Microsoft YaHei',sans-serif}
+.paper-flow .note-card h2{font-size:23px;line-height:1.5;margin-bottom:18px}
+.paper-flow .note-number{margin-top:18px}
+.paper-flow .will-reveal :is(.archive-photo,.note-card){opacity:1;translate:none}
+.paper-flow .lesson-references{break-inside:auto;margin:20px 0;padding:18px 0}
+.paper-flow .lesson-references a{break-inside:avoid}
+.paper-flow .document-end{break-inside:avoid;margin-top:25px;padding-top:14px}
+@media(max-width:650px){
+ .paged-folder{--sheet-height:1340px;height:calc(var(--sheet-height) + 190px);padding:0 12px 16px}
+ .dossier.paged-dossier{top:0;margin-top:-25px}
+ .paper-face{padding:43px 6% 38px 10%}
+ .paper-running-head,.paper-folio{left:10%;right:6%;font-size:7px}
+ .paper-running-head{top:16px}
+ .paper-folio{bottom:12px}
+ .paper-pagination{height:52px;font-size:11px;margin-top:12px}
+ .paper-pagination button{min-width:76px;gap:5px;padding:9px}
+ .paged-folder>.case-bottom{height:76px;padding:9px 0 15px}
+ .paged-folder>.case-bottom .next-file{font-size:17px}
+ .paged-folder>.case-bottom .next-file small{font-size:7px}
+ .paper-flow :is(.chromatic-hero,.race-hero,.flight-hero) h2{font-size:25px}
+ .paper-flow :is(.chromatic-hero,.race-hero,.flight-hero){display:block;break-inside:auto}
+ .paper-flow :is(.chromatic-prose,.race-prose,.flight-prose)>p{font-size:14px;line-height:1.85}
+ .paper-flow :is(.chromatic-chapter,.race-chapter,.flight-chapter) h2{font-size:21px}
+ .paper-flow :is(.chromatic-prep,.flight-brief){display:block;break-inside:auto}
+ .paper-flow .chromatic-prep>div{break-inside:avoid;margin-bottom:12px}
+ .paper-flow .flight-duration{display:block;border:0;padding:12px 0 0}
+ .paper-flow :is(.chromatic-project,.chromatic-takeaway,.race-debrief,.flight-log){padding:16px}
+ .paper-flow :is(.chromatic-swatches,.chromatic-context-demo,.chromatic-balance-demo){gap:8px}
+ .paper-flow .chromatic-swatches{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .paper-flow .chromatic-context-demo span{width:45px;height:45px}
+ .paper-flow .chromatic-specimen strong{font-size:23px;max-width:90%}
+ .paper-flow :is(.color-lab,.grip-lab,.wind-lab){padding:16px}
+ .paper-flow .note-card{padding:20px}
+}

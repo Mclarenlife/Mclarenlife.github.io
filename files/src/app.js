@@ -1,3 +1,4 @@
+import {mountPaperPages} from './paper-pages.js';
 import {sitePath,routePath,isSitePath,siteMarkup} from './site-path.js';
 import {mountTitleMotion} from './title-motion.js';
 import {updateWindLab} from './flight-view.js';
@@ -14,7 +15,7 @@ let current = resolveRoute(location.pathname);
 let renderedPath = location.pathname;
 let navigationToken = 0;
 let navigationController;
-let observer;
+let paperPages = null;
 let disposeTitleMotion = () => {};
 let stackObserver;
 let peek=null;
@@ -23,7 +24,7 @@ let homeScroll = 0;
 history.scrollRestoration = 'manual';
 function render(route, animated=false) {
  disposeTitleMotion();
- observer?.disconnect();
+ paperPages?.dispose(); paperPages=null;
  stackObserver?.disconnect();
  peek=null;
  document.title = route.title;
@@ -54,8 +55,9 @@ function render(route, animated=false) {
   for(const node of [archive,intro,main])stackObserver.observe(node);
  }
  if (route.type === 'case') {
-  observer = new IntersectionObserver(entries => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('revealed'); observer.unobserve(entry.target); } }); }, {threshold:.12});
-  main.querySelectorAll('.work').forEach(section=>{section.classList.add('will-reveal');observer.observe(section)});
+  paperPages=mountPaperPages(main.querySelector('.dossier'),reducedMotion,announcer);
+  const anchor=location.hash&&document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  if(anchor)paperPages?.goToElement(anchor,false);
  }
 }
 
@@ -117,6 +119,7 @@ async function navigate(path,{source=null,pop=false,scroll=null}={}) {
  const route=resolveRoute(path);
  if(!pop && path===location.pathname) return;
  disposeTitleMotion();
+ paperPages?.cancel();
  const token=++navigationToken;
  navigationController?.abort();
  navigationController=new AbortController();
@@ -158,6 +161,14 @@ document.addEventListener('click',event=>{
  const link=event.target.closest('a');
  if(!link||event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||link.target==='_blank'||link.hasAttribute('download'))return;
  const url=new URL(link.href,location.href);
+ if(url.origin===location.origin && url.pathname===location.pathname && url.hash){
+  const target=document.getElementById(decodeURIComponent(url.hash.slice(1)));
+  if(target && paperPages?.goToElement(target)){
+   event.preventDefault();history.pushState({...history.state},'',url.href);
+   main.querySelector('.dossier').scrollIntoView({behavior:reducedMotion.matches?'instant':'smooth',block:'start'});
+   return;
+  }
+ }
  const localPath=routePath(url.pathname).replace(/\/+$/,'')||'/';
  if(url.origin!==location.origin||url.hash||!isSitePath(url.pathname)||!['/','/about'].includes(localPath)&&!localPath.startsWith('/cases/'))return;
  event.preventDefault();navigate(url.pathname,{source:link});
@@ -174,7 +185,7 @@ window.addEventListener('popstate',event=>{
  // A fragment changes the reading position, not the open folder.
  if(location.pathname===renderedPath&&!document.body.classList.contains('folder-motion-running')){
   const section=location.hash&&document.getElementById(location.hash.slice(1));
-  if(section)section.scrollIntoView({behavior:reducedMotion.matches?'instant':'smooth',block:'start'});
+  if(section){if(paperPages?.goToElement(section,false))main.querySelector('.dossier').scrollIntoView({behavior:'instant',block:'start'});else section.scrollIntoView({behavior:reducedMotion.matches?'instant':'smooth',block:'start'});}
   else window.scrollTo({top:event.state?.scroll??0,behavior:'instant'});
   return;
  }
@@ -184,7 +195,7 @@ window.addEventListener('pagehide',()=>history.replaceState({...history.state,sc
 // The reference continues to the next folder on a deliberate extra scroll at the end.
 let endScroll=0;
 function advanceAtEnd(delta){
- if(current.type!=='case'||document.body.classList.contains('folder-motion-running')||lightbox.open)return;
+ if(current.type!=='case'||document.body.classList.contains('folder-motion-running')||lightbox.open||paperPages&&!paperPages.isLast)return;
  const remaining=document.documentElement.scrollHeight-window.innerHeight-window.scrollY;
  if(remaining>6||delta<=0){endScroll=0;return}
  endScroll+=delta;
