@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="800" viewBox="0 0 1600 800">
+  <defs>
+    <linearGradient id="paper" x2=".8" y2="1"><stop stop-color="#f8f5ec"/><stop offset="1" stop-color="#e7e3d7"/></linearGradient>
+    <linearGradient id="blue" x2=".7" y2="1"><stop stop-color="#3d60e3"/><stop offset="1" stop-color="#2245be"/></linearGradient>
+    <linearGradient id="green" x2=".8" y2="1"><stop stop-color="#15937d"/><stop offset="1" stop-color="#086b5b"/></linearGradient>
+    <linearGradient id="red" x2=".8" y2="1"><stop stop-color="#db6d47"/><stop offset="1" stop-color="#b84d2d"/></linearGradient>
+    <linearGradient id="sky" x2=".8" y2="1"><stop stop-color="#598eaa"/><stop offset="1" stop-color="#315f7c"/></linearGradient>
+    <filter id="shadow" x="-35%" y="-35%" width="180%" height="200%"><feDropShadow dx="5" dy="19" stdDeviation="16" flood-color="#1a211d" flood-opacity=".20"/></filter>
+    <filter id="small-shadow" x="-20%" y="-20%" width="150%" height="150%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#1a211d" flood-opacity=".18"/></filter>
+  </defs>
+  <path fill="url(#paper)" d="M0 0H1600V800H0Z"/>
+  <g fill="none" stroke="#d6d2c8" stroke-width="1"><path d="M62 59H1538M62 737H1538"/><path d="M62 54V64M1538 54V64M62 732V742M1538 732V742"/></g>
+  <g fill="#242821" font-family="Arial, sans-serif">
+    <text x="79" y="42" font-size="13" letter-spacing="2.6">MCLARY’S FILES</text>
+    <text x="1520" y="42" text-anchor="end" font-size="12" letter-spacing="2">AN INTERACTIVE LEARNING ARCHIVE</text>
+    <text x="79" y="192" font-size="13" letter-spacing="3">COLLECT / EXPLORE / UNDERSTAND</text>
+    <text x="68" y="372" font-family="Arial Black, Arial, sans-serif" font-size="186" font-weight="900" letter-spacing="-14">FILES.</text>
+    <text x="84" y="439" font-size="39" letter-spacing="-1.8">Follow your</text>
+    <text x="84" y="486" font-size="39" font-style="italic" letter-spacing="-1.5">curiosity.</text>
+    <path d="M88 569H171M158 556L171 569L158 582" fill="none" stroke="#242821" stroke-width="2"/>
+    <text x="84" y="668" font-size="12" letter-spacing="1.5">15 FILES. FOUR WORLDS. ONE OPEN MIND.</text>
+  </g>
+  <g transform="translate(804 87) rotate(11 330 300)">
+    <g filter="url(#shadow)">
+      <path d="M18 74Q0 74 0 92V522Q0 540 18 540H637Q655 540 655 522V28Q655 10 637 10H451Q440 10 433 24L411 65Q406 74 393 74Z" fill="url(#sky)"/>
+      <path d="M0 106H655" stroke="#a4c7d7" stroke-opacity=".4"/>
+      <text x="464" y="48" fill="#edf2ee" font-family="Arial" font-size="17" letter-spacing="2">04 / FLIGHT</text>
+    </g>
+    <g transform="translate(-35 91) rotate(-7 310 240)" filter="url(#shadow)">
+      <path d="M16 56Q0 56 0 73V407Q0 424 16 424H636Q652 424 652 407V17Q652 0 635 0H250Q239 0 232 13L214 47Q208 56 197 56Z" fill="url(#red)"/>
+      <text x="274" y="35" fill="#fff0db" font-family="Arial" font-size="17" letter-spacing="2">03 / RACING</text>
+      <path d="M18 71H634" stroke="#ffc8a3" stroke-opacity=".45"/>
+    </g>
+    <g transform="translate(-74 195) rotate(-12 310 230)" filter="url(#shadow)">
+      <path d="M16 52Q0 52 0 70V378Q0 395 16 395H635Q652 395 652 378V16Q652 0 635 0H170Q158 0 151 13L133 43Q128 52 115 52Z" fill="url(#green)"/>
+      <text x="192" y="34" fill="#d9f1d9" font-family="Arial" font-size="17" letter-spacing="2">02 / COLOR</text>
+      <path d="M17 70H635" stroke="#a9dbbd" stroke-opacity=".4"/>
+    </g>
+    <g transform="translate(-80 264) rotate(-16 320 190)">
+      <g transform="translate(59 0) rotate(4 280 150)" filter="url(#small-shadow)">
+        <path d="M0 0H520V283H0Z" fill="#faf7ee"/>
+        <path d="M38 52H480M38 110H480M38 158H480M38 206H480" stroke="#d6d2c8"/>
+        <text x="39" y="33" fill="#515951" font-family="Arial" font-size="10" letter-spacing="2">FIELD NOTES — A PRACTICE OF NOTICING</text>
+        <g transform="translate(57 76)" fill="none" stroke="#222921" stroke-width="2"><rect width="140" height="90" rx="7"/><circle cx="82" cy="45" r="28"/><circle cx="82" cy="45" r="20"/><path d="M15 0V-9H44V0M17 15H37"/></g>
+        <g transform="translate(277 75)"><circle cx="35" cy="39" r="36" fill="#e9b648" fill-opacity=".9"/><circle cx="74" cy="39" r="36" fill="#c75138" fill-opacity=".75"/><circle cx="54" cy="71" r="36" fill="#3866ad" fill-opacity=".78"/></g>
+      </g>
+      <g transform="translate(-18 97)" filter="url(#shadow)">
+        <path d="M16 51Q0 51 0 68V270Q0 288 18 288H635Q653 288 653 270V17Q653 0 635 0H21Q6 0 4 15L0 39V68" fill="url(#blue)"/>
+        <path d="M17 69H635" stroke="#a8b9ff" stroke-opacity=".52"/>
+        <text x="31" y="36" fill="#e8eec8" font-family="Arial" font-size="16" letter-spacing="1.8">01 / PHOTOGRAPHY</text>
+        <text x="29" y="168" fill="#e8eec8" font-family="Arial Black, Arial" font-weight="900" font-size="60" letter-spacing="-2">OPEN A FILE.</text>
+        <text x="32" y="221" fill="#d9e3ef" font-family="Arial" font-size="13" letter-spacing="2.3">FIND SOMETHING NEW.</text>
+        <g transform="translate(548 128)" stroke="#e8eec8" stroke-width="2" fill="none"><circle cx="33" cy="32" r="33"/><path d="M15 49L50 15M21 15H50V44"/></g>
+      </g>
+    </g>
+  </g>
+  <g font-family="Arial" font-size="11" letter-spacing="1.6" fill="#52584f"><text x="79" y="768">DIGITAL EXPERIENCE / PERSONAL ARCHIVE</text><text x="1520" y="768" text-anchor="end">MCLARY — 2026</text></g>
+</svg>

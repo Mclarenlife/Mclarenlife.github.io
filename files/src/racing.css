@@ -1,0 +1,54 @@
+.racing-dossier{padding:32px 4.5% 44px 9%;font-family:'Microsoft YaHei','Noto Sans SC',sans-serif;background-color:#edeade;background-image:linear-gradient(#596c6006 1px,transparent 1px);background-size:100% 28px}
+/* Keep the reveal mask with the sticky rail on these longer notebooks. */
+.case-view:has(.racing-dossier) .case-tabs{clip-path:none}
+.case-view:has(.racing-dossier) .case-tab-stack{clip-path:inset(-30px -30px -30px 0)}
+@media(max-width:650px){.case-view:has(.racing-dossier) .case-tab-stack{clip-path:inset(-30px -30px 0 -30px)}}
+.race-topline{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid #263c3655;padding-bottom:14px;font:10px/1.7 'Courier New',monospace;letter-spacing:.04em;color:#42554d}
+.race-hero{display:grid;grid-template-columns:1.1fr 1fr;gap:25px;align-items:center;padding:48px 0 30px}
+.race-eyebrow{font:10px/1.6 'Courier New','Microsoft YaHei',monospace;letter-spacing:.08em;color:#69736a;margin:0 0 12px}
+.race-hero h2{font:800 clamp(30px,3.35vw,56px)/1.3 'Microsoft YaHei',sans-serif;letter-spacing:-.045em;margin:12px 0 24px;color:#213631}
+.race-lead{font-size:15px;line-height:1.95;color:#49554e;margin:0}
+.race-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:25px;font-size:10px;color:#657169}
+.race-meta span{border:1px solid #5e71694d;padding:6px 8px}
+.race-plate{margin:30px 0 34px;background:#f9f5e9;padding:9px 9px 0;box-shadow:1px 4px 8px #16241b22;transform:rotate(-.5deg)}
+.race-plate img{display:block;width:100%;height:auto;max-height:none}
+.race-plate figcaption{font:10px/1.7 'Courier New','Microsoft YaHei',monospace;color:#657169;padding:10px 4px 12px}
+.race-hero-plate{margin:0 -10px 0 0;transform:rotate(3deg);position:relative}
+.race-hero-plate:before{content:'';position:absolute;z-index:2;top:-8px;left:32%;width:35%;height:22px;background:#d5c2908c;transform:rotate(-5deg);pointer-events:none}
+.race-context{font-size:11px;line-height:1.8;color:#677166;border-left:2px solid #c85632;padding-left:13px;margin:12px 0 30px}
+.race-contents{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #31433d55;margin:32px 0 40px;column-gap:25px}
+.race-contents a{display:flex;align-items:center;gap:11px;font-size:12px;line-height:1.6;border-bottom:1px solid #31433d33;padding:15px 0}
+.race-contents a:hover{color:#b84928}.race-contents span{font:11px 'Courier New',monospace;color:#b84928}.race-contents b{margin-left:auto;font-size:16px;font-weight:400}
+.race-pullquote{margin:40px 0 55px;border-left:0;border-top:4px solid #c85632;padding:25px 0 0;font:600 clamp(21px,2.1vw,31px)/1.7 'Microsoft YaHei',sans-serif;color:#273d36}
+.race-pullquote span{display:block;font:10px 'Courier New',monospace;letter-spacing:.12em;color:#a54c31;margin-bottom:14px}
+.race-chapter{margin:64px 0 76px;scroll-margin-top:90px}
+.race-chapter>header{display:flex;gap:19px;align-items:flex-start;border-top:1px solid #33483e66;padding-top:24px;margin-bottom:22px}
+.race-section-number{font:44px/1 Anton,Impact,sans-serif;color:#c85632;min-width:51px}
+.race-chapter h2{font-size:clamp(21px,2.1vw,30px);line-height:1.45;margin:0;color:#253b34}
+.race-chapter header .race-eyebrow{margin:0 0 7px}
+.race-chapter-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,.43fr);gap:34px;align-items:start}
+.race-prose>p{font-size:16px;line-height:2;letter-spacing:.015em;margin:0 0 20px;color:#3c4840}
+.race-sticky{position:relative;padding:26px 19px 23px;background:#e6d794;transform:rotate(2deg);box-shadow:2px 5px 6px #18291d1f;margin:14px -3px 0 0}
+.race-sticky small{font:9px/1.7 'Courier New',monospace;color:#766638}.race-sticky p{font:600 19px/1.85 'KaiTi','STKaiti','Microsoft YaHei',serif;margin:20px 0;color:#3c472f}
+.race-tape{position:absolute;width:65px;height:22px;left:30%;top:-10px;background:#ded5b899;transform:rotate(-6deg)}
+.race-scribble{font:italic 12px Georgia,serif;color:#815d35}
+.race-chapter:nth-child(even) .race-sticky{background:#cedad0;transform:rotate(-2deg)}
+.race-diagnosis{border-top:1px dashed #7f8980;border-bottom:1px dashed #7f8980;padding:15px 0;margin:24px 0}
+.race-diagnosis summary{display:flex;justify-content:space-between;gap:14px;cursor:pointer;list-style:none;font-weight:600;font-size:13px;line-height:1.8;color:#9b462c}
+.race-diagnosis summary::-webkit-details-marker{display:none}.race-diagnosis summary span{flex:none;transition:transform .2s}.race-diagnosis[open] summary span{transform:rotate(45deg)}
+.race-diagnosis p{font-size:13px;line-height:1.95;margin:16px 0 3px;color:#49564e}
+.race-drill{border:1px solid #4a62564d;background:#e0e4d9;padding:20px 23px;margin-top:25px}
+.race-drill h3{font-size:13px;font-weight:600;margin:0 0 17px;color:#284636}.race-drill h3 span{color:#c85632;font-size:20px;margin-right:8px}
+.race-drill ol{display:grid;grid-template-columns:repeat(3,1fr);gap:25px;margin:0;padding:0;list-style:none;counter-reset:step}
+.race-drill li{font-size:12px;line-height:1.9;counter-increment:step}.race-drill li:before{content:'0' counter(step);display:block;font:12px 'Courier New',monospace;color:#69796a;margin-bottom:8px}
+.race-debrief{padding:30px;background:#243932;color:#eee9d6;margin:40px 0}
+.race-debrief .race-eyebrow{color:#bed1c0}.race-debrief h2{font-size:25px;line-height:1.6;margin:12px 0}.race-debrief p{font-size:13px;line-height:1.9;color:#c1cdbc}
+.race-debrief dl{margin:25px 0 0}.race-debrief dl div{display:grid;grid-template-columns:70px 1fr;gap:16px;border-top:1px solid #ccd9c03d;padding:15px 0;font-size:12px;line-height:1.8}.race-debrief dt{color:#e5c44f}.race-debrief dd{margin:0}
+.grip-lab{display:grid;grid-template-columns:1.1fr 1fr;gap:15px 25px;background:#202d30;color:#ece9dc;padding:30px;margin:40px 0 60px;border-top:4px solid #ed794b}
+.grip-lab .race-eyebrow{color:#edab8f}.grip-lab h2{font-size:25px;line-height:1.6;margin:12px 0 20px}.grip-lab p{font-size:12px;line-height:1.85;color:#bfcfca}
+.grip-lab label{display:flex;justify-content:space-between;font-size:12px;margin:24px 0 10px}.grip-lab input{width:100%;accent-color:#ed794b;cursor:pointer}.grip-result output{font:32px 'Courier New',monospace;display:block;color:#e5c44f;margin-top:8px}
+.grip-plot{align-self:center}.grip-plot svg{display:block;width:100%;height:auto}.grip-plot svg text{fill:#bfcfca;font:12px 'Microsoft YaHei',sans-serif}.grip-plot p{text-align:center;font-family:'Courier New',monospace}
+.grip-lab>small{grid-column:1/-1;font-size:10px;line-height:1.8;color:#a2b1ac;border-top:1px solid #71807e66;padding-top:14px}
+
+@media(max-width:1000px){.race-hero{grid-template-columns:1fr;gap:30px}.race-hero-plate{max-width:550px;margin:0 auto}.race-hero h2{font-size:clamp(34px,5vw,48px)}.race-chapter-grid{gap:23px;grid-template-columns:minmax(0,1fr) 160px}.race-sticky{padding-inline:14px}.race-sticky p{font-size:17px}}
+@media(max-width:650px){.racing-dossier{padding:26px 6% 30px 11%}.race-topline{font-size:8px;gap:14px;flex-wrap:wrap}.race-hero{padding-top:30px}.race-hero h2{font-size:32px}.race-lead{font-size:14px}.race-meta{font-size:9px;gap:6px}.race-hero-plate{transform:rotate(1deg);margin:0}.race-contents{grid-template-columns:1fr;gap:0;margin-block:25px}.race-contents a{font-size:12px}.race-pullquote{font-size:21px}.race-chapter{margin-block:42px}.race-chapter>header{gap:12px}.race-section-number{font-size:34px;min-width:37px}.race-chapter h2{font-size:22px}.race-chapter-grid{display:block}.race-prose>p{font-size:15px}.race-sticky{margin:25px 6px 30px 20px;max-width:290px}.race-drill{padding:18px}.race-drill ol{grid-template-columns:1fr;gap:14px}.race-drill li:before{display:inline;margin-right:10px}.race-debrief{padding:23px 18px}.race-debrief h2{font-size:22px}.race-debrief dl div{grid-template-columns:48px 1fr;gap:10px}.grip-lab{display:block;padding:23px 18px}.grip-plot{max-width:270px;margin:15px auto}.grip-lab>small{display:block}}
