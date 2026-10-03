@@ -3,29 +3,29 @@
 .case-view>.case-heading{max-width:calc(var(--open-folder-max) - 64px)}
 .collection-rail{display:none}
 @media(min-width:1280px){
- .collection-rail{display:block;position:fixed;left:calc(var(--open-folder-edge) + var(--tab-depth) + 32px);top:clamp(130px,17vh,220px);width:min(280px,calc(100vw - var(--open-folder-edge) - var(--tab-depth) - 60px));max-height:calc(100dvh - clamp(130px,17vh,220px) - 28px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;z-index:8;font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;transition:opacity .25s;color:#eeece4}
- .collection-rail-kicker{font:10px/1.5 'Courier New',monospace;letter-spacing:.16em;color:#7f817b;margin:0 0 13px}
- .collection-rail h2{font-size:19px;font-weight:400;letter-spacing:.06em;margin:0 0 28px}
- .collection-rail nav{display:grid;border-top:1px solid #ffffff20}
- .collection-link{display:flex;gap:14px;align-items:center;position:relative;padding:23px 10px 23px 3px;border-bottom:1px solid #ffffff20;transition:background .2s}
- .collection-link-copy{min-width:0;flex:1}
- .collection-link strong{display:block;font-size:14px;line-height:1.5;font-weight:400}
- .collection-link small{display:block;font-size:10px;color:#777e78;line-height:1.6;margin-top:7px}
- .collection-mini-folder{position:relative;display:block;flex:none;width:32px;height:25px;border-radius:2px;background:var(--collection-color);isolation:isolate;opacity:.6;transition:opacity .2s,transform .3s}
- .collection-mini-folder:before{content:'';position:absolute;width:16px;height:6px;top:-4px;left:0;background:inherit;border-radius:3px 4px 0 0;z-index:-1}
- .collection-mini-folder i{position:absolute;inset:5px 0 0;border-radius:2px;background:color-mix(in srgb,var(--collection-color),white 14%);box-shadow:0 -1px 2px #0003;transform-origin:50% 100%;transition:transform .3s}
- .collection-link-arrow{font-size:16px;color:#717a70;opacity:0;transform:translateX(-4px);transition:opacity .2s,transform .2s}
- .collection-link:hover,.collection-link:focus-visible{background:#ffffff05}
- .collection-link:hover .collection-mini-folder,.collection-link:focus-visible .collection-mini-folder{opacity:1;transform:translateY(-2px)}
- .collection-link:hover .collection-mini-folder i,.collection-link:focus-visible .collection-mini-folder i{transform:perspective(80px) rotateX(-20deg)}
- .collection-link:hover .collection-link-arrow,.collection-link:focus-visible .collection-link-arrow{opacity:1;transform:none}
- .collection-link[aria-current=true] .collection-mini-folder{opacity:1}
- .collection-link[aria-current=true] strong{color:#fff}
- .collection-link[aria-current=true] small{color:#b9bcb2}
- .collection-link[aria-current=true]:after{content:'';position:absolute;right:10px;width:5px;height:5px;background:#e8e8dc;border-radius:50%}
- .collection-link[aria-current=true] .collection-link-arrow{visibility:hidden}
- .collection-rail-home{display:inline-block;margin:27px 0 5px;font-size:11px;color:#92998f;padding:7px 0}
- .collection-rail-home:hover{color:#eeece4}
- .folder-motion-running .collection-rail{opacity:0;pointer-events:none}
+ .collection-rail{display:flex;flex-direction:column;align-items:stretch;position:fixed;right:32px;bottom:32px;width:min(224px,calc(100vw - var(--open-folder-edge) - var(--tab-depth) - 60px));z-index:8;color:#f5f2e9;font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;transition:opacity .25s,translate .35s}
+ .collection-picker{position:relative;align-self:stretch;margin-bottom:12px}
+ .collection-picker summary{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer;list-style:none;padding:8px 3px;font-size:11px;letter-spacing:.06em;color:#aaa99f}
+ .collection-picker summary::-webkit-details-marker{display:none}
+ .collection-picker summary:hover,.collection-picker[open] summary{color:#f5f2e9}
+ .collection-picker summary>span{font-size:17px;line-height:1;transition:transform .25s}
+ .collection-picker[open] summary>span{transform:rotate(45deg)}
+ .collection-picker nav{position:absolute;bottom:calc(100% + 10px);left:0;right:0;display:grid;gap:6px;padding:8px;border-radius:20px;background:#242421;box-shadow:0 12px 30px #0004;max-height:calc(100dvh - 390px);overflow-y:auto;animation:collection-picker-in .28s cubic-bezier(.2,.8,.2,1)}
+ .collection-link{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:52px;padding:13px 12px;border-radius:12px;background:var(--collection-color);color:#fff;font-size:13px;transition:transform .2s,box-shadow .2s}
+ .collection-link small{font:9px/1.4 'Courier New',monospace;opacity:.8;white-space:nowrap}
+ .collection-link[aria-current=true]{box-shadow:inset 0 0 0 1px #ffffff80}
+ .collection-link:hover{transform:translateY(-2px);box-shadow:inset 0 0 0 1px #fff9}
+ .collection-card{display:flex;flex-direction:column;justify-content:space-between;gap:38px;aspect-ratio:1.2;padding:22px 20px;border-radius:22px;background:var(--collection-color);color:#f5f2e9;transition:transform .4s cubic-bezier(.2,.8,.2,1);transform-origin:50% 100%}
+ .collection-card strong{font-size:clamp(18px,1.25vw,23px);line-height:1.35;font-weight:400;letter-spacing:.02em}
+ .collection-card-caption{display:grid;gap:6px;font:12px/1.55 'Courier New','Microsoft YaHei',monospace}
+ .collection-card-caption small{font:10px/1.4 'Courier New','Microsoft YaHei',monospace;opacity:.75;letter-spacing:.08em}
+ .collection-card:hover{transform:translateY(-5px) rotate(-1.5deg)}
+ .collection-next{display:flex;align-items:center;justify-content:center;gap:12px;align-self:flex-end;width:73%;min-height:54px;margin-top:16px;border-radius:20px;background:#ffed28;color:#181818;font:15px/1.2 'Courier New',monospace;transition:transform .25s}
+ .collection-next span{transition:transform .25s}
+ .collection-next:hover{transform:translateY(-2px)}
+ .collection-next:hover span{transform:translateX(4px)}
+ .collection-rail :is(a,summary):focus-visible{outline:2px solid #f5f2e9;outline-offset:4px}
+ .folder-motion-running .collection-rail{opacity:0;translate:0 18px;pointer-events:none}
 }
-@media(prefers-reduced-motion:reduce){.collection-rail,.collection-rail *{transition:none!important}}
+@keyframes collection-picker-in{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.collection-rail,.collection-rail *{transition:none!important;animation:none!important}}
