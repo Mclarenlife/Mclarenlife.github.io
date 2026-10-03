@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="800" viewBox="0 0 1600 800">
+  <defs>
+    <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.15" fill="#efeee9"/></pattern>
+    <clipPath id="panel"><rect x="937" y="177" width="566" height="464" rx="4"/></clipPath>
+  </defs>
+  <rect width="1600" height="800" fill="#efeee9"/>
+  <g stroke="#242424" stroke-width="1" opacity=".4"><path d="M64 110H1536M64 691H1536"/></g>
+  <g fill="#222" font-family="Arial, sans-serif" font-size="20" letter-spacing="2">
+    <text x="64" y="72">MCLARY®</text><text x="634" y="72">DIGITAL TOOLS / 014</text>
+    <text x="1536" y="72" text-anchor="end">2026</text>
+  </g>
+  <text x="48" y="432" fill="#171717" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="342" letter-spacing="-30">B&amp;W</text>
+  <g font-family="Arial, sans-serif" fill="#222">
+    <text x="67" y="532" font-size="53" letter-spacing="-2">Small tools.</text>
+    <text x="67" y="594" font-size="53" letter-spacing="-2">Endless possibilities.</text>
+  </g>
+  <rect x="922" y="164" width="596" height="490" rx="7" fill="#d5d4cd"/>
+  <rect x="937" y="177" width="566" height="464" rx="4" fill="#171717"/>
+  <g clip-path="url(#panel)">
+    <path d="M1230 171C1064 186 1353 250 1155 300S1011 406 1166 419 1394 518 1240 560 1324 650 1121 687H1561V143Z" fill="url(#dots)"/>
+    <g transform="translate(985 222) rotate(-8 90 95)">
+      <rect x="6" y="9" width="182" height="181" rx="19" fill="#000" opacity=".25"/>
+      <rect width="182" height="181" rx="19" fill="#d8c5ee"/>
+      <g fill="none" stroke="#222" stroke-width="7" stroke-linejoin="round"><path d="M49 39V133H143M39 49H133V143"/><path d="M69 93L90 70 114 94" stroke-width="5"/></g>
+    </g>
+    <g transform="translate(1260 246) rotate(12 83 82)">
+      <rect x="5" y="7" width="165" height="165" rx="83" fill="#000" opacity=".25"/>
+      <circle cx="82.5" cy="82.5" r="82.5" fill="#c8e79c"/>
+      <g fill="none" stroke="#222" stroke-width="6"><path d="M41 63H122M103 44L123 63 103 82M124 104H43M61 84L41 104 61 124"/></g>
+    </g>
+    <g transform="translate(1056 430) rotate(7 81 79)">
+      <rect x="5" y="7" width="160" height="156" rx="16" fill="#000" opacity=".25"/>
+      <rect width="160" height="156" rx="16" fill="#ee805c"/>
+      <path d="M53 38H97L115 56V118H53Z" fill="none" stroke="#222" stroke-width="5"/>
+      <path d="M94 39V59H113M69 80H99M69 94H91" fill="none" stroke="#222" stroke-width="5"/>
+    </g>
+    <g transform="translate(1306 475)">
+      <circle r="57" fill="#efeee9"/>
+      <path d="M-23 19L23-19M-18-19H23V22" fill="none" stroke="#222" stroke-width="6"/>
+    </g>
+  </g>
+  <g fill="#222" font-family="Arial, sans-serif" font-size="18" letter-spacing="1.5">
+    <text x="64" y="741">COMPRESS / CONVERT / CREATE</text>
+    <text x="1536" y="741" text-anchor="end">ALL IN YOUR BROWSER.</text>
+  </g>
+</svg>

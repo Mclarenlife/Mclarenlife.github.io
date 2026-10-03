@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="g-b64" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#009b77"/>
+      <stop offset="100%" stop-color="#002f24"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#g-b64)"/>
+  <g fill="none" stroke="#f2f2f2" stroke-opacity="0.3" stroke-width="1.5">
+    <path d="M250 180h-40v240h40"/>
+    <path d="M550 180h40v240h-40"/>
+  </g>
+  <g fill="#f2f2f2" fill-opacity="0.42">
+    <rect x="330" y="200" width="16" height="16"/><rect x="360" y="200" width="16" height="16"/>
+    <rect x="390" y="200" width="16" height="16"/><rect x="420" y="200" width="16" height="16"/>
+    <rect x="450" y="200" width="16" height="16"/>
+    <rect x="330" y="240" width="16" height="16"/><rect x="450" y="240" width="16" height="16"/>
+    <rect x="330" y="280" width="16" height="16"/><rect x="390" y="280" width="16" height="16"/>
+    <rect x="420" y="280" width="16" height="16"/><rect x="450" y="280" width="16" height="16"/>
+    <rect x="360" y="320" width="16" height="16"/><rect x="390" y="320" width="16" height="16"/>
+    <rect x="450" y="320" width="16" height="16"/>
+    <rect x="330" y="360" width="16" height="16"/><rect x="420" y="360" width="16" height="16"/>
+  </g>
+  <text x="48" y="552" font-family="Archivo, Arial, sans-serif" font-size="30" font-weight="600"
+        letter-spacing="6" fill="#f2f2f2" fill-opacity="0.9">BASE64</text>
+</svg>

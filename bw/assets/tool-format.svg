@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="g-fmt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff6a13"/>
+      <stop offset="100%" stop-color="#3d1c02"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#g-fmt)"/>
+  <g fill="none" stroke="#f2f2f2" stroke-opacity="0.32" stroke-width="1.5">
+    <circle cx="330" cy="290" r="150"/>
+    <circle cx="470" cy="290" r="150"/>
+  </g>
+  <g fill="none" stroke="#f2f2f2" stroke-opacity="0.6" stroke-width="3">
+    <path d="M236 262h124M336 240l24 22-24 22"/>
+    <path d="M564 318H440M464 296l-24 22 24 22"/>
+  </g>
+  <text x="48" y="552" font-family="Archivo, Arial, sans-serif" font-size="30" font-weight="600"
+        letter-spacing="6" fill="#f2f2f2" fill-opacity="0.9">CONVERT</text>
+</svg>

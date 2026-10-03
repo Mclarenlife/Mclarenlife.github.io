@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>文件工具箱 — 压缩 · 转换 · PDF 转图</title>
+<meta name="description" content="十四个纯本地工具：图片压缩与格式转换、PDF 转图片与图片转 PDF、裁剪旋转、调色、加字、加边框。全部在浏览器里跑完，文件不上传。" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Noto+Sans+SC:wght@300;400;500;700&family=Rubik:wght@300..900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/poster.css" />
+</head>
+
+<body class="theme-0 tool-home">
+
+<!-- ══════════════════════════════════════════════════════════
+     PRELOADER
+     ══════════════════════════════════════════════════════════ -->
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="preloader-fill" data-preloader="fill"></div>
+
+  <div class="preloader-num" data-preloader="count">0%</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     CUSTOM CURSOR
+     ══════════════════════════════════════════════════════════ -->
+<div class="cursor" id="cursor" aria-hidden="true">
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"><span class="cursor-label"></span></div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     NAV
+     ══════════════════════════════════════════════════════════ -->
+<!-- 常驻 chrome。徽标在这里，而不是在首屏的左栏里：那一栏所在的 .intro 是
+     z-index:0 的层叠上下文，徽标在里面即使写成 position:fixed 也会被后面
+     z-index:2 的 section 整片盖住，浮不起来。挪到 body 直属子元素才真的浮。
+     它是一个 button 而不是 div：徽标是页面上唯一始终指向「首页」的东西，
+     和右下角调色盘同一个层级、同一套常驻件的读法，所以做成能按的，不做纯装饰。 -->
+<button class="logo-sm" type="button" data-logo-home data-cursor="首页" aria-label="返回首页">
+  <svg viewBox="0 0 1000 1000" fill="currentColor" fill-rule="evenodd" aria-hidden="true" focusable="false">
+    <g transform="translate(-126.75 -21.75)">
+      <path d="M 309 301 C 380 202 497 141 627 141 C 757 141 874 202 945 301 L 626.5 570 Z M 434 312 C 486 264 554 237.5 627 237.5 C 700 237.5 768 264 820 312 L 626.5 468 Z"/>
+      <path d="M 283 341 L 352 406 C 336 445 327.5 486 327.5 530 C 327.5 593 348 652 385 696 L 385 438 L 626.5 637 L 869 438 L 869 696 C 905 649 926 591 926 530 C 926 486 917.5 445 901 406 L 970 342 C 1000 397 1016 459 1016 522 C 1016 732 842 902.5 627 902.5 C 412 902.5 237.5 732 237.5 522 C 237.5 458 253.5 396 283 341 Z M 467 609 L 626.5 738 L 785.5 609 L 785.5 764 C 739 795 684 813 627 813 C 569 813 513 795 467 764 Z"/>
+    </g>
+  </svg>
+</button>
+
+<!-- 首屏标题。悬浮件，所以也在 body 直属层，理由和上面的徽标完全一样：
+     留在 .intro 里，页面一往下滚，后面 z-index:2 且背景不透明的 section
+     （.index）就会从底下顶上来把它整片埋掉 —— 固定定位救不了它，救它的
+     只有离开那个层叠上下文。左边距和底边距都取 var(--pad)，与右下角调色盘
+     按钮的右边距、底边距同一个值；尺寸与位置的算法见 css/style.css 的
+     --hero-title-size 和 .cell-hero。指针划过时整块字被一张湍流贴图推开。 -->
+<div class="cell-hero">
+  <div class="heading-group heading-group-warp" data-reveal="text" data-warp>
+    <h1 class="h1">文件工具箱</h1>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <button class="nav-button" data-nav="button" data-cursor="菜单" aria-expanded="false" aria-controls="nav-menu">
+      <span data-link="label">菜单</span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-menu" id="nav-menu" aria-hidden="true">
+  <div class="nav-menu-inner">
+    <a class="menu-link is-current" href="#top" data-cursor="首页" data-goto-home>
+      <span class="menu-index p1">1</span>
+      <span class="h2">首页</span>
+    </a>
+    <a class="menu-link" href="#tools" data-cursor="工具台">
+      <span class="menu-index p1">2</span>
+      <span class="h2">工具台</span>
+    </a>
+    <a class="menu-link" href="#library" data-cursor="索引">
+      <span class="menu-index p1">3</span>
+      <span class="h2">全部工具</span>
+    </a>
+    <a class="menu-link menu-link-sm" href="#contact" data-cursor="联系">
+      <span class="h2-sm">联系方式</span>
+    </a>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     MAIN
+     ══════════════════════════════════════════════════════════ -->
+<main class="main" id="top">
+
+  <!-- ── 首屏 ─────────────────────────────────────────────── -->
+  <section class="intro">
+
+    <!-- 效果 2 · WebGL 流体显形。指针划过，遮罩被侵蚀，露出下层的 MCLARY 名称海报；
+         字样在白纸上自己缓慢地变：实心、疏排、网点、描边，转完一圈回到实心。
+         它自己走完一圈，鼠标碰它不动 —— 滑动只负责蚀开上层流体。
+         海报本身没有提示语，也不跟随主题变色，十五张配色下它始终是同一张白纸上的同一个字。 -->
+    <div class="reveal-block-wrap" data-fluid-reveal>
+      <div class="reveal-block">
+        <div class="poster" data-poster aria-hidden="true"></div>
+        <canvas class="fluid-canvas" data-fluid-canvas></canvas>
+      </div>
+    </div>
+
+    <!-- 首屏只剩海报了。那句主张曾经挂在这里的左栏里，现在它是常驻悬浮件，
+         挪到了 body 直属层（见文件开头 .cell-hero 处），这一层于是空了出来 ——
+         留着两个没有内容的 div 和一套只为它们存在的样式，不如删干净。 -->
+
+    <!-- 扭曲用的滤镜定义。scale 平时为 0，等于不产生任何位移。 -->
+    <svg class="warp-defs" aria-hidden="true" focusable="false">
+      <filter id="heroWarp" x="-15%" y="-30%" width="130%" height="160%"
+              color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.008 0.021"
+                      numOctaves="2" seed="11" result="noise" />
+        <feDisplacementMap id="heroWarpMap" in="SourceGraphic" in2="noise"
+                           scale="0" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+  </section>
+
+
+  <!-- ── 工具台 ───────────────────────────────────────────── -->
+  <section class="stage" id="tools">
+    <div class="stage-inner">
+
+      <div class="stage-head">
+        <div class="stage-head-l">
+          <div class="stage-index">
+            <span class="micro num" data-tool-index>站点</span>
+            <span class="stage-rule"></span>
+            <span class="micro">全部工具</span>
+          </div>
+          <div class="tool-name" data-tool-title>
+            <h1 class="h1">关于这个站点</h1>
+          </div>
+        </div>
+
+        <div class="stage-head-r">
+          <p class="p1 stage-desc" data-tool-desc>
+            这里没有账号，也没有服务器。下面十四个工具都在你自己的浏览器里跑完。
+          </p>
+          <a class="micro stage-more link-underline" href="#library" data-cursor="查看">
+            <span data-underline="text">查看全部工具</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="tool-stage" data-tool-stage></div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 全部工具 ─────────────────────────────────────────── -->
+  <section class="index" id="library">
+    <div class="index-inner">
+
+      <div class="index-head">
+        <div class="index-head-l">
+          <h1 class="h1" data-scrub-reveal="h">全部</h1>
+          <h1 class="h1" data-scrub-reveal="h">十四个工具</h1>
+        </div>
+        <div class="index-head-r">
+          <p class="p1 index-note">
+            点击任意一行直接切换，右下角的调色盘也会跟着换主题。
+          </p>
+        </div>
+      </div>
+
+      <div class="index-list" data-reveal="div">
+        <button class="index-row" data-tool="compress" data-theme="1" data-cursor="打开">
+          <span class="index-num num">01</span>
+          <span class="index-name">图片压缩</span>
+          <span class="index-meta">JPG · PNG · WebP</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="format" data-theme="2" data-cursor="打开">
+          <span class="index-num num">02</span>
+          <span class="index-name">格式转换</span>
+          <span class="index-meta">PNG · JPG · WebP</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="pdf" data-theme="3" data-cursor="打开">
+          <span class="index-num num">03</span>
+          <span class="index-name">PDF 转图片</span>
+          <span class="index-meta">PDF → PNG · JPG</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="resize" data-theme="4" data-cursor="打开">
+          <span class="index-num num">04</span>
+          <span class="index-name">尺寸调整</span>
+          <span class="index-meta">百分比 · 像素</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="base64" data-theme="5" data-cursor="打开">
+          <span class="index-num num">05</span>
+          <span class="index-name">Base64 编解码</span>
+          <span class="index-meta">编码 · 解码</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="crop" data-theme="6" data-cursor="打开">
+          <span class="index-num num">06</span>
+          <span class="index-name">图片裁剪</span>
+          <span class="index-meta">比例 · 居中</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="rotate" data-theme="7" data-cursor="打开">
+          <span class="index-num num">07</span>
+          <span class="index-name">旋转与翻转</span>
+          <span class="index-meta">90° · 镜像</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="adjust" data-theme="8" data-cursor="打开">
+          <span class="index-num num">08</span>
+          <span class="index-name">色彩调整</span>
+          <span class="index-meta">亮度 · 对比度</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="round" data-theme="9" data-cursor="打开">
+          <span class="index-num num">09</span>
+          <span class="index-name">圆角与遮罩</span>
+          <span class="index-meta">圆角 · 圆形</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="blur" data-theme="10" data-cursor="打开">
+          <span class="index-num num">10</span>
+          <span class="index-name">模糊与马赛克</span>
+          <span class="index-meta">高斯 · 像素化</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="stitch" data-theme="11" data-cursor="打开">
+          <span class="index-num num">11</span>
+          <span class="index-name">拼接长图</span>
+          <span class="index-meta">横向 · 纵向</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="imgpdf" data-theme="12" data-cursor="打开">
+          <span class="index-num num">12</span>
+          <span class="index-name">图片转 PDF</span>
+          <span class="index-meta">一图一页</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="watermark" data-theme="13" data-cursor="打开">
+          <span class="index-num num">13</span>
+          <span class="index-name">文字水印</span>
+          <span class="index-meta">位置 · 平铺</span>
+          <span class="index-go">→</span>
+        </button>
+        <button class="index-row" data-tool="border" data-theme="14" data-cursor="打开">
+          <span class="index-num num">14</span>
+          <span class="index-name">添加边框</span>
+          <span class="index-meta">留白 · 内描边</span>
+          <span class="index-go">→</span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── 页脚 ─────────────────────────────────────────────── -->
+  <footer class="footer" id="contact">
+    <div class="footer-inner">
+
+      <h2 class="wordmark" data-wordmark aria-label="MCLARY">
+        <span class="wm-row" data-wm-row aria-hidden="true">
+          <span class="wm-ch"><span class="wm-base">M</span><span class="wm-r">M</span><span class="wm-b">M</span></span>
+          <span class="wm-ch"><span class="wm-base">C</span><span class="wm-r">C</span><span class="wm-b">C</span></span>
+          <span class="wm-ch"><span class="wm-base">L</span><span class="wm-r">L</span><span class="wm-b">L</span></span>
+          <span class="wm-ch"><span class="wm-base">A</span><span class="wm-r">A</span><span class="wm-b">A</span></span>
+          <span class="wm-ch"><span class="wm-base">R</span><span class="wm-r">R</span><span class="wm-b">R</span></span>
+          <span class="wm-ch"><span class="wm-base">Y</span><span class="wm-r">Y</span><span class="wm-b">Y</span></span>
+        </span>
+      </h2>
+
+      <div class="footer-strip">
+        <span class="micro">© 2026 MCLARY</span>
+        <span class="micro">全部在本地运行</span>
+      </div>
+
+    </div>
+  </footer>
+</main>
+
+
+<!-- ══════════════════════════════════════════════════════════
+     STICKY NAME BAR
+     ══════════════════════════════════════════════════════════ -->
+<div class="sticky-name" aria-hidden="true">
+  <div class="sticky-name-inner">
+    <div class="name-part is-left"><span class="h1">图片</span></div>
+    <div class="name-part is-right"><span class="h1">工具箱</span></div>
+  </div>
+  <div class="sticky-name-meta">
+    <span class="micro">14 个工具</span>
+  </div>
+</div>
+
+<div class="scrollbar-track"><i class="scrollbar-thumb" data-magnetic-strength="20"></i></div>
+<div class="theme-overlay" aria-hidden="true"><span></span></div>
+
+
+<!-- One colour well for each tool, arranged as a palette. -->
+<div class="palette" data-palette>
+  <div class="palette-panel" id="palette-panel" role="dialog" aria-modal="true" aria-labelledby="palette-title" aria-hidden="true" inert data-lenis-prevent>
+    <div class="palette-inner">
+      <div class="palette-topbar">
+        <span class="palette-brand">文件工具箱<span class="palette-brand-divider" aria-hidden="true">/</span><span class="palette-eyebrow">PALETTE — 15</span></span>
+        <button type="button" class="palette-close" data-palette-close aria-label="关闭调色盘" data-cursor="关闭"><span aria-hidden="true">×</span></button>
+      </div>
+      <div class="palette-grid">
+        <button type="button" class="palette-chip palette-home" data-theme="0" data-tool="home" data-cursor="首页">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">00</span><span class="chip-name">首页</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="1" data-tool="compress" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">01</span><span class="chip-name">图片压缩</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="2" data-tool="format" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">02</span><span class="chip-name">格式转换</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="3" data-tool="pdf" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">03</span><span class="chip-name">PDF 转图片</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="4" data-tool="resize" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">04</span><span class="chip-name">尺寸调整</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="5" data-tool="base64" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">05</span><span class="chip-name">Base64 编解码</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="6" data-tool="crop" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">06</span><span class="chip-name">图片裁剪</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="7" data-tool="rotate" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">07</span><span class="chip-name">旋转与翻转</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="8" data-tool="adjust" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">08</span><span class="chip-name">色彩调整</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="9" data-tool="round" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">09</span><span class="chip-name">圆角与遮罩</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="10" data-tool="blur" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">10</span><span class="chip-name">模糊与马赛克</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="11" data-tool="stitch" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">11</span><span class="chip-name">拼接长图</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="12" data-tool="imgpdf" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">12</span><span class="chip-name">图片转 PDF</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="13" data-tool="watermark" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">13</span><span class="chip-name">文字水印</span></span>
+        </button>
+        <button type="button" class="palette-chip" data-theme="14" data-tool="border" data-cursor="打开">
+          <span class="chip-swatch" aria-hidden="true"></span>
+          <span class="chip-label"><span class="chip-number" aria-hidden="true">14</span><span class="chip-name">添加边框</span></span>
+        </button>
+      </div>
+      <footer class="palette-footer">
+        <h2 id="palette-title">工具调色盘</h2>
+        <p class="palette-caption">每一种颜色，一个工具。<small>本地处理 · 无需上传</small></p>
+      </footer>
+    </div>
+  </div>
+  <button class="palette-toggle" type="button" data-palette-toggle data-cursor="调色盘" aria-expanded="false" aria-controls="palette-panel" aria-label="打开调色盘">
+    <span class="palette-glyph" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  </button>
+  <div class="palette-veil" data-palette-veil aria-hidden="true"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.21/dist/lenis.min.js"></script>
+<script src="js/fluid.js"></script>
+<script src="js/poster.js"></script>
+<script src="js/tools.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,464 @@
+/* ═══════════════════════════════════════════════════════════════
+   NAME SCENE
+   One sheet, one word, four windows. Nothing is painted here and
+   nothing is swapped: the wordmark is real text, and a single
+   registered number -- how far the pointer has travelled across the
+   sheet -- decides how solid it is, how finely it is screened, how
+   far its outline runs.
+
+   Because --p is registered as a <number>, the browser interpolates
+   it, and every property below is a function of it. js/poster.js
+   never animates anything; it only moves the number.
+
+   Four windows a quarter turn apart, so exactly one of them owns the
+   word at any moment and the space between two windows is the morph:
+
+     0.00   solid, a focus band raking down and back
+     0.25   venetian slats, opening and closing
+     0.50   halftone screen, coarse at its peak
+     0.75   outline, hairline swelling to a fat keyline, fanned
+
+   The windows are all periodic, so p wrapping from 1 back to 0 is
+   seamless -- the same word is on screen either side of the seam.
+
+   There is no transition on --p on purpose. The clock writes it every
+   frame, so a transition would be restarted sixty times a second and
+   the whole dependent property tree re-resolved on each one. The
+   easing that a flick needs lives in js/poster.js instead, where it
+   can be frame-rate independent.
+   ═══════════════════════════════════════════════════════════════ */
+
+@property --p {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+/* The quantised twin of --p, for the full-sheet grounds. It needs an
+   initial value for the same reason --p does: an unregistered custom
+   property that is referenced but never set makes every property that
+   reads it invalid at computed-value time, and opacity would quietly
+   fall back to 1 -- which for a ground means a full sheet of texture
+   painted over the word on the very first frame. */
+@property --g {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.poster {
+  --ink: #111114;
+  --paper: #fff;
+  --m: min(8.2cqw, 8.2cqh);
+  --fs: clamp(9px, 1.15cqw, 13px);
+
+  /* The wordmark's size, and the line its cap sits on. Two rules need
+     them, the word and the clock that has to clear the cap above it, so
+     they are named here rather than written twice.
+
+     Declared on .poster but only ever read on a child, and that is not
+     an accident: cqw and cqh resolve against the nearest size
+     container, and a container does not resolve container units against
+     itself. Reading --cap one level down is what makes it resolve
+     against .poster at all. */
+  --cap: calc(20.03cqw - 3.352 * min(1cqw, 1cqh));
+  --word-top: 52%;
+
+  /* The clock has to be as wide as the wordmark: its left edge on the
+     wordmark's left edge, its right edge on the wordmark's right edge.
+     The wordmark advances 4.517em of --cap and --cap was solved to span
+     the sheet between the margins, so 4.517em is the target width. The
+     value below is that width divided by the clock row's own advance at
+     1em, measured off this exact markup in this exact face -- which is
+     the same kind of solved constant 4.517em itself is, and for the same
+     reason: a font metric, not a guess.
+
+     Note it is matched on the ADVANCE box, not on the ink. Ink would
+     look marginally wider, but a live clock prints a different pair of
+     digits every minute and Rubik's '1' carries a much narrower body
+     than its '8', so an ink-matched row would visibly breathe from one
+     minute to the next. The advance box is the same width at 03:00 as
+     at 18:47, and the row stays put.
+
+     Retune it if the face ever loads differently. Rubik's figures are
+     wide -- 0.681em each against Archivo's 0.753em for a whole letter --
+     so eight of them need very nearly the wordmark's own size, where
+     Nunito's narrow figures had to be set LARGER than the wordmark to
+     reach the same measure. */
+  --clock-fs: calc(0.9723 * var(--cap));
+
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  container-type: size;
+  font-family: var(--sans);
+  color: var(--ink);
+
+  /* The four windows: a raised bump each, zero a quarter turn away.
+     -g is the same four numbers quantised for the full-sheet grounds,
+     which cannot afford to be recomputed every frame. */
+  --w-ink: max(0, cos(calc(6.2831853 * var(--p))));
+  --w-cut: max(0, cos(calc(6.2831853 * var(--p) - 1.5707963)));
+  --w-dots: max(0, cos(calc(6.2831853 * var(--p) - 3.1415927)));
+  --w-line: max(0, cos(calc(6.2831853 * var(--p) - 4.7123890)));
+
+  --w-ink-g: max(0, cos(calc(6.2831853 * var(--g))));
+  --w-cut-g: max(0, cos(calc(6.2831853 * var(--g) - 1.5707963)));
+  --w-dots-g: max(0, cos(calc(6.2831853 * var(--g) - 3.1415927)));
+  --w-line-g: max(0, cos(calc(6.2831853 * var(--g) - 4.7123890)));
+
+  /* The focus band sits on the letters when this window owns it, and
+     rakes up out of them as the window hands over. 43% rather than
+     half: the cap of Archivo occupies 7% to 79% of a 1em line box, so
+     half is already too low and clips the tops off. Phased so p
+     wrapping 1 -> 0 lands on the value it left, which is the whole
+     reason the seam is invisible. */
+  --band: calc(18% + 25% * cos(calc(12.566371 * var(--p))));
+}
+
+/* ── the stock ─────────────────────────────────────────────────── */
+
+/* Four grounds, one per window, each faded in and out by its own
+   number -- this is the only part of the sheet that moves on its own
+   schedule, and it is kept faint enough to stay a background.
+
+   They read --g, not --p. Each ground is a full-sheet fill, so its
+   opacity changing repaints a thousand by a thousand pixels; at sixty
+   times a second that is a hundred and eighty full repaints a second
+   for something nobody can see move. js/poster.js quantises --g to
+   sixteen steps a lap, which is one repaint every three seconds, and
+   the eye cannot tell the difference at this contrast. */
+.pg { position: absolute; inset: 0; }
+
+.pg-paper { background: var(--paper); }
+
+.pg-focus {
+  opacity: var(--w-ink-g);
+  background-image: linear-gradient(
+    to bottom,
+    rgb(17 17 20 / .07) 0,
+    transparent 34%,
+    transparent 66%,
+    rgb(17 17 20 / .07) 100%
+  );
+}
+
+.pg-dots {
+  opacity: var(--w-dots-g);
+  background-image:
+    radial-gradient(circle at 50% 50%, rgb(17 17 20 / .2) 30%, transparent 33%);
+  background-size: max(6px, 1.1cqw) max(6px, 1.1cqw);
+  -webkit-mask-image: radial-gradient(circle at 100% 0, #000, transparent 72%);
+  mask-image: radial-gradient(circle at 100% 0, #000, transparent 72%);
+}
+
+/* Kept below full strength: the grid is the whole sheet, so at full
+   opacity it stops being construction paper and starts competing with
+   the word for attention. */
+.pg-grid {
+  --grid: max(14px, 2.3cqw);
+  opacity: calc(.5 * var(--w-line-g));
+  background-image:
+    repeating-linear-gradient(90deg, rgb(17 17 20 / .06) 0 1px, transparent 1px var(--grid)),
+    repeating-linear-gradient(0deg, rgb(17 17 20 / .06) 0 1px, transparent 1px var(--grid)),
+    repeating-linear-gradient(90deg, rgb(17 17 20 / .13) 0 1px, transparent 1px calc(var(--grid) * 5)),
+    repeating-linear-gradient(0deg, rgb(17 17 20 / .13) 0 1px, transparent 1px calc(var(--grid) * 5));
+}
+
+/* ── the furniture ─────────────────────────────────────────────── */
+
+/* There is no frame. A border at a constant opacity is the one mark on
+   the sheet that never changes, and on a scene whose whole subject is
+   change it read as a static box drawn around a moving word. */
+
+.poster-rule {
+  position: absolute;
+  left: var(--m);
+  right: var(--m);
+  top: calc(var(--m) + 2.9 * var(--fs));
+  height: 1px;
+  background: rgb(17 17 20 / .28);
+}
+
+/* ── the wordmark ──────────────────────────────────────────────── */
+
+/* the size the old canvas solved for, written out as container units:
+   20.03cqw of the sheet's width, less the margin it has to clear on
+   the short side. MCLARY in Archivo 800 advances 4.893em. It lives on
+   .poster as --cap.
+
+   `top` is set so the cap -- the ink, not the line box -- lands on
+   --word-top of the sheet. Archivo's cap sits .139em below the top of a
+   1em line box, and that is the offset.
+
+   Moving the word is therefore a one-line change. --band, the focus
+   mask above, is left alone deliberately: a mask gradient's percentages
+   resolve against the element being masked, which is the 1em box here,
+   not the sheet. The band therefore tracks the word by construction and
+   re-tuning it when the word moves would double the offset.
+
+   The height has to be stated: every layer below is absolutely
+   positioned, so none of them gives this box a height of its own, and
+   without this the whole wordmark collapses to nothing. */
+.poster-word {
+  position: absolute;
+  top: calc(var(--word-top) - .139em);
+  left: var(--m);
+  right: var(--m);
+  height: 1em;
+  font-size: var(--cap);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ink);
+}
+
+/* ── the clock ─────────────────────────────────────────────────── */
+
+/* Wall time, to the second, on the sheet above the wordmark and
+   therefore under the fluid with everything else: the pointer uncovers
+   the time along with the letters, and when the cover floods back the
+   time goes with it. It is part of the poster, not furniture bolted on
+   top of it.
+
+   Three number boxes and two dots rather than one string, only so the
+   dots can be drawn rather than typed. The row is TIGHT: no
+   space-between, no distributed spacing. The digits are simply set
+   large enough that eight of them fill the measure the wordmark fills
+   with six. Spreading small digits across the width would have reached
+   the same two edges while leaving the clock reading as small type
+   stranded in a wide row -- the gaps, not the figures, would be doing
+   all the work.
+
+   Centred in the same box the wordmark is centred in, at a width that
+   equals the wordmark's, so left edge lands on left edge and right on
+   right without either being positioned. */
+
+.poster-clock {
+  position: absolute;
+  left: var(--m);
+  right: var(--m);
+  /* 0.139 * --cap is how far the wordmark's own line box hangs below its
+     cap line, so subtracting it lands BOTH rows on --word-top; the clock
+     then rides 1.285 of its own size above that line. 1.285 is 1.15
+     rescaled for the face: it is 1.285 * 0.9723 == 1.249 of --cap, the
+     same 1.249em of clearance Rubik's cap height happens to need, so the
+     gap between the two lines is set by the numerals, not by the knob.
+     Change the face and this has to be solved again with them. */
+  top: calc(var(--word-top) - 0.139 * var(--cap) - 1.285 * var(--clock-fs));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Rubik, not the sheet's Archivo, and not a soft rounded face either.
+
+     "Rounder" had to mean the ENDS of the strokes, not the shape of the
+     bowls. Archivo is a grotesque and stays one however it is weighted.
+     A geometric face (Outfit, Poppins) rounds only the counters -- the
+     terminal of a 2 is still a flat cut, and at this size that flat cut
+     is the first thing the eye finds. Nunito did dome every terminal, but
+     it is a humanist: its figures carry a stroke-modulation and a softer,
+     friendlier rhythm, and sitting eight inches under a condensed
+     grotesque wordmark it read as a different sign rather than a caption
+     to it. Rubik is the face that answers to both terms at once -- its
+     terminals are genuinely softened, and its skeleton is a geometric
+     grotesque with near-uniform stroke weight, which is the structure
+     Archivo is built from. Same construction, rounder ends. */
+  font-family: 'Rubik', var(--sans);
+  font-size: var(--clock-fs);
+  font-weight: 800;
+  line-height: 1;
+  /* Open, not welded. At zero the figures ran into one another and the
+     row read as a single dense block; a twentieth of an em between every
+     pair is a visible seam at this size without becoming a gap. */
+  letter-spacing: .05em;
+  /* Tabular figures, or the row steps sideways every time a second rolls
+     past a one-digit hour. */
+  font-variant-numeric: tabular-nums;
+  color: #000;
+  /* The row fades out as it falls. The cap line and the upper part of the
+     figures stay solid and the numerals dissolve away toward the
+     baseline, so the clock reads as something arriving out of the sheet
+     rather than as a second caption competing with the wordmark.
+
+     The second stop is the clock's own lower boundary, and that is the
+     whole point of it. Measured off this face, Rubik's figures run from
+     4.5% to 84.5% of the 1em line box -- the remaining 15% is empty box
+     under the baseline. Running the ramp out to 94% looks like more fade
+     and is not: the ink has already stopped at 84.5%, so the numerals
+     bottom out around a sixth grey and then end on a visible cut. Zeroing
+     the gradient on the ink floor instead means the figures are fully
+     gone exactly where they end, and the row dissolves rather than being
+     sliced.
+
+     The hold at 42% is the same one this had before; only where the ramp
+     finishes moved. Both prefixes, because the rest of this file writes
+     both. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0 42%, transparent 85%);
+  mask-image: linear-gradient(to bottom, #000 0 42%, transparent 85%);
+  /* Centring works on the advance box, and the advance box is not
+     centred on the ink: a digit's left side bearing is wider than its
+     right one, which parks the visible figures a little to the left of
+     where the box says they are. The nudge is in em, so it stays
+     correct at any --cap. */
+  transform: translateX(.0466em);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The separator is a PAIR of drawn circles, and it is drawn rather than
+   typed.
+
+   A bullet or colon glyph would be exactly as round as whatever face
+   happened to be loaded, would change the moment that face failed and
+   the fallback took over, and at weight 800 a real colon in a grotesque
+   renders as two square blocks. An empty box carrying two 50%-radius
+   pseudo-elements is round by construction, identical on every machine,
+   and loads nothing.
+
+   The box is the height of the WHOLE pair, not of one dot, so
+   align-items: centre lands the pair on the figures' centre line as a
+   unit -- centring the lower dot on its own would hang the pair high. */
+.poster-clock .pc-s {
+  flex: none;
+  position: relative;
+  width: .13em;
+  height: .36em;
+  align-self: center;
+  transform: translateY(-.055em);
+}
+
+.poster-clock .pc-s::before,
+.poster-clock .pc-s::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: .13em;
+  height: .13em;
+  border-radius: 50%;
+  background: #000;
+}
+
+.poster-clock .pc-s::before { top: 0; }
+.poster-clock .pc-s::after { bottom: 0; }
+
+/* one set of letters, five ways. every layer is the same six spans in
+   the same centred row, so the lockup cannot drift between them --
+   only the way it is treated changes. */
+.pw {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  font-style: normal;
+  text-decoration: none;
+  pointer-events: none;
+}
+
+.pw > span { display: block; }
+
+/* ── 0.00 · SOLID ──────────────────────────────────────────────── */
+
+/* a band of the sheet holds focus and the rest of the word falls off
+   above and below it. the plateau is wide enough to take the whole cap
+   when the band is home, so at rest the word is simply solid -- the
+   rake only shows while the scene is actually moving. */
+.pw-ink {
+  color: var(--ink);
+  opacity: var(--w-ink);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent calc(var(--band) - 62%),
+    #000 calc(var(--band) - 38%),
+    #000 calc(var(--band) + 38%),
+    transparent calc(var(--band) + 62%)
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent calc(var(--band) - 62%),
+    #000 calc(var(--band) - 38%),
+    #000 calc(var(--band) + 38%),
+    transparent calc(var(--band) + 62%)
+  );
+}
+
+/* ── 0.25 · SLATS ──────────────────────────────────────────────── */
+
+/* the word survives only in the gaps between the rails. at the edges
+   of the window --on reaches 100% and the sheet goes solid, which is
+   what lets the slats close back into the solid word they came from. */
+.pw-cut {
+  color: var(--ink);
+  opacity: var(--w-cut);
+  --on: calc(20% + 80% * (1 - var(--w-cut)));
+  --rake: calc(.085em * (0.5 - 0.5 * cos(calc(12.566371 * var(--p)))));
+  -webkit-mask-image: repeating-linear-gradient(
+    to bottom, #000 0 var(--on), transparent var(--on) 100%
+  );
+  mask-image: repeating-linear-gradient(
+    to bottom, #000 0 var(--on), transparent var(--on) 100%
+  );
+  /* the tile has to be the full width and one rail tall, so the
+     gradient repeats downward -- the other way round and it becomes
+     tall columns instead of horizontal blinds */
+  -webkit-mask-size: 100% .085em;
+  mask-size: 100% .085em;
+  -webkit-mask-position: 0 var(--rake);
+  mask-position: 0 var(--rake);
+}
+
+/* ── 0.50 · HALFTONE ───────────────────────────────────────────── */
+
+/* the letterforms are the clip, the dot screen is the fill, and a
+   second screen sits a hair off for misregistration. */
+.pw-dots {
+  color: transparent;
+  opacity: var(--w-dots);
+  --dot: calc(.025em + .024em * var(--w-dots));
+  background-image:
+    radial-gradient(circle at 50% 50%, rgb(17 17 20 / .2) 30%, transparent 33%),
+    radial-gradient(circle at 50% 50%, var(--ink) 30%, transparent 33%);
+  background-size: var(--dot) var(--dot), var(--dot) var(--dot);
+  background-position: calc(var(--dot) * .18) calc(var(--dot) * .12), 0 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* ── 0.75 · OUTLINE ────────────────────────────────────────────── */
+
+/* hairline at the edges of the window, a fat keyline with a paper
+   interior at its peak -- so the construction drawing and the flat
+   cartoon are the same line at two thicknesses. */
+.pw-line {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: calc(.0028em + .049em * var(--w-line)) var(--ink);
+  opacity: var(--w-line);
+}
+
+/* multiple exposure: the same word stepped back through itself, the
+   echoes thinning as they go. only rides the outline window, where a
+   fan of keylines reads as depth rather than as a printing fault. */
+.pw-echo {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: .0035em var(--ink);
+  opacity: calc(.3 * var(--w-line) * var(--k));
+  transform: translate(calc(-.028em * var(--k)), calc(-.046em * var(--k)));
+}
+
+/* There is no bounding box around the wordmark either, and there are no
+   measurement guides down its side. Both were only ever drawn while the
+   word was an outline, on the argument that a box round a solid word
+   would just be a rectangle -- but that argument is about the box being
+   redundant, not about the box being wanted. A frame drawn tightly
+   round changing type reads as a selection marquee, and it is the one
+   element on the sheet that competes with the letters instead of
+   describing them. */
+
+/* There is deliberately nothing under the wordmark: no index, no
+   position marker. The scene is not a gallery of cards to be counted
+   through, it is one sheet, and a readout would say otherwise. */
+
+@media (prefers-reduced-motion: reduce) {
+  .poster { display: none; }
+}

@@ -1,0 +1,1289 @@
+/* ═══════════════════════════════════════════════════════════════
+   Image Toolbox — stylesheet
+
+   Type system notes
+   -----------------
+   The original build used Latin-only metrics: line-height 0.88 and
+   -0.2em tracking. Both are wrong for CJK. Han glyphs fill the em
+   box, so a 0.88 leading makes consecutive lines collide, and
+   negative tracking makes characters overlap. Everything here is
+   retuned for CJK, and .split-line-mask gets vertical breathing room
+   so GSAP's line masks stop clipping the descenders.
+   ═══════════════════════════════════════════════════════════════ */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body, div, span, h1, h2, h3, p, a, img, svg, section, footer, nav, ul, li,
+button, input, select, textarea, label {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+html {
+  font-size: 1vw;
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* custom scrollbar hidden — Lenis + own thumb */
+::-webkit-scrollbar { display: none; }
+* { scrollbar-width: none; }
+
+::selection { color: var(--bg); background: var(--fg); }
+
+:root {
+  --scale: 14.4;
+  --u: calc(1rem / var(--scale));          /* 1 unit ≈ 1px @1440 */
+
+  /* Latin stays Archivo; Han falls through to Noto Sans SC. */
+  --sans: "Archivo", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB",
+          "Microsoft YaHei", "Source Han Sans SC", sans-serif;
+  --mono: "Archivo", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --h1-size: calc(78 * var(--u));
+  --h1-lh: 1.1;                            /* was 0.88 — clipped CJK */
+  --h1-ls: 0.012em;                        /* was -0.2em — overlapped CJK */
+
+  --h2-size: calc(34 * var(--u));
+  --h2-lh: 1.28;
+  --h2-ls: 0.02em;
+
+  --h3-size: calc(21 * var(--u));
+  --h3-lh: 1.4;
+  --h3-ls: 0.02em;
+
+  --p1-size: calc(15 * var(--u));
+  --p1-lh: 1.75;                           /* was 1.07 — unreadable CJK body */
+  --p1-ls: 0.015em;
+
+  --micro-size: calc(11.5 * var(--u));
+  --micro-lh: 1.4;
+  --micro-ls: 0.09em;
+
+  --cell: calc(162 * var(--u));
+  --gap: 16px;
+  --pad: 16px;
+  --stroke: calc(0.5 * var(--u));
+
+  --u-4: 4px;   --u-8: 8px;  --u-12: 12px; --u-16: 16px; --u-24: 24px;
+  --u-32: 32px; --u-48: 48px; --u-64: 64px; --u-72: 72px; --u-104: 104px;
+  --u-120: 120px; --u-144: 144px; --u-200: 200px; --u-240: 240px;
+
+  /* 常驻 chrome 的尺寸与两条对齐轴。页面左上、右上、右下三件东西各占一角，
+     尺寸必须是定值（--u 来自 1vw，会跟着窗口缩放），而彼此的对齐要写死，
+     否则改一件另两件就得跟着量。
+
+     三件共用一个 72 的尺寸模数：徽标、菜单按钮、调色盘按钮同为 72 宽。
+
+     --chrome-axis  = 徽标的水平中线 = 8 + 72/2 = 44。菜单按钮按它对中，
+                      所以徽标一改尺寸，按钮的 padding-top 自动重算，不必手改。
+     竖直中线则不需要任何变量：菜单按钮与调色盘按钮同为 72 宽、右侧同为
+     var(--pad)，中线因此自动重合。 */
+  --chrome-mark: var(--u-72);
+  --chrome-btn-w: var(--u-72);
+  --chrome-btn-h: 44px;
+  --chrome-axis: calc(var(--u-8) + var(--chrome-mark) / 2);
+
+  /* 首屏标题的左边距和底边距，对齐的是右下角调色盘按钮的右边距和底边距 ——
+     也就是同一个 var(--pad)。于是三件常驻的东西（徽标在左上、标题在左下、
+     调色盘在右下）共用一个 16px 的框，谁也不比谁靠外。
+
+     72 是常驻 chrome 的尺寸模数（徽标 72、菜单按钮 72 宽、调色盘 72），
+     不是随手取的数。min() 那一半只在窗口窄到放不下时才咬得住，而「放得下」
+     的判据不是视口右边，是调色盘按钮的左边 —— 标题和调色盘同为
+     position: fixed，又同在底部那一条带上，字顶到按钮底下去就是两块东西
+     叠在一起。所以宽度预算从右往左数：右边 --pad、调色盘 72、一道 --u-12
+     的缝、左边 --pad：
+
+       可用宽 = 100vw - 左 --pad - 缝 12 - 调色盘 72 - 右 --pad
+       标题宽 = 5 个汉字 × (1em 字身 + .012em 字距) = 5.06em
+
+     1070 / 900 宽的桌面上算出来是 188px / 158px，min 都取 72 —— 500px 以上的
+     常规窗口它就是一个死值 72px，窗口收窄也不变。500px 以下才按比例收，
+     既不折行也不压上调色盘。
+     原生滚动条已被 ::-webkit-scrollbar / scrollbar-width 隐藏，
+     100vw 就是真实视口宽，这个算法不需要再给滚动条留位置。
+
+     页面上其余 .h1（工具名等）仍走 --h1-size，不受这条影响。 */
+  --hero-title-size: min(72px, calc((100vw - 2 * var(--pad) - var(--u-72) - var(--u-12)) / 5.06));
+
+  /* 这里原来还有一个 --hero-title-drop（0.228em 的向下位移），已删。原因是错的：
+     视口最底部有一条约 10px 的不透明带，位移把整块字推进了那条带里，字底被切掉
+     一节。墨迹比行盒下沿低多少是排版事实，不是一条可以用位移改的常数。 */
+
+  --bg: #ffffff;
+  --fg: #000000;
+  --fg-50: rgba(0, 0, 0, .5);
+  --fg-30: rgba(0, 0, 0, .3);
+  --fg-10: rgba(0, 0, 0, .1);
+  --fg-5: rgba(0, 0, 0, .05);
+  --bg-2: #f4f4f2;
+  --accent: #000000;
+
+  --dur-s: .4s;
+  --dur-m: .8s;
+  --dur-l: 1.2s;
+  --ease-io: cubic-bezier(.76, 0, .24, 1);
+  --ease-out: cubic-bezier(.25, 1, .5, 1);
+}
+
+/* ── theme modes ─────────────────────────────────────────────── */
+/* One state = one tool. `--bg` is the whole-page colour, `--fg` the
+   type on it, `--bg-2` the darker sibling used by the fluid cover,
+   the menu panel and the scrollbar well. */
+/* One page, twelve states. Every `--bg` is a real published colour — mostly
+   Pantone library references, one International Klein Blue — so the palette
+   is traceable instead of eyeballed. `--fg` is the ink that colour carries:
+   picked by measured contrast against `--bg`, not by taste, which is why
+   some states are light-on-dark and the rest dark-on-light. `--bg-2` is the
+   darker sibling the fluid cover, the menu panel and the scrollbar well use. */
+/* 00 is the site itself, not a tool: it stays the quiet light monochrome the
+   home page was designed around, and the other fourteen are the colour. */
+body.theme-0 { --bg:#f2f2ef; --fg:#16161a; --accent:#16161a; --bg-2:#e4e4e0; }
+body.theme-1 { --bg:#002fa7; --fg:#e8ecfa; --accent:#002fa7; --bg-2:#00268c; } /* Klein blue  */
+body.theme-2 { --bg:#ff6a13; --fg:#1a0d02; --accent:#ff6a13; --bg-2:#e65c0c; } /* PANTONE 1585 C */
+body.theme-3 { --bg:#f5df4d; --fg:#1a1605; --accent:#f5df4d; --bg-2:#dcc93d; } /* PANTONE 13-0647 */
+body.theme-4 { --bg:#bb2649; --fg:#fbe9ed; --accent:#bb2649; --bg-2:#a32140; } /* PANTONE 18-1750 */
+body.theme-5 { --bg:#009b77; --fg:#04231c; --accent:#009b77; --bg-2:#008766; } /* PANTONE 17-5641 */
+body.theme-6 { --bg:#45b5aa; --fg:#04231f; --accent:#45b5aa; --bg-2:#3a9c93; } /* PANTONE 15-5519 */
+body.theme-7 { --bg:#5f4b8b; --fg:#efeaf8; --accent:#5f4b8b; --bg-2:#52407a; } /* PANTONE 18-3838 */
+body.theme-8 { --bg:#b565a7; --fg:#260a20; --accent:#b565a7; --bg-2:#a25996; } /* PANTONE 18-3224 */
+body.theme-9 { --bg:#92a8d1; --fg:#0d1b2e; --accent:#92a8d1; --bg-2:#8098c4; } /* PANTONE 15-3919 */
+body.theme-10 { --bg:#939597; --fg:#16171a; --accent:#939597; --bg-2:#7e8083; } /* PANTONE 17-5104 */
+body.theme-11 { --bg:#a47864; --fg:#1e1009; --accent:#a47864; --bg-2:#916a58; } /* PANTONE 17-1230 */
+/* 12-14 arrived with the second batch of tools. The first eleven already spend
+   224 / 24 / 51 / 344 / 165 / 176 / 268 / 314 / 218 / neutral / 20, so these
+   three take what was left: a true cyan, a near-black, and a lime. The red that
+   sat at 14 left with the tool that was folded into 01 — colour states are one
+   per tool, so a retired tool takes its colour with it. */
+body.theme-12 { --bg:#00b4d8; --fg:#04222b; --accent:#00b4d8; --bg-2:#009ec0; } /* cyan    */
+body.theme-13 { --bg:#141416; --fg:#f2f2ef; --accent:#141416; --bg-2:#242427; } /* ink     */
+body.theme-14 { --bg:#8ab800; --fg:#101c00; --accent:#8ab800; --bg-2:#769a00; } /* lime    */
+
+/* states that carry light type get light hairlines, not black ones —
+   exactly the states whose --fg is the light one */
+body.theme-1, body.theme-4, body.theme-7, body.theme-13 {
+  --fg-50: rgba(255, 255, 255, .55);
+  --fg-30: rgba(255, 255, 255, .35);
+  --fg-10: rgba(255, 255, 255, .14);
+  --fg-5:  rgba(255, 255, 255, .08);
+}
+
+body {
+  font-family: var(--sans);
+  color: var(--fg);
+  background-color: var(--bg);
+  font-weight: 400;
+  line-height: 1.5;
+  transition: background-color .7s var(--ease-out), color .7s var(--ease-out);
+  overflow-x: clip;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TYPE
+   ═══════════════════════════════════════════════════════════════ */
+.h1 {
+  font-size: var(--h1-size);
+  line-height: var(--h1-lh);
+  letter-spacing: var(--h1-ls);
+  font-weight: 300;
+  font-family: var(--sans);
+}
+.h2 {
+  font-size: var(--h2-size);
+  line-height: var(--h2-lh);
+  letter-spacing: var(--h2-ls);
+  font-weight: 400;
+  font-family: var(--sans);
+}
+.h3 { font-size: var(--h3-size); line-height: var(--h3-lh); letter-spacing: var(--h3-ls); font-weight: 500; }
+
+.p1 {
+  font-size: var(--p1-size);
+  line-height: var(--p1-lh);
+  letter-spacing: var(--p1-ls);
+  font-weight: 400;
+}
+.p1.is-dim { opacity: .5; }
+
+/* small tracked label — the workhorse of the new lower half */
+.micro {
+  font-size: var(--micro-size);
+  line-height: var(--micro-lh);
+  letter-spacing: var(--micro-ls);
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--fg-50);
+  font-family: var(--sans);
+}
+.micro.is-fg { color: var(--fg); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+
+a { color: inherit; text-decoration: none; }
+
+.link-underline [data-underline="text"] {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 92%;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  display: inline;
+  transition: background-size .6s var(--ease-io);
+}
+@media (hover: hover) {
+  .link-underline:hover [data-underline="text"] { background-size: 0% 1px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GRID
+   ═══════════════════════════════════════════════════════════════ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  column-gap: var(--gap);
+  row-gap: var(--gap);
+}
+
+/* .intro-inner 原来在这里：首屏文案那一栏，海报的内容内缩到短边的 8.2%。
+   标题变成常驻悬浮件之后这一栏空了，div 和样式一起删掉 —— 海报自己
+   （poster.css 的 --m）仍然守着那条 8.2% 的线。 */
+
+/* ═══════════════════════════════════════════════════════════════
+   PRELOADER  ·  a full-screen progress bar
+   ═══════════════════════════════════════════════════════════════
+   加载页只剩两件事：黑色从底边涨上来涨满整屏，和这屏正中的数字。页面上的所有
+   文案都删掉了 —— 进度条本身就是唯一的信息。 */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.preloader-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--fg);
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+}
+
+/* 数字只给一份颜色，让它自己反。difference 把身下的像素取反：白底上是黑字，
+   黑底上是白字，翻转正好发生在黑色涨到的那条线上 —— 没有第二层要裁，也没有任何
+   东西需要每帧同步，场上只有黑色在动。
+
+   叠两层、用 clip-path 各裁一半也做得到，但裁切是相对元素自己的盒子解析的，
+   要让接缝落在屏幕那条线上，盒子就得铺满整屏；铺满之后 difference 这一层已经
+   把同一件事做完了，还少一次重绘。
+
+   数字和百分号是同一段文本，不是一个 span 加一个游离的 %：每帧只改一次
+   textContent，两半没有任何机会错开。 */
+.preloader-num {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  mix-blend-mode: difference;
+  font-size: min(18vw, 200px);
+  line-height: 1;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CURSOR
+   ═══════════════════════════════════════════════════════════════ */
+.cursor {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 300;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  opacity: 0;
+}
+.cursor-dot {
+  position: absolute;
+  width: 6px; height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: #fff;
+}
+.cursor-ring {
+  position: absolute;
+  width: 40px; height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .6);
+  display: flex; align-items: center; justify-content: center;
+}
+.cursor-label {
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: #fff;
+  opacity: 0;
+  white-space: nowrap;
+}
+body.has-cursor { cursor: none; }
+/* the custom ring must not swallow the real pointer inside the tool UI */
+body.has-cursor .t-input, body.has-cursor .t-area { cursor: text; }
+body.has-cursor .t-seg button, body.has-cursor .t-drop,
+body.has-cursor .t-btn, body.has-cursor .t-menu-btn { cursor: pointer; }
+body.has-cursor .t-range { cursor: ew-resize; }
+
+/* ═══════════════════════════════════════════════════════════════
+   NAV
+   ═══════════════════════════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 94;
+  pointer-events: none;
+}
+.nav-inner {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+  /* 右边距 = var(--pad)，与调色盘按钮相同；按钮本身也是 72 宽，
+     于是两者的竖直中线落在同一条 x 上。 */
+  padding-right: var(--pad);
+  /* 上边距把按钮的中线推到徽标的中线（--chrome-axis = 60）上。 */
+  padding-top: calc(var(--chrome-axis) - var(--chrome-btn-h) / 2);
+}
+/* padding 已经走 --u-8 / --u-16 这组定值，字号也必须是定值：--micro-size
+   是 calc(11.5 * var(--u))，跟着 1vw 缩放，1070 宽时"菜单"只有 8.5px 高，
+   窄一档就认不出来了。
+
+   宽高都定死。宽 72 是为了和调色盘按钮共用一条竖直中线（见 .nav-inner）；
+   高 44 配 --chrome-axis 的上边距，中线与徽标齐平。文字居中，不靠 padding
+   撑 —— 撑出来的是内边距，不是对齐。 */
+.nav-button {
+  pointer-events: auto;
+  position: relative;
+  z-index: 2;
+  width: var(--chrome-btn-w);
+  height: var(--chrome-btn-h);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--fg);
+  color: var(--bg);
+  cursor: pointer;
+  font-size: 15px;
+  letter-spacing: var(--micro-ls);
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: transform .4s var(--ease-out);
+}
+.nav-button:hover { transform: scale(1.06); }
+
+.nav-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 93;
+  background: var(--bg-2);
+  display: flex;
+  align-items: center;
+  padding: var(--pad);
+  clip-path: inset(0 0 100% 0);
+  pointer-events: none;
+}
+.nav-menu.is-open { pointer-events: auto; }
+.nav-menu-inner { display: flex; flex-direction: column; gap: .25em; }
+.menu-link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--u-24);
+  overflow: hidden;
+}
+.menu-index { color: var(--fg-50); font-variant-numeric: tabular-nums; }
+
+/* 覆盖层自己的字号也是定值。.h2 / .p1 都是 calc(N * var(--u))，而 --u 来自
+   1vw：同一块菜单，1070 宽时正文 25px，1440 宽时 34px —— 一个铺满全屏的
+   菜单，文字尺寸却跟着窗口宽度变。34 / 15 是这套尺寸在 1440 设计宽上的原值。 */
+.nav-menu .h2 { font-size: 34px; }
+.nav-menu .p1 { font-size: 15px; }
+
+/* 联系方式 是脚注，不是那三个目的地的同级：脱流，钉在覆盖层底部居中。
+   .nav-menu 是 position:fixed，所以它就是包含块 —— bottom:var(--pad) 正是
+   覆盖层自己的内边距，和右上角菜单按钮所处的那个内缩一致。脱流是为了让
+   上面三条保住 flex 父级给它们的居中，而不是被这条一起顶走。 */
+.h2-sm { font-size: 15px; }
+.menu-link-sm {
+  position: absolute;
+  left: var(--pad);
+  right: var(--pad);
+  bottom: var(--pad);
+  display: flex;
+  justify-content: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO
+   ═══════════════════════════════════════════════════════════════ */
+/* min-height 是必须的，不是保险：海报那张卡是 100vh，而这一屏的内容
+   （左栏标尺 + 文件工具箱）只有 878 高。内容撑不出满屏时，海报底边
+   ——连同右下角的风格名——会滑到下一屏底下被盖住。 */
+.intro {
+  position: relative;
+  z-index: 0;
+  min-height: 100vh;
+  padding-bottom: 12vh;
+}
+
+/* 徽标是正方的（旧版是 95x160 的竖版，还带 preserveAspectRatio="none"
+   硬拉成正方之外的比例）。外框跟着方走，图形本身在 1000 方框里居中，
+   四周各留约 11%，所以实际墨迹比这个数小一圈。
+   不设 preserveAspectRatio：默认的 xMidYMid meet 正是方图对方框要的行为。
+
+   尺寸走 --u-104 而不是 calc(104 * var(--u))：--u 来自 1vw，所以后者是
+   随窗口连续缩放的，1070 宽时徽标只有 77px、比右下角那个恒为 72px 的
+   调色盘还小，到 1440 才回到 104px。页面上的常驻 chrome 应当是一组
+   固定尺寸，徽标和调色盘、菜单按钮必须用同一套 --u-N 定值。 */
+.logo-sm {
+  /* 悬浮件，不是首屏的内容。position:fixed 让它不随页面滚走；z-index 90
+     高过所有 section（2），低过菜单覆盖层（93）、导航（94）、吸底名条（95）
+     和调色盘（96）—— 打开菜单时徽标仍被盖住，和它原来在 .intro 里的行为一致。
+     它是个 button，浏览器默认的按钮底子（背景色）要显式清掉；margin / padding /
+     border / font 顶部那条全局 reset 已经清了。焦点环留着，那是键盘用户唯一能
+     看见的落点。 */
+  position: fixed;
+  top: var(--u-8);
+  left: var(--pad);
+  width: var(--chrome-mark);
+  height: var(--chrome-mark);
+  background: none;
+  color: var(--fg);
+  z-index: 90;
+  cursor: pointer;
+  transition: transform .3s var(--ease-out), opacity var(--dur-s) var(--ease-out);
+}
+.logo-sm svg { width: 100%; height: 100%; display: block; }
+@media (hover: hover) { .logo-sm:hover { transform: translateY(-2px); opacity: .7; } }
+.logo-sm:active { transform: translateY(0); }
+
+/* 主张是悬浮件：页面滚走时它留在原地，由 main.js 的 initHeroTitleFade 按
+   滚动进度淡出。
+
+   左边距和底边距都取 var(--pad) —— 和右下角调色盘按钮的右边距、底边距是
+   同一个值（.palette-toggle 就是 right/bottom: var(--pad)）。它也因此和左上
+   角徽标的左边距齐平，三件常驻件共用一个 16px 的框。
+
+   底边不再做任何墨迹补偿位移。曾经这里有 --hero-title-drop: 0.228em，是照着
+   「行盒下沿比墨迹下沿低 0.228em」的测量往下推的。那个测量是错的：Noto Sans SC
+   的 CJK 行盒本来就贴着墨迹，这 16px 没补上任何东西，只是把整块字推进视口最底
+   边 —— 那里有一条约 10px 的不透明带（吸底名条 .sticky-name 的盒子），字底探
+   进去就被切掉一节，就是「底部被遮住」那个现象。
+
+   现在不加位移。对齐的契约是「盒子下沿落在 16px」，和调色盘、徽标同一个框；
+   眼睛看到的墨迹会比这再高 0.17em 左右（72px 时约 12px），因为 CJK 行盒自带
+   一段降部空间。这 12px 故意不去凑平：位移正是上次把字切掉的原因，而真要凑
+   平就只能去改 line-height，那是换个字体就崩的硬凑值。 */
+.cell-hero {
+  position: fixed;
+  bottom: var(--pad);
+  left: var(--pad);
+  /* 和徽标同一个高度：z-index 90 高过所有 section（2），低过菜单覆盖层（93）、
+     导航（94）、吸底名条（95）和调色盘（96）。
+
+     这一层是必须的，不是保险：.index 是 position:relative; z-index:2 且背景
+     不透明，标题要是还关在 .intro（z-index:0）的层叠上下文里，页面往下滚，
+     下一屏就会从底下顶上来把它整片埋掉 —— position:fixed 在这里救不了它，
+     救它的只有离开那个上下文（HTML 里它因此和徽标一起做 body 直属子元素）。
+
+     pointer-events:none 同样是从前一个宿主继承下来的：字淡出之后仍然浮在那
+     一带，不接管指针就等于在滚上来的正文上盖了一块看不见的挡板。扭曲效果
+     一直是 initHeroWarp 自己拿指针去 hit-test 的，不靠 hover。 */
+  z-index: 90;
+  pointer-events: none;
+}
+
+/* 只冻这一处 .h1 的字号：.h1 还被工具名等复用，那些仍按视口缩放。
+   这里不设 transform —— 理由见上面 .cell-hero 那段。 */
+.cell-hero .h1 {
+  font-size: var(--hero-title-size);
+}
+
+.heading-group { display: flex; flex-direction: column; }
+.h1.is-offset { padding-left: var(--u-120); }
+
+/* 鼠标经过时整块字被湍流贴图推开。滤镜只有 scale 在动，平时为 0，
+   所以静止状态没有任何额外开销。 */
+.warp-defs { position: absolute; width: 0; height: 0; pointer-events: none; }
+.heading-group-warp { filter: url(#heroWarp); will-change: filter; }
+
+/* ── palette dock ────────────────────────────────────────────── */
+/* Circular colour wells on the same quiet paper as the home page. */
+.palette { position: fixed; inset: 0; z-index: 96; overflow: hidden; pointer-events: none; }
+.palette-toggle {
+  position: absolute; right: var(--pad); bottom: var(--pad); z-index: 1;
+  width: 72px; height: 72px; border-radius: 50%; background: var(--fg); color: var(--bg);
+  display: grid; place-items: center; cursor: pointer; pointer-events: auto;
+}
+.palette-glyph { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; width: 20px; height: 20px; }
+.palette-glyph i { display: block; background: currentColor; }
+.palette-panel {
+  position: absolute; inset: 0; z-index: 2; background: #f2f2ef; color: #16161a;
+  font-family: var(--sans); opacity: 0; visibility: hidden;
+  overflow-y: auto; overscroll-behavior: contain; pointer-events: auto;
+}
+.palette-inner {
+  min-height: 100%; display: flex; flex-direction: column;
+  padding: 24px clamp(24px, 4vw, 64px) 28px;
+}
+.palette-topbar { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.palette-brand { display: flex; align-items: center; gap: 18px; font-size: 13px; letter-spacing: .05em; }
+.palette-brand-divider { color: #aaa9a2; }
+.palette-eyebrow { font-size: 10px; letter-spacing: .16em; color: #797972; }
+.palette-close {
+  width: 44px; height: 44px; display: grid; place-items: center; flex-shrink: 0;
+  background: #f2f2ef; color: #16161a; border: 1px solid #cbc9c2; border-radius: 50%;
+  cursor: pointer; transition: color .2s, background .2s;
+}
+.palette-close span { font: 27px/1 Arial, sans-serif; }
+.palette-grid {
+  --well: clamp(78px, 12.4vh, 128px);
+  width: min(100%, 1060px); margin: auto; padding: 42px 0;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(22px, 4.5vh, 46px) clamp(18px, 3vw, 48px);
+}
+.palette-chip {
+  position: relative; min-width: 0; display: flex; flex-direction: column; align-items: center;
+  gap: 17px; padding: 9px 0 3px; background: transparent; color: inherit;
+  text-align: center; font-family: var(--sans); cursor: pointer;
+}
+.chip-swatch {
+  position: relative; display: grid; place-items: center; width: var(--well); height: var(--well);
+  flex-shrink: 0; border-radius: 50%; background: var(--tile); color: var(--ink, #16161a);
+  transition: transform .4s var(--ease-out);
+}
+.chip-swatch::before {
+  content: ''; position: absolute; inset: -7px; border: 1px solid #16161a; border-radius: inherit;
+  opacity: 0; transform: scale(.95); transition: opacity .3s, transform .3s;
+}
+.chip-swatch::after { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0; }
+.palette-chip[data-theme="0"] .chip-swatch { box-shadow: inset 0 0 0 1px #d1d0c8; }
+.chip-label { display: flex; justify-content: center; align-items: baseline; gap: 8px; }
+.chip-number { font-family: var(--mono); font-size: 9px; font-variant-numeric: tabular-nums; color: #898981; }
+.chip-name { font-size: 13px; font-weight: 400; line-height: 1.5; letter-spacing: .025em; }
+.palette-chip.is-active .chip-swatch::before { opacity: .65; transform: none; }
+.palette-chip.is-active .chip-swatch::after { opacity: 1; }
+.palette-chip:focus-visible { outline: none; }
+.palette-chip:focus-visible .chip-swatch::before { opacity: 1; transform: none; border-width: 2px; }
+.palette-close:focus-visible { outline: 2px solid #16161a; outline-offset: 4px; }
+.palette-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; }
+.palette-footer h2 { font-size: clamp(40px, 4.6vw, 66px); font-weight: 300; line-height: 1.2; letter-spacing: .012em; }
+.palette-caption { display: flex; flex-direction: column; gap: 10px; padding-bottom: 5px; font-size: 12px; line-height: 1.5; }
+.palette-caption small { font-size: 10px; color: #81817a; letter-spacing: .04em; }
+.palette-veil { position: absolute; inset: 0; z-index: 3; opacity: 0; background: var(--tile, #f2f2ef); pointer-events: none; }
+.palette-chip[data-theme="0"]  { --tile: #f2f2ef; }
+.palette-chip[data-theme="1"]  { --tile: #002fa7; --ink: #e8ecfa; }
+.palette-chip[data-theme="2"]  { --tile: #ff6a13; }
+.palette-chip[data-theme="3"]  { --tile: #f5df4d; }
+.palette-chip[data-theme="4"]  { --tile: #bb2649; --ink: #fbe9ed; }
+.palette-chip[data-theme="5"]  { --tile: #009b77; }
+.palette-chip[data-theme="6"]  { --tile: #45b5aa; }
+.palette-chip[data-theme="7"]  { --tile: #5f4b8b; --ink: #efeaf8; }
+.palette-chip[data-theme="8"]  { --tile: #b565a7; }
+.palette-chip[data-theme="9"]  { --tile: #92a8d1; }
+.palette-chip[data-theme="10"] { --tile: #939597; }
+.palette-chip[data-theme="11"] { --tile: #a47864; }
+.palette-chip[data-theme="12"] { --tile: #00b4d8; }
+.palette-chip[data-theme="13"] { --tile: #141416; --ink: #f2f2ef; }
+.palette-chip[data-theme="14"] { --tile: #8ab800; }
+@media (hover: hover) {
+  .palette-chip:hover .chip-swatch { transform: translateY(-5px) scale(1.055); }
+  .palette-chip:hover .chip-name { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+  .palette-close:hover { color: #f2f2ef; background: #16161a; }
+}
+@media (min-width: 701px) and (max-height: 700px) {
+  .palette-inner { padding-top: 18px; padding-bottom: 20px; }
+  .palette-grid { --well: 76px; padding-block: 24px; gap: 18px 24px; width: min(100%, 900px); }
+  .palette-chip { gap: 13px; }
+  .palette-footer h2 { font-size: 42px; }
+}
+@media (max-width: 700px) {
+  .palette-inner { padding: 20px 22px 24px; }
+  .palette-topbar { min-height: 44px; padding-right: 52px; }
+  .palette-brand { font-size: 12px; gap: 12px; }
+  .palette-eyebrow { font-size: 9px; }
+  .palette-close { position: fixed; top: 20px; right: 22px; z-index: 2; }
+  .palette-grid { --well: clamp(62px, 19vw, 94px); grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 10px; padding-block: 36px; width: min(100%, 500px); }
+  .palette-chip { gap: 12px; }
+  .chip-label { flex-direction: column; align-items: center; gap: 2px; }
+  .chip-name { font-size: 12px; letter-spacing: 0; }
+  .chip-number { font-size: 8px; }
+  .palette-footer { align-items: flex-start; flex-direction: column; gap: 14px; }
+  .palette-footer h2 { font-size: 38px; }
+  .palette-caption { gap: 6px; font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .palette-chip *, .palette-close { transition: none !important; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   EFFECT 2 · FLUID REVEAL
+   ═══════════════════════════════════════════════════════════════ */
+.reveal-block-wrap {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 100vh;
+  background: var(--bg-2);
+  z-index: 0;
+}
+.reveal-block { position: relative; width: 100%; height: 100%; overflow: hidden; }
+/* the name poster under the fluid lives in css/poster.css -- it is DOM,
+   not a canvas, so there is nothing to size here */
+.fluid-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+/* 海报上不再有任何提示语，也不再有轮播索引 —— 唯一的导航就是指针本身。 */
+
+/* ═══════════════════════════════════════════════════════════════
+   EFFECT 3 · SCRUB BLUR
+   ═══════════════════════════════════════════════════════════════ */
+[data-scrub-reveal] { will-change: filter, transform, opacity; }
+
+/* GSAP's line masks clip at the line box. CJK ink plus a 1.1 leading
+   still overflows by a hair, so give the mask vertical room and pull
+   the layout back with an equal negative margin. */
+.split-line-mask {
+  overflow: clip;
+  padding-block: 0.1em;
+  margin-block: -0.1em;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOOL STAGE  ·  redesigned
+   ═══════════════════════════════════════════════════════════════ */
+.stage {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+  padding-top: 14vh;
+  padding-bottom: var(--u-120);
+}
+.stage-inner { padding: 0 var(--pad); }
+
+.stage-head {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  column-gap: var(--gap);
+  row-gap: var(--u-32);
+  align-items: end;
+  padding-bottom: var(--u-48);
+  border-bottom: var(--stroke) solid var(--fg);
+  margin-bottom: var(--u-48);
+}
+.stage-head-l { grid-column: 1 / span 4; display: flex; flex-direction: column; gap: var(--u-12); }
+.stage-head-r { grid-column: 6 / span 3; display: flex; flex-direction: column; gap: var(--u-16); }
+
+.stage-index { display: flex; align-items: center; gap: var(--u-12); }
+.stage-index .num { font-size: var(--micro-size); color: var(--fg-50); }
+.stage-rule { flex: 1; height: var(--stroke); background: var(--fg-10); }
+
+.tool-name { display: flex; flex-direction: column; }
+.tool-name .h1 { text-wrap: nowrap; }
+
+.stage-desc { color: var(--fg-50); max-width: 26em; }
+.stage-more {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--u-8);
+  color: var(--fg-50);
+  transition: color var(--dur-s) var(--ease-out);
+}
+@media (hover: hover) { .stage-more:hover { color: var(--fg); } }
+
+/* ── the tool surface ───────────────────────────────────────── */
+.tool-stage { grid-column: 1 / -1; }
+.tool {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  column-gap: var(--gap);
+  row-gap: var(--u-48);
+}
+.tool-col-l { grid-column: 1 / span 4; }
+.tool-col-r { grid-column: 5 / span 4; }
+
+/* drop zone — no dashed box, just a quiet surface with one hairline */
+.t-drop {
+  position: relative;
+  background: var(--bg-2);
+  padding: var(--u-32) var(--u-24);
+  text-align: center;
+  cursor: pointer;
+  transition: background-color var(--dur-s) var(--ease-out);
+}
+.t-drop:hover, .t-drop.is-over { background: var(--fg-5); }
+.t-drop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: var(--stroke) solid transparent;
+  pointer-events: none;
+  transition: border-color var(--dur-s) var(--ease-out);
+}
+.t-drop.is-over::after { border-color: var(--fg); }
+.t-drop input[type="file"] { position: absolute; inset: 0; opacity: .01; width: 100%; height: 100%; cursor: pointer; }
+.t-drop:focus-within::after { border-color: var(--fg-30); }
+.t-drop-main { display: block; font-size: var(--h3-size); line-height: 1.3; letter-spacing: .02em; font-weight: 400; }
+.t-drop-sub { display: block; margin-top: var(--u-12); }
+
+/* options */
+.t-opts { display: flex; flex-direction: column; gap: var(--u-32); }
+.t-opt { display: flex; flex-direction: column; gap: var(--u-12); }
+.t-opt-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--u-12); }
+.t-opt-val { color: var(--fg); font-variant-numeric: tabular-nums; }
+.t-opt.is-off { opacity: .35; }
+.t-opt.is-off .t-range { pointer-events: none; }
+
+/* segmented control */
+.t-seg {
+  display: flex;
+  background: var(--bg-2);
+  padding: 3px;
+  gap: 2px;
+}
+.t-seg button {
+  flex: 1;
+  padding: var(--u-12) var(--u-8);
+  font-family: var(--sans);
+  font-size: var(--p1-size);
+  line-height: 1.2;
+  letter-spacing: .02em;
+  color: var(--fg-50);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--dur-s) var(--ease-out), color var(--dur-s) var(--ease-out);
+}
+.t-seg button:hover { color: var(--fg); }
+.t-seg button[aria-checked="true"] { background: var(--bg); color: var(--fg); }
+
+/* dropdown */
+.t-menu { position: relative; }
+.t-menu-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--u-12);
+  padding: var(--u-12) var(--u-16);
+  background: var(--bg-2);
+  border: none;
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: var(--p1-size);
+  line-height: 1.2;
+  letter-spacing: .02em;
+  cursor: pointer;
+  text-align: left;
+}
+.t-menu-caret { flex: none; opacity: .4; transition: transform var(--dur-s) var(--ease-out); }
+.t-menu.is-open .t-menu-caret { transform: rotate(180deg); }
+.t-menu-list {
+  position: absolute;
+  left: 0; right: 0;
+  top: calc(100% + 4px);
+  z-index: 20;
+  background: var(--bg);
+  border: var(--stroke) solid var(--fg-10);
+  max-height: 260px;
+  overflow-y: auto;
+  display: none;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .12);
+}
+.t-menu.is-open .t-menu-list { display: block; }
+.t-menu-list button {
+  width: 100%;
+  display: block;
+  padding: var(--u-12) var(--u-16);
+  background: none;
+  border: none;
+  color: var(--fg-50);
+  font-family: var(--sans);
+  font-size: var(--p1-size);
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+}
+.t-menu-list button:hover { background: var(--fg-5); color: var(--fg); }
+.t-menu-list button[aria-selected="true"] { color: var(--fg); font-weight: 500; }
+
+/* range */
+.t-range-row { display: flex; align-items: center; gap: var(--u-16); }
+.t-range {
+  flex: 1;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 2px;
+  background: var(--fg-10);
+  border-radius: 2px;
+  cursor: ew-resize;
+}
+.t-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--fg);
+  cursor: ew-resize;
+  box-shadow: 0 0 0 6px var(--bg);
+}
+.t-range::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border: none; border-radius: 50%;
+  background: var(--fg);
+  cursor: ew-resize;
+}
+
+/* text + number input */
+.t-input {
+  width: 100%;
+  font-family: var(--sans);
+  font-size: var(--p1-size);
+  line-height: 1.4;
+  letter-spacing: .02em;
+  color: var(--fg);
+  background: var(--bg-2);
+  border: var(--stroke) solid transparent;
+  border-radius: 0;
+  padding: var(--u-12) var(--u-16);
+  appearance: none;
+  -webkit-appearance: none;
+}
+.t-input:focus { outline: none; border-color: var(--fg); }
+.t-input.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.t-area {
+  width: 100%;
+  resize: vertical;
+  min-height: calc(150 * var(--u));
+  font-family: var(--mono);
+  font-size: calc(12 * var(--u));
+  line-height: 1.7;
+  color: var(--fg);
+  background: var(--bg-2);
+  border: var(--stroke) solid transparent;
+  border-radius: 0;
+  padding: var(--u-16);
+}
+.t-area:focus { outline: none; border-color: var(--fg); }
+
+/* switch */
+.t-switch { display: flex; align-items: center; justify-content: space-between; gap: var(--u-16); cursor: pointer; }
+.t-switch-track {
+  position: relative;
+  flex: none;
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  background: var(--fg-10);
+  transition: background-color var(--dur-s) var(--ease-out);
+}
+.t-switch-thumb {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+  transition: transform var(--dur-s) var(--ease-out);
+}
+.t-switch input { position: absolute; opacity: .01; width: 0; height: 0; }
+.t-switch input:checked + .t-switch-track { background: var(--fg); }
+.t-switch input:checked + .t-switch-track .t-switch-thumb { transform: translateX(18px); }
+.t-switch input:focus-visible + .t-switch-track { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--fg); }
+
+/* action bar */
+.t-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: var(--u-12);
+  flex-wrap: wrap;
+  padding-top: var(--u-32);
+  border-top: var(--stroke) solid var(--fg-10);
+}
+.t-stats { flex: 1; color: var(--fg-50); text-align: right; min-width: 12em; }
+
+.t-btn {
+  font-family: var(--sans);
+  font-size: var(--p1-size);
+  font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--bg);
+  background: var(--fg);
+  border: none;
+  border-radius: 999px;
+  padding: var(--u-16) var(--u-32);
+  cursor: pointer;
+  transition: transform .35s var(--ease-out), opacity .3s var(--ease-out);
+}
+.t-btn:hover { transform: scale(1.03); }
+.t-btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+.t-btn-ghost {
+  color: var(--fg);
+  background: transparent;
+  box-shadow: inset 0 0 0 var(--stroke) var(--fg-30);
+}
+.t-btn-ghost:hover { box-shadow: inset 0 0 0 var(--stroke) var(--fg); }
+
+/* queue — sits under the drop zone (it is a child of .tool-col-l, not a row of
+   .tool, so it needs no grid-column and carries its own spacing) */
+.t-queue { display: flex; flex-wrap: wrap; gap: var(--u-8); margin-top: var(--u-16); }
+.t-queue:empty { display: none; }
+.t-chip {
+  display: inline-flex; align-items: center; gap: var(--u-12);
+  background: var(--bg-2);
+  padding: var(--u-8) var(--u-12) var(--u-8) var(--u-16);
+  max-width: 100%;
+}
+.t-chip-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.t-chip-size { color: var(--fg-50); flex: none; }
+.t-chip-x {
+  border: none; background: none; color: inherit;
+  cursor: pointer; padding: 0; line-height: 1;
+  opacity: .4; font-size: 15px;
+  transition: opacity var(--dur-s) var(--ease-out);
+}
+.t-chip-x:hover { opacity: 1; }
+
+/* results */
+.t-results {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: var(--gap);
+  row-gap: var(--u-24);
+}
+.t-results:empty { display: none; }
+
+/* base64's bespoke panel spans the full width */
+.t-panel { grid-column: 1 / -1; display: flex; flex-direction: column; gap: var(--u-16); }
+.t-panel .t-bar { border-top: none; padding-top: 0; }
+.t-panel .t-stats { text-align: left; }
+.t-out {
+  display: block;
+  background: var(--bg-2);
+  padding: var(--u-8);
+  transition: background-color var(--dur-s) var(--ease-out);
+}
+.t-out:hover { background: var(--fg-5); }
+.t-out-thumb { position: relative; aspect-ratio: 4 / 3; overflow: hidden; }
+.t-out-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; }
+.t-out.is-txt .t-out-thumb { display: none; }
+.t-out-meta {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--u-8); padding: var(--u-12) var(--u-8) var(--u-8);
+}
+.t-out-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.t-out-save { flex: none; font-variant-numeric: tabular-nums; }
+
+.t-empty { color: var(--fg-30); }
+.t-note { color: var(--fg-50); }
+.t-offnote { display: none; }
+.t-opt.is-off .t-offnote { display: block; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TOOL INDEX  ·  redesigned
+   ═══════════════════════════════════════════════════════════════ */
+.index { position: relative; z-index: 2; background: var(--bg); padding-bottom: var(--u-120); }
+.index-inner { padding: 0 var(--pad); }
+
+.index-head {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  column-gap: var(--gap);
+  row-gap: var(--u-32);
+  align-items: end;
+  padding-bottom: var(--u-48);
+  border-bottom: var(--stroke) solid var(--fg);
+}
+.index-head-l { grid-column: 1 / span 4; }
+.index-head-r { grid-column: 6 / span 3; }
+.index-note { color: var(--fg-50); max-width: 24em; }
+
+.index-list { margin-top: var(--u-8); }
+.index-row {
+  display: grid;
+  grid-template-columns: var(--u-48) 1fr auto var(--u-32);
+  align-items: center;
+  gap: var(--u-24);
+  width: 100%;
+  text-align: left;
+  padding: var(--u-24) 0;
+  border: none;
+  border-bottom: var(--stroke) solid var(--fg-10);
+  background: none;
+  color: inherit;
+  font-family: var(--sans);
+  cursor: pointer;
+  transition: padding-left .5s var(--ease-out), background-color .3s var(--ease-out);
+}
+.index-num { color: var(--fg-30); font-variant-numeric: tabular-nums; }
+.index-name { font-size: var(--h2-size); line-height: 1.2; letter-spacing: var(--h2-ls); font-weight: 400; }
+.index-meta { color: var(--fg-50); font-size: var(--micro-size); letter-spacing: var(--micro-ls); text-transform: uppercase; }
+.index-go { justify-self: end; color: var(--fg-30); transition: transform .4s var(--ease-out), color .3s var(--ease-out); }
+@media (hover: hover) {
+  .index-row:hover { padding-left: var(--u-16); background: var(--fg-5); }
+  .index-row:hover .index-go { transform: translateX(6px); color: var(--fg); }
+}
+.index-row.is-current { border-bottom-color: var(--fg); }
+.index-row.is-current .index-num { color: var(--fg); }
+.index-row.is-current .index-go { color: var(--fg); }
+
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER  ·  full-bleed wordmark
+
+   One word set edge to edge. JS measures the natural width at a
+   fixed 100px and solves the font-size that makes it span exactly,
+   so the mark is always flush with both margins at any viewport —
+   no letter-spacing guesswork, no transform distortion.
+   ═══════════════════════════════════════════════════════════════ */
+.footer { position: relative; z-index: 2; background: var(--bg); }
+.footer-inner { padding: var(--u-120) var(--pad) var(--u-32); }
+
+.wordmark {
+  position: relative;
+  /* The mark is fitted edge to edge, so when a glyph is dragged sideways or
+     stretched (scaleX goes to 1.14) it would poke past the window and raise a
+     horizontal scrollbar. That is what the clip is for — and only that: it was
+     also silently eating the bounce, because a letter pulled upward, or scaled
+     up from a 50% 100% origin, leaves the box through its top edge and the clip
+     cut it flat. That was the "弹高后被上方遮罩遮挡" report.
+     overflow-clip-margin re-opens the top without giving up the sides; the
+     sides stay at zero because the letters really are meant to stay put there.
+     The margin is in vw, not in the --u-N chrome tokens: those are fixed
+     pixel sizes, while the solved font-size of the mark tracks the viewport —
+     360px at a 1070 viewport, i.e. ~34vw — so headroom measured in vw stays
+     proportional to the type at every width.
+     How much is needed: the line box is .86em and Archivo's cap about .73em,
+     so a letter already sits 0.13em (~47px) below the top of the box before it
+     moves. Above that it travels sy (1.15 off a 50% 100% origin, so 0.15 of
+     its own 310px box) plus about 10px of y pull and the 18px the dispersion
+     ghosts sit out — call it 75px of travel against 47px of slack, so roughly
+     28px can clear the edge, and 46px if the ghost is the outermost thing
+     out. 4.5vw is 48px here. It can afford to be generous: clip does not make
+     a scroll container, and the 120px of empty .footer-inner padding above the
+     mark is exactly what the letters rise into. The bottom needs a quarter of
+     that (the pull down is a fraction of the pull up and scaleY only ever grows
+     upward) and still has to clear the .footer-strip divider 32px below. */
+  overflow: clip;
+  overflow-clip-margin: 4.5vw 1.6vw;
+  padding-bottom: .06em;
+  /* the mark runs to the window edges, not to the text column */
+  margin-inline: calc(var(--pad) * -1);
+}
+/* Archivo is served as one variable font carrying both axes, so the
+   width axis is addressed by keyword. extra-condensed is the narrowest
+   instance in the family — the closest thing it has to apechain's
+   compressed display cut. */
+.wm-row {
+  display: flex;
+  align-items: flex-end;
+  line-height: .86;
+  font-family: var(--sans);
+  font-size: 100px;              /* provisional; initWordmark() solves the real one */
+  font-weight: 800;
+  font-stretch: extra-condensed;
+  letter-spacing: -.025em;
+  white-space: nowrap;
+  color: var(--fg);
+  will-change: font-size;
+}
+.wm-ch {
+  position: relative;
+  display: block;
+  flex: none;
+  will-change: transform;
+  transform-origin: 50% 100%;
+}
+/* The two ghosts are the red and blue ends of the dispersion. They are
+   outlines, not fills: a filled copy sitting a few pixels off would bury
+   the black letter under red+blue and turn it violet. Stroked and offset,
+   they read as a colour fringe on a letter that stays solid. */
+.wm-r, .wm-b {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: transparent;
+  -webkit-text-stroke-width: .013em;
+  opacity: 0;
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+.wm-r { -webkit-text-stroke-color: #ff2b46; }
+.wm-b { -webkit-text-stroke-color: #2b7bff; }
+
+.footer-strip {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--u-32);
+  padding-top: var(--u-12);
+  border-top: var(--stroke) solid var(--fg-10);
+  color: var(--fg-50);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STICKY NAME BAR
+   ═══════════════════════════════════════════════════════════════ */
+.sticky-name {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 95;
+  height: var(--u-72);
+  padding: 0 var(--pad) var(--u-16);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  pointer-events: none;
+  overflow: clip;
+  transform: translateY(110%);
+}
+.sticky-name-inner { display: flex; justify-content: space-between; }
+.sticky-name-meta {
+  display: none;
+  justify-content: space-between;
+  color: var(--fg-50);
+}
+@media (min-width: 992px) { .sticky-name-meta { display: flex; } }
+.name-part { display: flex; }
+.name-part.is-left { justify-content: flex-start; align-items: center; }
+.name-part.is-right { justify-content: flex-end; align-items: center; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLLBAR / THEME OVERLAY
+   ═══════════════════════════════════════════════════════════════ */
+.scrollbar-track {
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: 10;
+  width: calc(var(--u-4) + var(--u-12));
+  padding: var(--u-4);
+  pointer-events: none;
+}
+.scrollbar-thumb {
+  display: block;
+  width: var(--u-4);
+  height: var(--u-16);
+  border-radius: 8px;
+  background: var(--fg-10);
+  transform-origin: 100% 0;
+  transition: width .2s cubic-bezier(.77, 0, .175, 1);
+  will-change: transform;
+}
+@media (hover: hover) { .scrollbar-thumb:hover { width: var(--u-8); } }
+
+.theme-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.theme-overlay span {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: scale(0);
+  will-change: transform;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   REVEAL PRE-SET
+   ═══════════════════════════════════════════════════════════════ */
+[data-reveal="text"],
+[data-reveal="div"],
+[data-reveal="w"],
+[data-scrub-reveal] { visibility: hidden; }
+
+/* ═══════════════════════════════════════════════════════════════
+   HOME
+   The first tile is not a tool — it is the site itself. Its working
+   panel is replaced by a short introduction in the same type voice.
+   ═══════════════════════════════════════════════════════════════ */
+.home { grid-column: 1 / -1; }
+/* 首屏已经放过大字，这里只承接一段说明，所以正文直接起排 */
+.home-body {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: var(--gap);
+  row-gap: var(--u-24);
+}
+.home-body p { grid-column: span 1; max-width: 34em; color: var(--fg-50); }
+.home-promise {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--u-12) var(--u-24);
+  margin-top: var(--u-32);
+  padding-top: var(--u-16);
+  border-top: var(--stroke) solid var(--fg-10);
+}
+.home-promise span {
+  font-size: var(--micro-size);
+  line-height: var(--micro-lh);
+  letter-spacing: var(--micro-ls);
+  color: var(--fg-50);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 991px) {
+  :root {
+    --scale: 3.93;
+    --h1-size: calc(40 * var(--u));
+    --h2-size: calc(28 * var(--u));
+    --h3-size: calc(19 * var(--u));
+    --p1-size: calc(13 * var(--u));
+    --micro-size: calc(9 * var(--u));
+    --pad: 12px;
+    --gap: 12px;
+  }
+  .grid, .tool, .stage-head, .index-head { grid-template-columns: repeat(6, 1fr); }
+  /* 整块海报在窄屏被移除，首屏回到普通竖向流 */
+  .intro { padding-bottom: 0; }
+  /* .cell-hero 是 body 直属的悬浮件，这里不需要、也不该有它的任何规则：
+     它在所有宽度下都留在左下角，窄屏的字号收缩由 --hero-title-size 的 min()
+     自己完成（5 个汉字放不下时按 5.06em 的字宽算）。早先这里写过一条
+     position:static，窗口一收窄字就排到文档流最上方、变成左上角了。 */
+  .h1.is-offset { padding-left: var(--u-48); }
+  .stage-head-l, .stage-head-r, .tool-col-l, .tool-col-r, .t-bar, .t-results,
+  .index-head-l, .index-head-r, .index-list { grid-column: 1 / span 6; }
+  .home-body { grid-template-columns: 1fr; margin-top: var(--u-32); }
+  .stage, .index { padding-top: 8vh; padding-bottom: var(--u-104); }
+  .t-results { grid-template-columns: repeat(2, 1fr); }
+  .t-stats { text-align: left; min-width: 0; flex: 1 1 100%; }
+  .index-row { grid-template-columns: var(--u-32) 1fr var(--u-24); }
+  .index-meta { display: none; }
+  .index-name { font-size: calc(22 * var(--u)); }
+  .footer-inner { padding-top: var(--u-72); }
+  .reveal-block-wrap { display: none; }
+  .preloader-line { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal="text"], [data-reveal="div"], [data-reveal="w"], [data-scrub-reveal] { visibility: visible; }
+}
