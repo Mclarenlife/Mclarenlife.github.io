@@ -53,6 +53,46 @@
     });
   }
 
+  function isSvgFile(file) {
+    return /\.svg$/i.test(file.name) || /^image\/svg\+xml(?:;|$)/i.test(file.type);
+  }
+
+  function formatFileToImage(file) {
+    if (!isSvgFile(file)) return fileToImage(file);
+    return file.text().then(function (text) {
+      var doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+      var svg = doc.documentElement;
+      var ns = 'http://www.w3.org/2000/svg';
+      if (doc.querySelector('parsererror') || svg.localName !== 'svg' ||
+          (svg.namespaceURI && svg.namespaceURI !== ns)) {
+        throw new Error('无效的 SVG：' + file.name);
+      }
+      svg.setAttribute('xmlns', ns);
+
+      // A responsive SVG may only declare a viewBox. Use its coordinate size
+      // instead of the browser's default 300 × 150 image viewport.
+      var box = (svg.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number);
+      if (box.length === 4 && box.every(Number.isFinite) && box[2] > 0 && box[3] > 0) {
+        var units = { '': 1, px: 1, in: 96, cm: 96 / 2.54, mm: 96 / 25.4, pt: 96 / 72, pc: 16 };
+        var length = function (value) {
+          var m = (value || '').trim().match(/^([+]?(?:\d+\.?\d*|\.\d+))(px|in|cm|mm|pt|pc)?$/i);
+          return m ? Number(m[1]) * units[(m[2] || '').toLowerCase()] : 0;
+        };
+        var w = length(svg.getAttribute('width'));
+        var h = length(svg.getAttribute('height'));
+        if (!w && !h) { w = box[2]; h = box[3]; }
+        else if (!w) w = h * box[2] / box[3];
+        else if (!h) h = w * box[3] / box[2];
+        svg.setAttribute('width', String(w));
+        svg.setAttribute('height', String(h));
+      }
+
+      // Decode in an Image, never insert imported SVG into the page DOM.
+      var source = new XMLSerializer().serializeToString(svg);
+      return fileToImage(new File([source], file.name, { type: 'image/svg+xml' }));
+    });
+  }
+
   function toBlob(canvas, type, quality) {
     return new Promise(function (res) {
       var done = function (b) { res(b || null); };
@@ -406,11 +446,12 @@
     format: {
       id: 'format', theme: '2', index: '02',
       title: '图片格式转换',
-      desc: '在 PNG / JPEG / WebP 之间互转，保持原始尺寸，支持批量处理。',
+      desc: '支持导入 SVG、PNG、JPEG、WebP 等图片，转换为 PNG / JPEG / WebP，支持批量处理。',
       accept: 'image/*',
-      acceptAttr: IMG_ACCEPT,
+      acceptAttr: IMG_ACCEPT + ',.svg,image/svg+xml',
+      allowSvg: true,
       dropTitle: '拖入图片',
-      dropSub: IMG_HINT,
+      dropSub: '或点击选择 · 支持 SVG / JPG / PNG / WebP / BMP / GIF',
       runLabel: '开始转换',
       fields: [
         { type: 'seg', key: 'format', label: '目标格式', value: 'image/webp',
@@ -420,7 +461,7 @@
           offWhen: { key: 'format', values: ['image/png'] },
           offNote: 'PNG 为无损格式，此项不生效' },
         { type: 'switch', key: 'flatten', label: '为透明区域填白', value: false,
-          note: '转成 JPEG 时透明处会变黑，勾上则填白底' },
+          note: 'JPEG 自动填充白底；PNG / WebP 可保留透明背景' },
         { type: 'range', key: 'maxW', label: '最大宽度', min: 0, max: 8000, step: 80, value: 0,
           fmt: function (v) { return v ? v + ' px' : '原始尺寸'; } }
       ],
@@ -429,7 +470,7 @@
         var maxW = parseInt(ctx.opts.maxW, 10) || 0;
         var bg = ctx.opts.flatten ? '#ffffff' : (f === 'image/jpeg' ? '#ffffff' : null);
         return ctx.each(function (file) {
-          return fileToImage(file).then(function (img) {
+          return formatFileToImage(file).then(function (img) {
             var d = fitWidth(img, maxW);
             return toBlob(renderTo(img, d.w, d.h, bg), f, q);
           }).then(function (blob) {
@@ -1532,7 +1573,7 @@
     arr.forEach(function (f) {
       if (tool.accept && tool.accept !== '*/*') {
         var ok = tool.accept === 'image/*'
-          ? /^image\//.test(f.type)
+          ? (/^image\//.test(f.type) || (tool.allowSvg && isSvgFile(f)))
           : (f.type === tool.accept.split(',')[0] || /\.pdf$/i.test(f.name));
         if (!ok) return;
       }
