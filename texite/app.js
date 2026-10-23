@@ -4,11 +4,11 @@ const icon=name=>`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${paths[n
 function icons(){ $$('[data-icon]').forEach(e=>e.innerHTML=icon(e.dataset.icon)); }
 icons();
 
-const frame=$('#workbench-frame');let ready=false,playing=false,scene='write',scrollLock=0;
+const frame=$('#workbench-frame');let ready=false,playing=false,scene='write';
 const names={write:'01 / 编辑与编译',tools:'02 / 右键与行内 AI',search:'03 / 项目搜索',references:'04 / 快捷引用',history:'05 / 历史与备份',ai:'06 / AI 助手',settings:'07 / 设置'};
 const say=text=>$('#demo-caption').textContent=text;
 const send=(command,data={})=>frame.contentWindow?.postMessage({type:'texite-demo-command',command,...data},location.origin);
-function setScene(next,sendCommand=true){scene=next;$('#scene-label').textContent=names[next];$$('[data-jump]').forEach(b=>{b.classList.toggle('active',b.dataset.jump===next);b.setAttribute('aria-current',b.dataset.jump===next?'step':'false');});if(sendCommand&&ready)send('scene',{scene:next});}
+function setScene(next,sendCommand=true){scene=next;$('#scene-label').textContent=names[next];if(sendCommand&&ready)send('scene',{scene:next});}
 function setPlaying(value){playing=value;$('#stop-demo').hidden=!value;$('#experience').classList.toggle('playing',value);$$('[data-play]').forEach(b=>b.classList.toggle('is-playing',value&&b.dataset.play===scene));}
 function resizeFrame(){const width=$('#ipad-screen').clientWidth;frame.style.transform=`scale(${width/1200})`;}
 new ResizeObserver(resizeFrame).observe($('#ipad-screen'));resizeFrame();
@@ -16,7 +16,6 @@ function expand(){const expanded=$('#experience').classList.toggle('is-expanded'
 $('#expand').onclick=expand;
 $('#stop-demo').onclick=()=>send('stop');
 $$('[data-play]').forEach(b=>b.onclick=()=>{if(!ready){say('工作区还在载入，稍后即可播放。');return;}setScene(b.dataset.play,false);send('play',{scene:b.dataset.play});if(innerWidth<=950&&$('#experience').getBoundingClientRect().top>innerHeight*.5)$('#experience').scrollIntoView({behavior:'smooth',block:'start'});});
-$$('[data-jump]').forEach(b=>b.onclick=()=>{send('stop');setScene(b.dataset.jump);scrollLock=Date.now()+1500;$('#'+b.dataset.jump).scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});});
 $('#reset').onclick=()=>{send('stop');$('#confirm-dialog').returnValue='';$('#confirm-dialog').showModal();};
 $('#confirm-dialog').addEventListener('close',()=>{if($('#confirm-dialog').returnValue==='confirm'){ready=false;$('#workbench-loading').hidden=false;send('reset');say('正在备份当前项目并重置示例…');}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){send('stop');if($('#experience').classList.contains('is-expanded'))expand();}});
@@ -30,5 +29,5 @@ window.addEventListener('message',event=>{
  if(data.event==='notice')say(data.text);
  if(data.event==='window-control'){if(data.action==='maximize')expand();else say('这是网站内的真实界面体验。窗口大小请使用设备下方的放大按钮调整。');}
 });
-let scheduled=false;window.addEventListener('scroll',()=>{if(scheduled||playing||Date.now()<scrollLock||$('#experience').classList.contains('is-expanded'))return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;const target=innerWidth>700&&innerWidth<=950?Math.min(innerHeight-35,$('#experience').getBoundingClientRect().bottom+85):innerHeight*.5;let next='write';for(const section of $$('.story-section'))if(section.getBoundingClientRect().top<=target)next=section.dataset.scene;if(next!==scene)setScene(next);});},{passive:true});
+let scheduled=false;window.addEventListener('scroll',()=>{if(scheduled||playing||$('#experience').classList.contains('is-expanded'))return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;const target=innerWidth>700&&innerWidth<=950?Math.min(innerHeight-35,$('#experience').getBoundingClientRect().bottom+85):innerHeight*.5;let next='write';for(const section of $$('.story-section'))if(section.getBoundingClientRect().top<=target)next=section.dataset.scene;if(next!==scene)setScene(next);});},{passive:true});
 frame.addEventListener('error',()=>say('工作区载入失败，请刷新或确认通过 START.cmd 打开网站。'));
