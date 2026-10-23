@@ -1,0 +1,5 @@
+{
+  "name": "多章节课程论文",
+  "mainFile": "main.tex",
+  "engine": "pdflatex"
+}

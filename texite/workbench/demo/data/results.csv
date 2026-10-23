@@ -1,0 +1,4 @@
+setting,training_examples,mae
+Small,100,0.42
+Medium,300,0.31
+Large,500,0.27

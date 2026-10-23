@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="800" viewBox="0 0 1600 800">
+ <defs>
+  <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#bfc9b8" stroke-width=".6"/></pattern>
+  <filter id="shadow" x="-.4" y="-.4" width="1.8" height="1.8"><feDropShadow dx="0" dy="20" stdDeviation="23" flood-color="#173021" flood-opacity=".17"/></filter>
+  <linearGradient id="sheet" x2=".8" y2="1"><stop stop-color="#fffef9"/><stop offset="1" stop-color="#eeeede"/></linearGradient>
+  <clipPath id="canvas"><rect width="1600" height="800"/></clipPath>
+ </defs>
+ <g clip-path="url(#canvas)">
+ <rect width="1600" height="800" fill="#f6f5ef"/>
+ <rect x="790" width="810" height="800" fill="#e4e9db"/>
+ <rect x="790" width="810" height="800" fill="url(#grid)"/>
+ <circle cx="1285" cy="384" r="310" fill="#d9e3c4"/>
+ <circle cx="1285" cy="384" r="266" fill="none" stroke="#b2bea6" stroke-width="1"/>
+ <path d="M64 110H1536M64 691H1536" stroke="#263c30" stroke-opacity=".25"/>
+ <g font-family="Arial,sans-serif" font-size="18" letter-spacing="2" fill="#354d3e">
+  <text x="64" y="72">MCLARY / SELECTED WORK</text><text x="1536" y="72" text-anchor="end">PRODUCT EXPERIENCE — 2026</text>
+  <text x="64" y="741">LOCAL FIRST. IDEAS FIRST.</text><text x="1536" y="741" text-anchor="end">WRITE / REFINE / COMPOSE</text>
+ </g>
+ <text x="55" y="370" font-family="Georgia,serif" font-size="215" letter-spacing="-13" fill="#1b3024">Texite<tspan fill="#6b8052">.</tspan></text>
+ <path d="M68 409H203" stroke="#879c63" stroke-width="6"/>
+ <g font-family="Arial,sans-serif" fill="#294334">
+  <text x="66" y="486" font-size="44" letter-spacing="-1.5">Less friction.</text><text x="66" y="541" font-size="44" letter-spacing="-1.5">More thought.</text>
+  <text x="68" y="609" font-size="17" letter-spacing="3">THE LOCAL LaTeX WORKSPACE</text>
+ </g>
+ <g transform="translate(898 187) rotate(-12 225 225)" filter="url(#shadow)">
+  <rect width="446" height="438" rx="13" fill="#203c2e"/>
+  <path d="M0 47H446" stroke="#809584" stroke-opacity=".5"/>
+  <g fill="#abc191"><circle cx="23" cy="24" r="4"/><circle cx="39" cy="24" r="4"/><circle cx="55" cy="24" r="4"/></g>
+  <text x="93" y="30" font-family="Arial,sans-serif" font-size="14" fill="#dce7cf" letter-spacing="2">main.tex</text>
+  <g font-family="Consolas,monospace" font-size="17" fill="#e1ead7">
+   <text x="26" y="97" fill="#b8d47d">\documentclass{article}</text><text x="26" y="131">\begin{document}</text>
+   <text x="26" y="185" fill="#b8d47d">\section{A new perspective}</text><text x="26" y="220">Every idea begins</text><text x="26" y="249">with a little space.</text>
+   <text x="26" y="307">\[ e^{i\pi} + 1 = 0 \]</text><text x="26" y="386" fill="#a8bd95">\end{document}</text>
+  </g>
+ </g>
+ <g transform="translate(1115 174) rotate(10 172 235)" filter="url(#shadow)">
+  <rect width="345" height="478" fill="url(#sheet)"/>
+  <path d="M29 33H316" stroke="#c0c9b3"/>
+  <text x="29" y="56" fill="#607351" font-size="10" font-family="Arial,sans-serif" letter-spacing="2">NOTES ON POSSIBILITY</text>
+  <g fill="#25382c" font-family="Georgia,serif"><text x="29" y="119" font-size="33">A new</text><text x="29" y="157" font-size="33" font-style="italic">perspective.</text></g>
+  <g stroke="#9ba78e" stroke-width="2" opacity=".7"><path d="M29 189H308M29 201H308M29 213H262M29 231H308M29 243H298"/></g>
+  <text x="172" y="306" text-anchor="middle" fill="#2d4732" font-family="Georgia,serif" font-size="38" font-style="italic">e<tspan dy="-15" font-size="21">iπ</tspan><tspan dy="15" font-size="32"> + 1 = 0</tspan></text>
+  <g stroke="#9ba78e" stroke-width="2" opacity=".7"><path d="M29 346H308M29 358H308M29 370H282M29 388H308M29 400H247"/></g>
+  <path d="M29 440H316" stroke="#c0c9b3"/><text x="172" y="459" text-anchor="middle" fill="#607351" font-family="Georgia,serif" font-size="12">01</text>
+ </g>
+ <g transform="translate(1378 150) rotate(10)"><rect width="95" height="48" rx="24" fill="#c1d690"/><path d="M26 24L38 34 62 14" stroke="#294334" stroke-width="3" fill="none"/></g>
+ </g>
+</svg>

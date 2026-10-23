@@ -1,0 +1,5 @@
+{
+  "name": "阶段进展报告",
+  "mainFile": "main.tex",
+  "engine": "pdflatex"
+}

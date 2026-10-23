@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Texite — 把心思，留给内容。</title>
+  <meta name="description" content="本地 LaTeX 编辑器 Texite。编辑、预览、版本恢复与 AI 辅助，在同一个工作区完成。直接在网页中试一试。">
+  <meta name="theme-color" content="#f6f5ef"><link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/fonts/misans.css"><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="typography.css"><script type="module" src="theme.js"></script>
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#experience">跳到交互体验</a>
+<header class="site-header">
+  <a class="brand" href="#top" aria-label="Texite 首页"><img src="assets/icon.svg" alt="" width="30" height="30">Texite<span class="brand-caption">你的本地 LaTeX 工作区</span></a>
+  <nav aria-label="主导航"><a href="#write">功能体验</a><a href="templates.html">模板下载</a><a href="https://mclarenlife.github.io/" target="_blank" rel="noopener noreferrer">作者主页 <span aria-hidden="true">↗</span></a></nav>
+  <div class="header-actions"><button class="icon-button" id="theme" aria-label="切换深色外观" title="切换外观"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.9 13.1A9 9 0 0 1 10.9 3.1 9 9 0 1 0 20.9 13.1Z"/></svg></button><a class="button small primary" href="#download">下载 Texite <span>↗</span></a></div>
+</header>
+<main id="top">
+<div class="story-grid">
+  <div class="story-copy">
+    <section class="story-section hero" data-scene="write">
+      <div class="eyebrow"><i></i> LOCAL FIRST. IDEAS FIRST.</div>
+      <h1>把心思，<br>留给<span class="accent-word">内容。</span></h1>
+      <p class="hero-description">从第一行想法，到最后一版论文。<br>编辑、排版、修改，在一个安静的<br class="desktop-break"> LaTeX 工作区里完成。</p>
+      <div class="hero-actions"><a class="button primary" href="#download">下载 Texite <span data-icon="download"></span></a><button class="text-button" data-play="write"><span class="play-dot">▶</span> 看一段演示</button></div>
+      <p class="platform-note">Windows · macOS <span>／</span> 内置 pdfLaTeX</p>
+      <a class="try-hint" href="#experience"><span class="live-dot"></span><span>右侧可以直接操作<span class="hint-sub">改一句话，看看会发生什么</span></span><span class="hint-arrow">↗</span></a>
+      <a class="scroll-cue" href="#write"><span>向下探索</span><span>↓</span></a>
+    </section>
+    <section class="story-section" id="write" data-scene="write">
+      <div class="section-index">01 <span>WRITE & COMPILE</span></div>
+      <h2>从源码到正文，<br>两种方式<span>接着写。</span></h2><p>先在 Code 里修改标题，<br>再到 Visual 中直接改写正文。<br>最后点击编译，查看模拟排版结果。</p>
+      <div class="feature-notes"><span>Code 编辑</span><span>Visual 编辑</span><span>模拟编译</span></div>
+      <button class="button demo-button" data-play="write"><span class="play-dot">▶</span> 播放编辑操作演示 <span class="duration">逐步操作</span></button>
+      <div class="try-this"><span>亲手试试</span>切换两种编辑模式，修改同一份文稿。</div><p class="fine-print">网页未加载编译器，结果为模拟演示。</p>
+    </section>
+    <section class="story-section" id="tools" data-scene="tools">
+      <div class="section-index">02 <span>INSERT & REFINE</span></div>
+      <h2>右键插入，<br>选中之后<span>接着改。</span></h2><p>表格和符号，不必从头写命令。<br>选中一段文字，再给 AI 一个要求，<br>看清它只改了哪里。</p>
+      <div class="feature-notes"><span>表格设置</span><span>符号选择</span><span>行内 AI</span></div>
+      <button class="button demo-button" data-play="tools"><span class="play-dot">▶</span> 播放右键与行内 AI演示 <span class="duration">逐步操作</span></button>
+      <div class="try-this"><span>亲手试试</span>在编辑器中右键插入内容，或选中文字输入修改要求。</div><p class="fine-print">AI 修改与回答均为本地预设，不连接真实模型。</p>
+    </section>
+    <section class="story-section" id="search" data-scene="search">
+      <div class="section-index">03 <span>FIND THE RIGHT LINE</span></div>
+      <h2>先缩小范围，<br>再找到<span>那一行。</span></h2><p>限定要搜索的文件，<br>输入关键词，点击查找结果。<br>源码立即定位，落点清楚可见。</p>
+      <div class="feature-notes"><span>限定文件</span><span>文字查找</span><span>结果定位</span></div>
+      <button class="button demo-button" data-play="search"><span class="play-dot">▶</span> 播放项目搜索演示 <span class="duration">逐步操作</span></button>
+      <div class="try-this"><span>亲手试试</span>只勾选 main.tex，搜索 synthetic，再点击结果。</div><p class="fine-print">演示方框会标注编辑器中对应的源码位置。</p>
+    </section>
+    <section class="story-section" id="references" data-scene="references">
+      <div class="section-index">04 <span>CITE WITHOUT INTERRUPTING</span></div>
+      <h2>光标停在哪，<br>引用就<span>插在哪。</span></h2><p>先选好正文中的插入位置，<br>再按作者找到参考文献。<br>点击插入引用，继续写下去。</p>
+      <div class="feature-notes"><span>参考文献搜索</span><span>插入引用</span><span>保留光标</span></div>
+      <button class="button demo-button" data-play="references"><span class="play-dot">▶</span> 播放快捷引用演示 <span class="duration">逐步操作</span></button>
+      <div class="try-this"><span>亲手试试</span>点击正文位置，在参考文献面板搜索 Lamport 并插入引用。</div><p class="fine-print">引用命令会写入真实的示例源码。</p>
+    </section>
+    <section class="story-section" id="history" data-scene="history">
+      <div class="section-index">05 <span>KEEP A WAY BACK</span></div>
+      <h2>放心修改，<br>每一版都有<span>回头路。</span></h2><p>先备份项目，写下一条备注。<br>修改后查看增删差异，<br>确认再恢复，当前版本也会保留。</p>
+      <div class="feature-notes"><span>项目备份</span><span>修改差异</span><span>版本恢复</span></div>
+      <button class="button demo-button" data-play="history"><span class="play-dot">▶</span> 播放历史与备份演示 <span class="duration">逐步操作</span></button>
+      <div class="try-this"><span>亲手试试</span>备份项目、修改标题，再从历史或项目备份中恢复。</div><p class="fine-print">演示开始前也会自动保存一份项目备份。</p>
+    </section>
+    <section class="story-section" id="ai" data-scene="ai">
+      <div class="section-index">06 <span>YOUR ASSISTANT, YOUR CALL</span></div>
+      <h2>把任务交出去，<br>把决定权<span>留下来。</span></h2><p>Agent 帮你修改，差异让你核对。<br>不满意，撤回整次修改。<br>切到对话，只讨论，不改稿。</p>
+      <div class="feature-notes"><span>Agent 修改</span><span>差异与撤回</span><span>只读对话</span></div>
+      <button class="button demo-button" data-play="ai"><span class="play-dot">▶</span> 播放AI 助手演示 <span class="duration">逐步操作</span></button>
+      <div class="try-this"><span>亲手试试</span>发送预设任务，查看差异，再尝试对话模式。</div><p class="fine-print">此处使用预设修改和回答，不连接 Codex 或在线 API。</p>
+    </section>
+    <section class="story-section" id="settings" data-scene="settings">
+      <div class="section-index">07 <span>MAKE IT YOURS</span></div>
+      <h2>顺手的工具，<br>也要<span>看着舒服。</span></h2><p>外观、配色、字体，按自己的习惯选。<br>编译配置与同步设置，各有清晰的位置。<br>从五个选项卡，认识你的工作区。</p>
+      <div class="feature-notes"><span>外观与主题</span><span>编辑器文字</span><span>编译与同步</span></div>
+      <button class="button demo-button" data-play="settings"><span class="play-dot">▶</span> 播放设置演示 <span class="duration">逐步操作</span></button>
+      <div class="try-this"><span>亲手试试</span>打开设置，选择喜欢的外观与字体，实时查看效果。</div><p class="fine-print">演示只浏览设置，不修改偏好；编译与云同步需要桌面版。</p>
+    </section>
+  </div>
+  <aside class="experience-column" aria-label="Texite 网页交互体验">
+    <div class="experience-sticky" id="experience" tabindex="-1">
+      <div class="device-overline"><span><i class="live-dot"></i> 交互工作区</span><span id="scene-label">01 / 编辑与编译</span></div>
+      <div class="tablet ipad-pro" id="tablet" aria-label="iPad Pro 13 英寸横向展示框">
+        <span class="ipad-power" aria-hidden="true"></span><span class="ipad-volume" aria-hidden="true"></span>
+        <span class="ipad-camera" aria-hidden="true"></span>
+        <div class="ipad-screen" id="ipad-screen"><iframe id="workbench-frame" src="workbench/" title="Texite 真实界面交互体验" width="1200" height="900" allow="clipboard-write"></iframe><div class="workbench-loading" id="workbench-loading"><img src="assets/icon.svg" alt="" width="38" height="38"><span>正在打开 Texite 工作区…</span></div></div>
+      </div>
+      <div class="tour-progress" aria-hidden="true"><span id="tour-progress"></span></div>
+      <div class="demo-controller"><div class="demo-caption"><span class="live-dot" id="play-indicator"></span><span id="demo-caption" role="status">真实 Texite 界面。可以直接操作，也可以观看鼠标演示。</span></div><button class="icon-button" id="expand" title="放大工作区" aria-label="放大工作区"><span data-icon="expand"></span></button><button class="icon-button" id="stop-demo" hidden aria-label="停止演示" title="停止演示"><span data-icon="pause"></span></button><button class="icon-button" id="reset" title="重置示例" aria-label="重置示例"><span data-icon="reset"></span></button></div>
+<div class="scene-navigation" aria-label="选择体验功能"><button data-jump="write" class="active" aria-current="step"><span>01</span> 编辑</button><button data-jump="tools"><span>02</span> 右键 / AI</button><button data-jump="search"><span>03</span> 搜索</button><button data-jump="references"><span>04</span> 引用</button><button data-jump="history"><span>05</span> 历史</button><button data-jump="ai"><span>06</span> AI 助手</button><button data-jump="settings"><span>07</span> 设置</button></div>
+      <p class="experience-note">桌面界面体验 · 模拟编译 / 预设 AI · <a href="guide.html#demo">体验范围 ↗</a></p>
+    </div>
+  </aside>
+</div>
+<section class="local-section" id="start">
+  <div class="section-kicker">YOUR WORK. YOUR WORKSPACE.</div>
+  <h2>文件在本地。<br><span>灵感不必等网络。</span></h2>
+  <div class="local-details"><div><span class="detail-number">01</span><h3>打开，就能开始</h3><p>内置 pdfLaTeX 与常用编译资源。普通编辑与编译可离线完成，按需导入更多引擎和宏包。</p></div><div><span class="detail-number">02</span><h3>接着写已有的项目</h3><p>打开本地文件夹，或导入项目 ZIP。熟悉的源码、图片和参考文献，仍然在一起。</p></div><div><span class="detail-number">03</span><h3>同步由你选择</h3><p>可配置自己的 WebDAV 服务，手动上传与拉取项目。不配置云服务，也能完整进行本地写作。</p></div></div>
+</section>
+<section class="samples-section" aria-labelledby="samples-title"><div class="section-heading"><div><div class="section-kicker">START WITH SOMETHING REAL</div><h2 id="samples-title">从一份用得上的文稿开始。</h2></div><span>无隐私信息 · 可自由修改的演示项目</span></div><div class="sample-list"><a href="examples/research-note.zip" download><span class="sample-icon" data-icon="chart"></span><div><h3>实验记录与论文初稿</h3><p>公式、图表、引用，完整串起一次结果汇报。</p></div><span class="sample-format">EN · ZIP</span><span data-icon="download"></span></a><a href="examples/course-paper.zip" download><span class="sample-icon" data-icon="book"></span><div><h3>多章节课程论文</h3><p>中文排版、目录与章节拆分，从结构开始写。</p></div><span class="sample-format">中文 · ZIP</span><span data-icon="download"></span></a><a href="examples/progress-report.zip" download><span class="sample-icon" data-icon="files"></span><div><h3>阶段进展报告</h3><p>进度、问题、下一步，一页交代清楚。</p></div><span class="sample-format">中文 · ZIP</span><span data-icon="download"></span></a></div></section>
+<section class="faq-section"><h2>开始之前，<br><span>你可能还想知道。</span></h2><div class="faq-list"><details open><summary>这里的体验，和桌面软件有什么不同？<span>+</span></summary><p>这里直接复用 Texite 的前端界面，支持真实编辑、项目备份与恢复。点击编译会展示模拟 PDF，并持续标注模拟说明；AI 使用预设流程。iPad Pro 仅作为展示框，不代表已推出 iPadOS 版。桌面版提供真正的 pdfLaTeX 编译、文件系统、完整项目管理与可配置 AI。<a href="examples/research-note/preview.pdf" target="_blank" rel="noopener">查看样例的真实编译 PDF ↗</a></p></details><details><summary>需要先安装 LaTeX 环境吗？<span>+</span></summary><p>普通项目不需要。安装包自带默认 pdfLaTeX、中文与常用宏包。特殊模板所需的额外引擎或宏包，可以下载扩展包后导入软件。请按项目需求选择。</p></details><details><summary>不用 AI，也可以正常使用吗？<span>+</span></summary><p>可以。AI 是可选辅助功能。编辑、编译、项目管理、历史恢复等本地功能不依赖 AI，也不需要创建在线账号。</p></details><details><summary>macOS 安装时遇到安全提示怎么办？<span>+</span></summary><p>目前的 macOS 安装包尚未经过 Apple 公证，系统可能提示无法验证或“已损坏”。下载前请阅读<a href="guide.html#mac">安装说明</a>，核对来源与校验信息，不建议关闭系统安全保护。</p></details></div></section>
+<section class="download-section" id="download"><div class="download-mark"><img src="assets/icon.svg" alt="" width="56" height="56"></div><div class="section-kicker">READY WHEN YOU ARE.</div><h2>下一篇，<br>在 Texite 里开始。</h2><p>你的文稿，你的节奏，你的工作区。</p><div class="download-buttons"><a class="button primary" href="https://github.com/Mclarenlife/Texite/releases/download/v0.9.0/Texite-0.9.0-windows-x64.exe"><span data-icon="windows"></span> Windows x64 <span data-icon="download"></span></a><a class="button" href="https://github.com/Mclarenlife/Texite/releases/download/v0.9.0/Texite-0.9.0-arm64.dmg"><span data-icon="apple"></span> macOS Apple Silicon <span data-icon="download"></span></a></div><p class="download-meta">公开版本 v0.9.0 <span>·</span> <a href="https://github.com/Mclarenlife/Texite/releases" target="_blank" rel="noopener">更新日志 ↗</a> <span>·</span> <a href="guide.html#mac">macOS 安装说明 ↗</a></p></section>
+</main>
+<footer><a class="brand" href="#top"><img src="assets/icon.svg" width="24" height="24" alt="">Texite</a><span>把心思，留给内容。</span><nav aria-label="页脚"><a href="guide.html">使用说明</a><a href="credits.html">字体与致谢</a><a href="https://github.com/Mclarenlife/Texite" target="_blank" rel="noopener">GitHub ↗</a><a href="https://mclarenlife.github.io/" target="_blank" rel="noopener">作者 ↗</a></nav></footer>
+<dialog id="confirm-dialog" aria-labelledby="confirm-title"><form method="dialog"><span class="dialog-kicker">TEXITE DEMO</span><h2 id="confirm-title">重置交互体验？</h2><p id="confirm-message">先备份当前项目，再重新载入原始示例。网页内的历史和备份会保留，不会影响电脑中的 Texite 文件。</p><div class="dialog-actions"><button class="button" value="cancel">取消</button><button class="button primary" value="confirm">重置示例</button></div></form></dialog>
+<noscript><div class="noscript">交互体验需要启用 JavaScript。您仍可下载桌面版、样例项目，或阅读使用说明。</div></noscript>
+</body></html>

@@ -1,0 +1,24 @@
+\documentclass[UTF8,a4paper,11pt]{ctexart}
+\usepackage[margin=25mm]{geometry}
+\usepackage{amsmath,booktabs,graphicx,xcolor}
+\usepackage[colorlinks=true,linkcolor=teal,citecolor=teal]{hyperref}
+\title{从问题到结论：多章节写作示例}
+\author{Texite 演示项目}
+\date{}
+\begin{document}
+\maketitle
+\begin{abstract}
+本项目用一个虚构的校园节能研究练习展示长文档的组织方式：
+主文件负责装配，章节独立编辑，图表和参考文献集中管理。
+内容仅用于软件演示，不包含真实个人、学校或研究数据。
+\end{abstract}
+\pagestyle{plain}
+\tableofcontents
+\newpage
+\input{chapters/01-introduction}
+\input{chapters/02-method}
+\clearpage
+\input{chapters/03-discussion}
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

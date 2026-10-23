@@ -1,0 +1,5 @@
+{
+  "name": "实验记录与论文初稿",
+  "mainFile": "main.tex",
+  "engine": "pdflatex"
+}
