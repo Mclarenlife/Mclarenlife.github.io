@@ -10,3 +10,8 @@ No external recordings. Rebuild with scripts/build-scene-audio.mjs.
 
 Interface feedback: original short, rounded sine resonances synthesized in
 src/ambient-music.js; follows the same mute switch as music and water effects.
+
+Web delivery: FLAC level 12, original sample rate/channels/16-bit samples retained.
+Rebuild and verify sample-identical PCM with scripts/compress-scene-audio.mjs.
+WAV masters remain as compatibility fallbacks. No additional normalization,
+resampling, pitch changes, fading or loop edits are applied by compression.
