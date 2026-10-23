@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[1365],{41365:(e,t,a)=>{a.r(t),a.d(t,{default:()=>u});var s=a(95155),l=a(99780);function u(e){let{slice:t}=e;return(0,s.jsx)(l.default,{slice:t,kind:"anatomy",platforms:t._platforms||[]})}}}]);
+//# sourceMappingURL=1365.b7375fcee680064c.js.map

@@ -1,0 +1,14 @@
+.mclary-header-mark{display:block;width:112px;height:32px;object-fit:cover;transition:filter .3s ease}
+a:hover>.mclary-header-mark{filter:saturate(1.65)}
+.mclary-menu-home{margin-top:27px;padding:10px 0;font-size:16px}
+.mclary-menu-home a{text-decoration:none;color:inherit}
+.mclary-menu-home a:hover{opacity:.6}
+header img[src*="/collection/branding/"]:not(.mclary-header-mark){object-fit:contain!important;padding:5px}
+@media(max-width:767px){
+ [class*="HomeHeroContent-sc"]{justify-content:flex-start;padding-top:clamp(300px,86vw,460px);padding-bottom:72px;height:auto;min-height:100svh}
+ [class*="HomeHeroContent-sc"] h1{width:100%;max-width:none;font-size:clamp(42px,11vw,72px)}
+}
+/* Product screenshots contain interface text: preserve the full frame. */
+video:has(source[src^="/collection/collection-assets/"]) { object-fit: contain !important; background: #f1f1ee; }
+img[src^="/collection/collection-assets/"][src*="-view-"] { object-fit: contain !important; background: #f1f1ee; }
+img[src^="/collection/collection-assets/"][src*="-square.jpg"] { object-fit: contain !important; background: #f1f1ee; }
