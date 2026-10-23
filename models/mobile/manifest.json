@@ -1,0 +1,275 @@
+{
+  "version": 1,
+  "models": [
+    {
+      "name": "shipwreck-detail",
+      "ratio": 0.55,
+      "error": 0.001,
+      "sourceHash": "24c2c8d88ed6481d7630f5a0f3bd24746eb5602634745d04c6a2198f913748d0",
+      "originalBytes": 6735352,
+      "mobileBytes": 3994384,
+      "originalBounds": {
+        "min": [
+          -17.19348907470703,
+          -0.053371235728263855,
+          -4.462320327758789
+        ],
+        "max": [
+          12.51346206665039,
+          16.39849853515625,
+          4.9922308921813965
+        ]
+      },
+      "before": {
+        "triangles": 221740,
+        "vertices": 456680,
+        "primitives": 7,
+        "geometryBytes": 17080144
+      },
+      "after": {
+        "triangles": 121826,
+        "vertices": 250842,
+        "primitives": 7,
+        "geometryBytes": 9192540
+      },
+      "textures": [
+        {
+          "name": "Salt worn sailcloth-normal",
+          "width": 512,
+          "height": 512,
+          "bytes": 187987,
+          "srgb": false
+        },
+        {
+          "name": "Salt worn sailcloth-color",
+          "width": 1024,
+          "height": 1024,
+          "bytes": 766123,
+          "srgb": true
+        },
+        {
+          "name": "Salt worn sailcloth-roughness",
+          "width": 512,
+          "height": 512,
+          "bytes": 157626,
+          "srgb": false
+        },
+        {
+          "name": "Waterlogged oak-normal",
+          "width": 512,
+          "height": 512,
+          "bytes": 264144,
+          "srgb": false
+        },
+        {
+          "name": "Waterlogged oak-color",
+          "width": 1024,
+          "height": 1024,
+          "bytes": 779970,
+          "srgb": true
+        },
+        {
+          "name": "Waterlogged oak-roughness",
+          "width": 512,
+          "height": 512,
+          "bytes": 156662,
+          "srgb": false
+        },
+        {
+          "name": "Carved stern teak-color",
+          "width": 1024,
+          "height": 1024,
+          "bytes": 845452,
+          "srgb": true
+        }
+      ]
+    },
+    {
+      "name": "ruins-detail",
+      "ratio": 0.5,
+      "error": 0.001,
+      "sourceHash": "f25d3e7314321697c75f7e01f4cffaae2e20329c983e154bbcd88ccd3b412b48",
+      "originalBytes": 3486540,
+      "mobileBytes": 1720520,
+      "originalBounds": {
+        "min": [
+          -42.590675354003906,
+          -26.329208374023438,
+          -101.51136016845703
+        ],
+        "max": [
+          40.503379821777344,
+          16.131473541259766,
+          4.272300720214844
+        ]
+      },
+      "before": {
+        "triangles": 175228,
+        "vertices": 338673,
+        "primitives": 1,
+        "geometryBytes": 12940272
+      },
+      "after": {
+        "triangles": 87614,
+        "vertices": 187523,
+        "primitives": 1,
+        "geometryBytes": 7052104
+      },
+      "textures": [
+        {
+          "name": "Eroded limestone-normal",
+          "width": 512,
+          "height": 512,
+          "bytes": 228615,
+          "srgb": false
+        },
+        {
+          "name": "Eroded limestone-color",
+          "width": 1024,
+          "height": 1024,
+          "bytes": 811828,
+          "srgb": true
+        },
+        {
+          "name": "Eroded limestone-roughness",
+          "width": 512,
+          "height": 512,
+          "bytes": 157626,
+          "srgb": false
+        }
+      ]
+    },
+    {
+      "name": "boat-hull",
+      "ratio": 0.75,
+      "error": 0.0004,
+      "sourceHash": "f83c17a9fdbfd912fee43ebf840881ac436c3cb6b1466bbd0262177c5034bf5f",
+      "originalBytes": 1913792,
+      "mobileBytes": 1204196,
+      "originalBounds": {
+        "min": [
+          -2.1360108852386475,
+          -0.35999998450279236,
+          -0.5889766812324524
+        ],
+        "max": [
+          2.1478323936462402,
+          0.7859999537467957,
+          0.5889766812324524
+        ]
+      },
+      "before": {
+        "triangles": 39187,
+        "vertices": 52266,
+        "primitives": 6,
+        "geometryBytes": 1907634
+      },
+      "after": {
+        "triangles": 35400,
+        "vertices": 49438,
+        "primitives": 6,
+        "geometryBytes": 1794416
+      },
+      "textures": []
+    },
+    {
+      "name": "shark",
+      "ratio": 0.6,
+      "error": 0.0005,
+      "sourceHash": "ff3070f94cbc90e2e54004fd545c97e83d511dfe78560a07c0efd3ace2956050",
+      "originalBytes": 530008,
+      "mobileBytes": 179368,
+      "originalBounds": {
+        "min": [
+          -2.992000102996826,
+          -0.8299999833106995,
+          -1.4600000381469727
+        ],
+        "max": [
+          2.549999952316284,
+          1.4500000476837158,
+          1.4600000381469727
+        ]
+      },
+      "before": {
+        "triangles": 18236,
+        "vertices": 9504,
+        "primitives": 2,
+        "geometryBytes": 527592
+      },
+      "after": {
+        "triangles": 11634,
+        "vertices": 6203,
+        "primitives": 2,
+        "geometryBytes": 342736
+      },
+      "textures": []
+    },
+    {
+      "name": "turtle",
+      "ratio": 0.6,
+      "error": 0.0005,
+      "sourceHash": "d50cdead6aa153157402498722b8e61cb4cdadb0f561ec8c87bc8c8db763f28b",
+      "originalBytes": 950688,
+      "mobileBytes": 307212,
+      "originalBounds": {
+        "min": [
+          -1.3680000305175781,
+          -0.3614499866962433,
+          -1.8300000429153442
+        ],
+        "max": [
+          1.7799999713897705,
+          0.526922881603241,
+          1.8300000429153442
+        ]
+      },
+      "before": {
+        "triangles": 31976,
+        "vertices": 17118,
+        "primitives": 5,
+        "geometryBytes": 945048
+      },
+      "after": {
+        "triangles": 19780,
+        "vertices": 10760,
+        "primitives": 5,
+        "geometryBytes": 592120
+      },
+      "textures": []
+    },
+    {
+      "name": "whale",
+      "ratio": 0.6,
+      "error": 0.0005,
+      "sourceHash": "be1639b4c5e01a7ec812f63fe14c66160ae988d5877a174ce6844abf6e039279",
+      "originalBytes": 870284,
+      "mobileBytes": 273404,
+      "originalBounds": {
+        "min": [
+          -3.5322940349578857,
+          -0.9224305748939514,
+          -2.4000000953674316
+        ],
+        "max": [
+          2.9800000190734863,
+          0.9599999785423279,
+          2.4000000953674316
+        ]
+      },
+      "before": {
+        "triangles": 28696,
+        "vertices": 15786,
+        "primitives": 3,
+        "geometryBytes": 866760
+      },
+      "after": {
+        "triangles": 17490,
+        "vertices": 9922,
+        "primitives": 3,
+        "geometryBytes": 541508
+      },
+      "textures": []
+    }
+  ]
+}
