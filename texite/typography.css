@@ -4,7 +4,9 @@
 :root { --site-body:1.125rem; --site-control:1rem; --site-caption:.875rem; --muted:#60685f; }
 .dark { --muted:#aeb7aa; }
 body { font-size:var(--site-body); line-height:1.7; }
-.site-header { min-height:5.25rem; height:auto; padding-block:.9rem; flex-wrap:wrap; column-gap:1.5rem; row-gap:.6rem; }
+html { scroll-padding-top:5rem; }
+.hero { min-height:calc(100dvh - 4rem); }
+.site-header { min-height:4rem; height:auto; padding-block:.5rem; flex-wrap:wrap; column-gap:1.5rem; row-gap:.6rem; }
 .site-header nav { font-size:var(--site-control); gap:1.5rem; flex-wrap:wrap; }
 .site-header nav a { min-height:2.75rem; display:inline-flex; align-items:center; gap:.25rem; }
 .site-header nav span { font-size:inherit; margin:0; }
@@ -24,7 +26,7 @@ body { font-size:var(--site-body); line-height:1.7; }
 .eyebrow,.section-kicker,.section-index span,.feature-notes span,.story-section>.platform-note,
 .hint-sub,.scroll-cue,.duration,.try-this,.try-this>span,.story-section>.fine-print,
 .brand-caption,.device-overline,.demo-caption,
-.experience-note,.workbench-loading,.section-heading>span,.sample-format,
+.workbench-loading,.section-heading>span,.sample-format,
 .download-section>.download-meta,footer,footer>span,footer nav,.dialog-kicker,.document-page code {
   font-size:var(--site-caption); line-height:1.65;
 }
@@ -55,18 +57,16 @@ footer { gap:1.5rem; flex-wrap:wrap; }
 footer nav { flex-wrap:wrap; }
 dialog p { font-size:var(--site-body); line-height:1.8; }
 .dialog-actions { flex-wrap:wrap; }
-.experience-sticky { top:6.25rem; max-height:calc(100dvh - 6.5rem); overflow-y:auto; overflow-x:hidden; padding:1rem .5rem; scrollbar-width:thin; }
+.experience-sticky { top:5rem; max-height:calc(100dvh - 5.25rem); overflow-y:auto; overflow-x:hidden; padding:1rem .5rem; scrollbar-width:thin; }
 .device-overline { gap:.5rem; flex-wrap:wrap; letter-spacing:.035em; padding:0 .25rem; margin-bottom:1rem; }
-.tablet.ipad-pro { width:min(100%,max(17rem,calc((100dvh - 19rem)*1.333333))); }
+.tablet.ipad-pro { width:min(100%,max(17rem,calc((100dvh - 16rem)*1.333333))); }
 .demo-controller { padding:.5rem 0; gap:.35rem; align-items:flex-start; min-height:3.5rem; }
 .demo-caption { flex:1; min-width:0; gap:.65rem; }
 .demo-caption .live-dot { margin-top:.55rem; }
 .demo-controller>.icon-button { width:2.5rem; height:2.5rem; }
 .demo-controller>.icon-button svg { width:1.125rem; height:1.125rem; }
-.experience-note { margin:.75rem 0 0; }
 .is-expanded { justify-content:flex-start; overflow:auto; max-height:none; top:1rem; padding:1rem!important; }
-.is-expanded .tablet.ipad-pro { width:min(100%,max(17rem,calc((100dvh - 16rem)*1.333333))); flex-shrink:0; }
-.is-expanded .experience-note { width:min(100%,68.75rem); }
+.is-expanded .tablet.ipad-pro { width:min(100%,max(17rem,calc((100dvh - 14rem)*1.333333))); flex-shrink:0; }
 .template-placeholder { min-height:calc(100dvh - 7rem); padding:5rem 1.5rem; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
 .placeholder-mark { width:4rem; height:4rem; display:grid; place-items:center; border:1px solid var(--line); border-radius:1.2rem; margin-bottom:1.5rem; background:var(--surface); color:var(--green); }
 .placeholder-mark svg { width:1.75rem; height:1.75rem; }
@@ -79,14 +79,14 @@ dialog p { font-size:var(--site-body); line-height:1.8; }
 @media(max-width:950px) {
   .site-header nav { display:flex; gap:1rem; }
   .experience-sticky { max-height:none; overflow:visible; }
-  .experience-column { top:6rem; }
-  .tablet.ipad-pro { width:min(100%,max(16rem,calc((100dvh - 21rem)*1.333333))); }
+  .experience-column { top:5rem; }
+  .tablet.ipad-pro { width:min(100%,max(16rem,calc((100dvh - 18rem)*1.333333))); }
   .story-section:not(.hero) { scroll-margin-top:calc(100dvh - 8rem); }
   .is-expanded { overflow:auto; }
 }
 @media(max-width:700px) {
-  html { scroll-padding-top:9rem; }
-  .site-header { padding:.65rem 1rem; gap:.5rem; }
+  html { scroll-padding-top:7.5rem; }
+  .site-header { padding:.4rem 1rem; gap:.4rem; }
   .site-header nav { order:3; width:100%; justify-content:center; gap:clamp(.75rem,4vw,1.5rem); }
   .site-header .brand { font-size:1.4rem; }
   .site-header nav a { min-height:2.5rem; }
@@ -95,7 +95,7 @@ dialog p { font-size:var(--site-body); line-height:1.8; }
   .experience-column { position:relative; top:auto; }
   .experience-sticky { position:relative; top:auto; padding:.5rem 0; }
   .tablet.ipad-pro { width:100%; }
-  .story-section:not(.hero) { padding:4rem 1.25rem; scroll-margin-top:9rem; min-height:auto; }
+  .story-section:not(.hero) { padding:4rem 1.25rem; scroll-margin-top:7.5rem; min-height:auto; }
   .story-section h2 { font-size:2.125rem; }
   .hero { min-height:auto; }
   .hero-description br,.story-section>p br { display:none; }
