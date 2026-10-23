@@ -4,7 +4,10 @@
 (function () {
   'use strict';
 
-  gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
+  const ScrollTrigger = window.ScrollTrigger;
+  gsap.registerPlugin(CustomEase);
+  if (ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+  if (window.SplitText) gsap.registerPlugin(window.SplitText);
 
   CustomEase.create('ease-io', '0.76, 0, 0.24, 1');
   CustomEase.create('hero-out', '0.16, 1, 0.3, 1');
@@ -13,25 +16,52 @@
   const $$ = (s, c) => Array.from((c || document).querySelectorAll(s));
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouch = window.matchMedia('(hover: none)').matches;
+  const motionLite = !!window.__motionLite || reduce || isTouch || window.matchMedia('(pointer: coarse), (max-width: 991px)').matches;
 
   /* ═══════════════════════════════════════════════════════════
      SMOOTH SCROLL
      ═══════════════════════════════════════════════════════════ */
-  const lenis = new Lenis({
+  function nativeScroller() {
+    let stopped = false;
+    let previousOverflow = '';
+    return {
+      on: (event, fn) => { if (event === 'scroll') window.addEventListener('scroll', fn, { passive: true }); },
+      stop: () => {
+        if (stopped) return;
+        stopped = true;
+        previousOverflow = document.documentElement.style.overflow;
+        document.documentElement.style.overflow = 'hidden';
+      },
+      start: () => {
+        if (!stopped) return;
+        document.documentElement.style.overflow = previousOverflow;
+        stopped = false;
+      },
+      scrollTo: (target, options = {}) => {
+        const node = typeof target === 'string' ? $(target) : target;
+        if (node == null) return;
+        const top = typeof node === 'number' ? node : node.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: top + (options.offset || 0), behavior: reduce || options.immediate ? 'instant' : 'smooth' });
+      }
+    };
+  }
+  const lenis = motionLite ? nativeScroller() : new Lenis({
     duration: 1.1,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
     touchMultiplier: 1.6
   });
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => lenis.raf(time * 1000));
-  gsap.ticker.lagSmoothing(0);
+  if (!motionLite) {
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
 
   /* ═══════════════════════════════════════════════════════════
      SPLIT HELPER
      ═══════════════════════════════════════════════════════════ */
   function splitLines(el) {
-    if (reduce) return null;
+    if (motionLite) return null;
     try {
       return SplitText.create
         ? SplitText.create(el, { type: 'lines', mask: 'lines', autoSplit: true, linesClass: 'split-line' })
@@ -52,9 +82,10 @@
   const progress = { v: 0 };
 
   function runPreloader() {
-    if (reduce) {
+    if (motionLite) {
       preloader.classList.add('is-done');
       gsap.set(preloader, { display: 'none' });
+      document.body.style.overflow = '';
       lenis.start();
       document.body.classList.add('is-loaded');
       revealAll();
@@ -72,6 +103,7 @@
         preloader.classList.add('is-done');
         gsap.set(preloader, { pointerEvents: 'none' });
         document.body.classList.add('is-loaded');
+        document.body.style.overflow = '';
         lenis.start();
         heroReveal();
       }
@@ -117,7 +149,7 @@
     const el = $('[data-warp]');
     const map = $('#heroWarpMap');
     if (!el || !map) return;
-    if (reduce || isTouch) return;
+    if (motionLite) return;
 
     /* .cell-hero is pointer-events:none so the headline can never emit its
        own enter/leave. Hit-test the pointer instead: the warp still triggers,
@@ -217,6 +249,19 @@
   function initHeroTitleFade() {
     const el = $('.cell-hero');
     if (!el) return;
+    if (motionLite) {
+      let frame = 0;
+      const paint = () => {
+        frame = 0;
+        const progress = window.scrollY / Math.max(1, window.innerHeight * .4);
+        el.style.opacity = String(reduce ? (progress < 1 ? 1 : 0) : Math.max(0, 1 - progress));
+      };
+      const update = () => { if (!frame) frame = requestAnimationFrame(paint); };
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update, { passive: true });
+      paint();
+      return;
+    }
 
     /* prefers-reduced-motion: no scrubbed interpolation, but the title still
        has to leave once the hero is gone — otherwise it hangs over the next
@@ -225,8 +270,8 @@
       ScrollTrigger.create({
         trigger: '.intro',
         start: 'top top-=30%',
-        once: true,
-        onEnter: () => gsap.set(el, { opacity: 0 })
+        onEnter: () => gsap.set(el, { opacity: 0 }),
+        onLeaveBack: () => gsap.set(el, { opacity: 1 })
       });
       return;
     }
@@ -238,7 +283,7 @@
         trigger: '.intro',
         start: 'top top',
         end: '+=40%',
-        scrub: 0.6,
+        scrub: motionLite ? true : 0.6,
         invalidateOnRefresh: true
       }
     });
@@ -255,7 +300,7 @@
      ═══════════════════════════════════════════════════════════ */
   function initScrubBlur() {
     $$('[data-scrub-reveal]').forEach((el) => {
-      if (reduce) { el.style.visibility = 'visible'; return; }
+      if (motionLite) { el.style.visibility = 'visible'; return; }
 
       const split = splitLines(el);
       const targets = split ? split.lines : [el];
@@ -287,7 +332,7 @@
     // masked line reveals
     $$('[data-reveal="text"]').forEach((el) => {
       if (el.closest('.cell-hero')) return;             // handled by heroReveal
-      if (reduce) { el.style.visibility = 'visible'; return; }
+      if (motionLite) { el.style.visibility = 'visible'; return; }
 
       const split = splitLines(el);
       const targets = split ? split.lines : [el];
@@ -308,7 +353,7 @@
     // plain block reveals
     $$('[data-reveal="div"], [data-reveal="w"]').forEach((el) => {
       if (el.closest('.cell-hero')) return;
-      if (reduce) { el.style.visibility = 'visible'; return; }
+      if (motionLite) { el.style.visibility = 'visible'; return; }
 
       ScrollTrigger.create({
         trigger: el,
@@ -325,6 +370,7 @@
   }
 
   function initParallax() {
+    if (motionLite) return;
     $$('[data-parallax="img"] img').forEach((img) => {
       gsap.fromTo(img,
         { yPercent: -6, scale: 1.1 },
@@ -349,7 +395,7 @@
   function initPoster() {
     const host = $('[data-poster]');
     if (!host || !window.Poster) return;
-    if (isTouch || reduce) { host.style.display = 'none'; return; }
+    if (motionLite) { host.style.display = 'none'; return; }
 
     poster = Poster.create(host);
     if (!poster) { host.style.display = 'none'; return; }
@@ -366,7 +412,7 @@
   function initFluid() {
     const host = $('[data-fluid-reveal]');
     if (!host) return;
-    if (isTouch || reduce) { host.style.display = 'none'; return; }
+    if (motionLite) { host.style.display = 'none'; return; }
 
     const bg = getComputedStyle(document.body).getPropertyValue('--bg').trim() || '#ffffff';
 
@@ -625,6 +671,10 @@
       gsap.set(panel, { autoAlpha: 1, clearProps: 'clipPath' });
       close.focus({ preventScroll: true });
       if (reduce) { busy = false; return; }
+      if (motionLite) {
+        gsap.fromTo(panel, { autoAlpha: 0 }, { autoAlpha: 1, duration: .18, onComplete: () => { busy = false; } });
+        return;
+      }
       const { x, y } = dockOrigin();
       gsap.timeline({ onComplete: () => { gsap.set(panel, { clearProps: 'clipPath' }); busy = false; } })
         .fromTo(panel, { clipPath: circle(0, x, y) }, { clipPath: circle(reach(x, y), x, y), duration: .65, ease: 'power3.inOut' })
@@ -636,6 +686,10 @@
       busy = true;
       modal(false);
       if (reduce) { gsap.set(panel, { autoAlpha: 0 }); busy = false; return; }
+      if (motionLite) {
+        gsap.to(panel, { autoAlpha: 0, duration: .16, onComplete: () => { busy = false; } });
+        return;
+      }
       const { x, y } = dockOrigin();
       gsap.fromTo(panel, { clipPath: circle(reach(x, y), x, y) }, { clipPath: circle(0, x, y), duration: .45, ease: 'power3.inOut', onComplete: () => {
         gsap.set(panel, { autoAlpha: 0, clearProps: 'clipPath' });
@@ -653,6 +707,13 @@
         gsap.set(panel, { autoAlpha: 0 });
         if (done) done();
         busy = false;
+        return;
+      }
+      if (motionLite) {
+        gsap.timeline({ onComplete: () => { busy = false; } })
+          .fromTo(veil, { opacity: 0 }, { opacity: 1, duration: .12 })
+          .add(() => { modal(false); gsap.set(panel, { autoAlpha: 0 }); if (done) done(); })
+          .to(veil, { opacity: 0, duration: .18 });
         return;
       }
       const swatch = $('.chip-swatch', chip).getBoundingClientRect();
@@ -720,13 +781,13 @@
       if (open) {
         lenis.stop();
         gsap.timeline()
-          .to(menu, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.75, ease: 'ease-io' })
-          .to(links, { yPercent: 0, opacity: 1, duration: 0.7, stagger: 0.06, ease: 'hero-out' }, '-=0.4');
+          .to(menu, { clipPath: 'inset(0% 0% 0% 0%)', duration: motionLite ? .2 : .75, ease: 'ease-io' })
+          .to(links, { yPercent: 0, opacity: 1, duration: motionLite ? .2 : .7, stagger: motionLite ? 0 : .06, ease: 'hero-out' }, motionLite ? '<' : '-=0.4');
       } else {
         lenis.start();
         gsap.timeline()
-          .to(links, { yPercent: 110, opacity: 0, duration: 0.35, stagger: 0.03, ease: 'power2.in' })
-          .to(menu, { clipPath: 'inset(0% 0% 100% 0%)', duration: 0.6, ease: 'ease-io' }, '-=0.15');
+          .to(links, { yPercent: 110, opacity: 0, duration: motionLite ? .1 : .35, stagger: motionLite ? 0 : .03, ease: 'power2.in' })
+          .to(menu, { clipPath: 'inset(0% 0% 100% 0%)', duration: motionLite ? .15 : .6, ease: 'ease-io' }, motionLite ? '<' : '-=0.15');
       }
     }
 
@@ -749,6 +810,7 @@
      STICKY NAME BAR
      ═══════════════════════════════════════════════════════════ */
   function initStickyName() {
+    if (motionLite) return;
     const bar = $('.sticky-name');
     if (!bar) return;
     gsap.set(bar, { yPercent: 110 });
@@ -768,6 +830,7 @@
      CUSTOM SCROLLBAR
      ═══════════════════════════════════════════════════════════ */
   function initScrollbar() {
+    if (motionLite) return;
     const thumb = $('.scrollbar-thumb');
     if (!thumb) return;
     const setY = gsap.quickTo(thumb, 'y', { duration: 0.2, ease: 'power2.out' });
@@ -801,6 +864,20 @@
     const wrap = $('[data-wordmark]');
     const row = $('[data-wm-row]');
     if (!wrap || !row) return;
+    if (motionLite) {
+      let width = 0;
+      const fitStatic = () => {
+        if (width === wrap.clientWidth) return;
+        width = wrap.clientWidth;
+        row.style.fontSize = '100px';
+        const last = row.lastElementChild;
+        const natural = last ? last.offsetLeft + last.offsetWidth : 0;
+        if (natural) row.style.fontSize = (100 * width / natural * .998) + 'px';
+      };
+      fitStatic();
+      window.addEventListener('resize', fitStatic, { passive: true });
+      return;
+    }
 
     const PROBE = 100;
     const RADIUS = 0.22;         /* falloff reach, as a fraction of the mark's width */
@@ -926,7 +1003,7 @@
      CUSTOM CURSOR
      ═══════════════════════════════════════════════════════════ */
   function initCursor() {
-    if (isTouch || reduce) return;
+    if (motionLite) return;
     const cur = $('#cursor');
     if (!cur) return;
 
@@ -1009,7 +1086,7 @@
     initWordmark();
     initCursor();
 
-    document.fonts && document.fonts.ready.then(() => ScrollTrigger.refresh());
+    if (ScrollTrigger && !motionLite && document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
 
     runPreloader();
   }

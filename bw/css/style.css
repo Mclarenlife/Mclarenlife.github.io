@@ -1277,3 +1277,15 @@ body.has-cursor .t-range { cursor: ew-resize; }
 @media (prefers-reduced-motion: reduce) {
   [data-reveal="text"], [data-reveal="div"], [data-reveal="w"], [data-scrub-reveal] { visibility: visible; }
 }
+
+/* Touch/narrow screens use native scrolling and system fonts. No idle filters. */
+@media (hover: none), (pointer: coarse), (max-width: 991px), (prefers-reduced-motion: reduce) {
+  :root { --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; --mono: ui-monospace, "SF Mono", Consolas, monospace; }
+  body { transition: none; }
+  .heading-group-warp { filter: none; will-change: auto; }
+  [data-scrub-reveal] { filter: none; will-change: auto; }
+  .wm-row, .wm-ch, .wm-r, .wm-b { will-change: auto; }
+  .wm-r, .wm-b, .scrollbar-track, .sticky-name { display: none; }
+  [data-reveal], [data-scrub-reveal] { visibility: visible; }
+}
+.is-motion-lite .heading-group-warp { filter: none; will-change: auto; }
