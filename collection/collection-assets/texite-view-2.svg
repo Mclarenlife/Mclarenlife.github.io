@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900"><defs>
+<filter id="shadow" x="-70%" y="-70%" width="240%" height="260%"><feDropShadow dx="0" dy="28" stdDeviation="24" flood-color="#0b1d15" flood-opacity=".19"/></filter>
+<filter id="soft"><feGaussianBlur stdDeviation="45"/></filter>
+<linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffefa"/><stop offset=".54" stop-color="#f5f1e7"/><stop offset="1" stop-color="#d9d8c8"/></linearGradient>
+<linearGradient id="green" x1="0" x2="1" y2="1"><stop stop-color="#a8b9a2"/><stop offset=".45" stop-color="#4f765c"/><stop offset="1" stop-color="#193b2b"/></linearGradient>
+<linearGradient id="copper" x1="0" x2="1" y2="1"><stop stop-color="#ffd3b2"/><stop offset=".22" stop-color="#df885c"/><stop offset=".6" stop-color="#a84625"/><stop offset="1" stop-color="#662e21"/></linearGradient>
+<linearGradient id="metal"><stop stop-color="#787d75"/><stop offset=".15" stop-color="#e9eee2"/><stop offset=".42" stop-color="#8b9186"/><stop offset=".55" stop-color="#f7f9ed"/><stop offset=".78" stop-color="#555c51"/><stop offset="1" stop-color="#a0a795"/></linearGradient>
+<radialGradient id="dark"><stop stop-color="#365544"/><stop offset="1" stop-color="#11271e"/></radialGradient>
+<radialGradient id="light"><stop stop-color="#f4f4e9"/><stop offset="1" stop-color="#c9d6bd"/></radialGradient>
+<radialGradient id="warm"><stop stop-color="#fffef4"/><stop offset="1" stop-color="#e8dfca"/></radialGradient>
+<radialGradient id="orange"><stop stop-color="#f3c49c"/><stop offset="1" stop-color="#cc7e58"/></radialGradient>
+</defs><rect width="1200" height="900" fill="url(#dark)"/><g transform="translate(150 0) scale(0.9)"><ellipse cx="610" cy="760" rx="325" ry="62" fill="#020f09" opacity=".35" filter="url(#soft)"/>
+<g transform="translate(210 235) rotate(-12 350 250)" filter="url(#shadow)"><rect x="24" y="24" width="620" height="470" rx="4" fill="#71836b"/><rect x="12" y="12" width="620" height="470" rx="4" fill="#c1c8b5"/><rect width="620" height="470" rx="4" fill="url(#paper)"/>
+<text x="45" y="57" fill="#647660" font-family="Arial" font-size="13" letter-spacing="3">TEXITE / FIELD NOTES</text><text x="45" y="120" fill="#263a2b" font-family="Georgia" font-size="47" >Ideas, made</text><text x="45" y="173" fill="#263a2b" font-family="Georgia" font-size="47" >tangible.</text>
+<path d="M45 205H570" stroke="#a6b09a"/><text x="310" y="304" fill="#233f2b" font-family="Georgia" font-size="78" text-anchor="middle" font-style="italic">E = mc²</text><path d="M45 365h510" stroke="#a8afa3" stroke-width="3" opacity=".55"/><path d="M45 389h510" stroke="#a8afa3" stroke-width="3" opacity=".55"/><path d="M45 413h321.3" stroke="#a8afa3" stroke-width="3" opacity=".55"/><text x="555" y="438" fill="#6e7b66" font-family="Arial" font-size="16" >02</text>
+</g><g transform="translate(670 540) rotate(10)" filter="url(#shadow)"><rect width="245" height="185" rx="3" fill="#1d3529" stroke="#65826a"/><text x="25" y="46" fill="#d4dfb6" font-family="monospace" font-size="23" >\begin{idea}</text><text x="25" y="86" fill="#aabf99" font-family="monospace" font-size="23" >  refine</text><text x="25" y="126" fill="#d4dfb6" font-family="monospace" font-size="23" >\end{idea}</text><circle cx="215" cy="155" r="6" fill="#b0cd8f"/></g></g></svg>

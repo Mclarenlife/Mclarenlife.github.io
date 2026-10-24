@@ -8,7 +8,5 @@ header img[src*="/collection/branding/"]:not(.mclary-header-mark){object-fit:con
  [class*="HomeHeroContent-sc"]{justify-content:flex-start;padding-top:clamp(300px,86vw,460px);padding-bottom:72px;height:auto;min-height:100svh}
  [class*="HomeHeroContent-sc"] h1{width:100%;max-width:none;font-size:clamp(42px,11vw,72px)}
 }
-/* Product screenshots contain interface text: preserve the full frame. */
-video:has(source[src^="/collection/collection-assets/"]) { object-fit: contain !important; background: #f1f1ee; }
-img[src^="/collection/collection-assets/"][src*="-view-"] { object-fit: contain !important; background: #f1f1ee; }
-img[src^="/collection/collection-assets/"][src*="-square.jpg"] { object-fit: contain !important; background: #f1f1ee; }
+/* Editorial artwork fills the existing media masks; motion and geometry stay intact. */
+video:has(source[src^="/collection/collection-assets/"]), img[src^="/collection/collection-assets/"][src$=".jpg"] { object-fit: cover !important; }

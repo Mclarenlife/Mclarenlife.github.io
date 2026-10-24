@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="Chartelis folded paper icon">
+<defs>
+ <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#343B3C"/><stop offset=".46" stop-color="#20282B"/><stop offset="1" stop-color="#10191D"/></linearGradient>
+ <linearGradient id="paper" x1=".1" y1="0" x2=".9" y2="1"><stop stop-color="#FFFEF9"/><stop offset=".45" stop-color="#F1EDE3"/><stop offset="1" stop-color="#CBC6BA"/></linearGradient>
+ <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#BDB7A9"/><stop offset="1" stop-color="#7A807B"/></linearGradient>
+ <linearGradient id="bronze" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#E7BD89"/><stop offset=".55" stop-color="#B88B5E"/><stop offset="1" stop-color="#835E40"/></linearGradient>
+ <linearGradient id="fold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#F9F6EE"/><stop offset=".5" stop-color="#DEDBD1"/><stop offset="1" stop-color="#AAAFA9"/></linearGradient>
+ <radialGradient id="halo" cx=".25" cy=".05" r="1"><stop stop-color="#BDC6BF" stop-opacity=".11"/><stop offset="1" stop-color="#BCC4BA" stop-opacity="0"/></radialGradient>
+ <filter id="shadow" x="-50%" y="-40%" width="210%" height="210%"><feDropShadow dx="11" dy="27" stdDeviation="19" flood-color="#000B10" flood-opacity=".48"/></filter>
+ <clipPath id="squircle"><path d="M512 64 C704 64 800 64 864 128 C928 192 960 288 960 512 C960 736 928 832 864 896 C800 960 704 960 512 960 C320 960 224 960 160 896 C96 832 64 736 64 512 C64 288 96 192 160 128 C224 64 320 64 512 64Z"/></clipPath>
+</defs>
+<g clip-path="url(#squircle)">
+ <rect x="64" y="64" width="896" height="896" fill="url(#tile)"/>
+ <rect x="64" y="64" width="896" height="896" fill="url(#halo)"/>
+ <g transform="translate(26 8) scale(.95)" filter="url(#shadow)">
+  <path d="M 741 286 L 637 437 L 560 394 Q 548 387 533 387 H 435 Q 405 387 405 417 V 607 Q 405 637 435 637 H 533 Q 548 637 560 630 L 637 587 L 741 738 L 622 806 Q 590 824 553 824 H 394 Q 352 824 323 795 L 245 717 Q 216 688 216 646 V 378 Q 216 336 245 307 L 323 229 Q 352 200 394 200 H 553 Q 590 200 622 218 Z" transform="translate(0 12)" fill="url(#edge)"/>
+  <path d="M 741 286 L 637 437 L 560 394 Q 548 387 533 387 H 435 Q 405 387 405 417 V 607 Q 405 637 435 637 H 533 Q 548 637 560 630 L 637 587 L 741 738 L 622 806 Q 590 824 553 824 H 394 Q 352 824 323 795 L 245 717 Q 216 688 216 646 V 378 Q 216 336 245 307 L 323 229 Q 352 200 394 200 H 553 Q 590 200 622 218 Z" fill="url(#paper)"/>
+  <path d="M323 229 Q352 200 394 200 H553 Q590 200 622 218 L741 286 L637 437 L560 394 Q548 387 533 387 H435 Q405 387 405 417 L405 515 L323 229Z" fill="#FFFDF6" opacity=".42"/>
+  <path d="M622 218 L741 286 L637 437 L611 352Z" fill="url(#bronze)"/>
+  <path d="M622 218 L611 352 L553 200 Q590 200 622 218Z" fill="#FFFDF6"/>
+  <path d="M637 587 L741 738 L622 806 Q590 824 553 824 L611 672Z" fill="url(#fold)"/>
+  <path d="M637 587 L611 672 L741 738Z" fill="#FFFFF9"/>
+  <path d="M323 229 L405 417 M323 795 L405 607" stroke="#FFFEF8" stroke-opacity=".2" stroke-width="2"/>
+ </g>
+ <path d="M512 65 C704 65 800 65 863 129 C927 193 959 289 959 512 C959 736 927 831 863 895 C799 959 704 959 512 959 C320 959 225 959 161 895 C97 831 65 736 65 512 C65 288 97 193 161 129 C225 65 320 65 512 65Z" fill="none" stroke="#FFFFFF" stroke-opacity=".12" stroke-width="2"/>
+</g></svg>
