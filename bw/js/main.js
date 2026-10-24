@@ -709,13 +709,8 @@
         busy = false;
         return;
       }
-      if (motionLite) {
-        gsap.timeline({ onComplete: () => { busy = false; } })
-          .fromTo(veil, { opacity: 0 }, { opacity: 1, duration: .12 })
-          .add(() => { modal(false); gsap.set(panel, { autoAlpha: 0 }); if (done) done(); })
-          .to(veil, { opacity: 0, duration: .18 });
-        return;
-      }
+      // The colour expanding from the chosen swatch is shared by touch and desktop.
+      // It runs only for this selection; lightweight loading and native scrolling remain.
       const swatch = $('.chip-swatch', chip).getBoundingClientRect();
       const x = swatch.left + swatch.width / 2, y = swatch.top + swatch.height / 2;
       gsap.timeline({ onComplete: () => { busy = false; } })

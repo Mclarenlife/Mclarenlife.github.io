@@ -18,5 +18,5 @@
     // Optional visual effects must not prevent access to the tools.
     window.__motionLite = true;
     document.documentElement.classList.add('is-motion-lite');
-  }).then(function () { return load('js/main.js?v=20261023-mobile'); });
+  }).then(function () { return load('js/main.js?v=20261025-palette'); });
 })();
