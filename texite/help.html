@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>功能帮助 · 连接 AI — Texite</title>
+  <meta name="description" content="在 Texite 中连接 Codex 等 Agent CLI，或配置自定义对话 API。包含安装登录、程序路径、API 地址与常见问题说明。">
+  <link rel="icon" href="assets/icon.svg"><link rel="stylesheet" href="assets/fonts/misans.css">
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="typography.css"><link rel="stylesheet" href="help.css">
+  <script type="module" src="theme.js"></script><script type="module" src="help.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#content">跳到正文</a>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Texite 首页"><img src="assets/icon.svg" width="30" height="30" alt="">Texite</a>
+    <nav aria-label="主导航"><a href="index.html#write">功能体验</a><a href="templates.html">模板下载</a><a href="help.html" aria-current="page">功能帮助</a><a href="https://mclarenlife.github.io/" target="_blank" rel="noopener noreferrer">作者主页 <span aria-hidden="true">↗</span></a></nav>
+    <div class="header-actions"><button class="icon-button" id="theme" aria-label="切换深色外观" title="切换深色外观"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.9 13.1A9 9 0 0 1 10.9 3.1 9 9 0 1 0 20.9 13.1Z"/></svg></button><a class="button small primary" href="index.html#download">下载 Texite ↗</a></div>
+  </header>
+  <main class="help-page" id="content">
+    <header class="help-intro">
+      <p class="section-kicker">TEXITE / 功能帮助</p>
+      <h1>把 AI 接入你的工作区。</h1>
+      <p>从连接到第一次修改，按步骤完成配置。<br>打开 Texite 桌面版中的项目，点击顶栏「AI 助手」开始。</p>
+      <p class="help-caption">以下步骤用于实际软件；官网平板中的 AI 是预设演示，不会连接真实服务。</p>
+    </header>
+    <div class="help-layout">
+      <aside class="help-sidebar" aria-label="本页目录">
+        <span>连接指南</span>
+        <nav><a href="#choose">选择连接方式</a><a href="#agent">Agent CLI</a><a href="#api">自定义 API</a><a href="#troubleshooting">常见问题</a></nav>
+        <a class="help-back" href="guide.html">安装与使用说明 ↗</a>
+      </aside>
+      <div class="help-content">
+        <section id="choose" class="help-section">
+          <p class="section-kicker">01 / 选择方式</p><h2>你希望 AI 帮你做什么？</h2>
+          <div class="help-choices">
+            <a href="#agent" class="help-choice"><span class="help-label">Agent CLI</span><h3>直接修改文稿</h3><p>连接本机 Agent，读取项目、修改文字、查看差异。使用 CLI 已登录的账户与模型服务。</p><span class="help-link">配置 Agent <span aria-hidden="true">↗</span></span></a>
+            <a href="#api" class="help-choice"><span class="help-label">自定义 API</span><h3>讨论思路与写法</h3><p>使用自己的 API 地址、模型和密钥，进行解释、润色建议与问答。回复不会自动写入文件。</p><span class="help-link">配置对话 API <span aria-hidden="true">↗</span></span></a>
+          </div>
+          <p class="help-note">Agent 模式连接本机 CLI。对话模式可以选择 Agent CLI，也可以选择自定义 API；使用 CLI 对话时不执行文件修改。</p>
+        </section>
+        <section id="agent" class="help-section">
+          <p class="section-kicker">02 / AGENT CLI</p><h2>以 Codex 为例，连接本机助手。</h2>
+          <p>CLI 是在终端运行的程序。先安装并完成登录，再让 Texite 连接它。无需手动启动 app-server。</p>
+          <ol class="help-steps">
+            <li><h3>安装 CLI，完成终端登录</h3><p>按 <a href="https://learn.chatgpt.com/docs/codex/cli" target="_blank" rel="noopener noreferrer">Codex 官方安装指南 ↗</a> 选择 Windows 或 macOS 的安装方式。安装完成后重新打开终端，逐条运行：</p>
+              <div class="help-command"><pre><code>codex --version
+codex login
+codex login status</code></pre><button type="button" data-copy aria-label="复制 Codex 登录命令">复制</button></div>
+              <p>浏览器中完成登录，终端确认已有登录状态后，回到 Texite。账户可用方式与权限以 <a href="https://learn.chatgpt.com/docs/auth" target="_blank" rel="noopener noreferrer">官方登录说明 ↗</a> 为准。</p></li>
+            <li><h3>在 Texite 中选择 Agent CLI</h3><p class="help-path">AI 助手 <span>›</span> Agent <span>›</span> 连接设置 <span>›</span> 选择 Agent CLI</p><p>类型选「Codex CLI」，「程序路径 / 命令名」先留空，点击「保存并连接」。Texite 会尝试自动查找本机程序。</p>
+              <details class="help-detail"><summary>找不到程序？手动填写完整路径</summary><div>
+                <h4>macOS · 终端</h4><div class="help-command"><pre><code>command -v codex</code></pre><button type="button" data-copy aria-label="复制 Mac 路径查找命令">复制</button></div><p>将输出路径填入程序路径，例如 <code>/opt/homebrew/bin/codex</code>。以自己电脑的实际输出为准。</p>
+                <h4>Windows · PowerShell</h4><div class="help-command"><pre><code>where.exe codex.exe</code></pre><button type="button" data-copy aria-label="复制 Windows 路径查找命令">复制</button></div><p>填写找到的 <code>codex.exe</code> 完整路径。如果通过 npm 安装后只有 <code>codex.cmd</code> 或 <code>codex.ps1</code>，需要找到该安装中的实际 <code>codex.exe</code>，或改用官方独立安装方式；当前连接器直接启动可执行文件。</p>
+                <p class="help-note">选择 CLI 可执行文件，不要选择 ChatGPT.app、Codex.app、安装包或文件夹。路径一栏只填路径，不附加「app-server」或登录命令。</p>
+              </div></details></li>
+            <li><h3>连接后，试一次小修改</h3><p>连接状态显示「已连接」后，在助手底部选择可用模型。先选中一段文字，再发送一个范围明确的要求：</p><blockquote>只润色选中的这段文字，保持公式、引用键和 LaTeX 命令不变。</blockquote><p>完成后查看修改差异，需要时选择「撤回整次修改」。也可以在对话模式选择「Agent CLI」，仅讨论内容。</p></li>
+          </ol>
+          <details class="help-detail"><summary>使用其他 Agent CLI</summary><div><p>在「选择 Agent CLI」中切换类型。除 Codex 外，当前预设通过 ACP 连接；请先安装相应 CLI／适配器，并在终端完成该服务的登录或模型配置。</p>
+            <dl class="help-fields">
+              <div><dt>Claude</dt><dd>程序 <code>claude-agent-acp</code>，参数 <code>[]</code>。需要 Claude ACP 适配器，仅安装普通 Claude 程序不等于已具备此接口。</dd></div>
+              <div><dt>Qwen Code</dt><dd>程序 <code>qwen</code>，参数 <code>["--acp"]</code>。</dd></div>
+              <div><dt>MiniMax / DeepSeek</dt><dd>选择对应的 OpenCode 预设，程序 <code>opencode</code>，参数 <code>["acp"]</code>。先在 OpenCode 配置对应服务；默认模型填写该 CLI 提供的完整模型 ID。</dd></div>
+              <div><dt>自定义 ACP CLI</dt><dd>填写可执行程序及 JSON 数组格式的参数。需要支持 ACP v1、标准输入输出和编辑器文件读写；普通交互式命令并不一定兼容。</dd></div>
+            </dl><p>参数按预设保留即可。不同 CLI 的文件读写能力存在差异，连接成功后请先做一次小范围修改验证。</p></div></details>
+          <p class="help-note">连接设置中可调整「空闲自动断开」。默认空闲 5 分钟后断开，执行任务时保持连接，发送下一条指令时自动重连。</p>
+        </section>
+        <section id="api" class="help-section">
+          <p class="section-kicker">03 / 自定义 API</p><h2>用你自己的模型服务对话。</h2>
+          <p>准备服务商提供的 API 地址、模型 ID 和 API Key。当前支持 OpenAI 兼容的 <strong>Chat Completions</strong> 接口；仅提供 Responses 或其他协议的端点不能直接接入。</p>
+          <ol class="help-steps">
+            <li><h3>切换到自定义 API</h3><p class="help-path">AI 助手 <span>›</span> 对话 <span>›</span> 自定义 API <span>›</span> 配置对话 API</p><p>点击配置图标，新增一份配置。</p></li>
+            <li><h3>填写四项配置</h3><dl class="help-fields">
+              <div><dt>配置名称</dt><dd>便于自己识别，例如「论文助手」。可以保存多份配置。</dd></div>
+              <div><dt>API 地址</dt><dd>填写服务商的接口基础地址，例如 <code>https://api.openai.com/v1</code>。Texite 会补上 <code>/chat/completions</code>；完整的 Chat Completions 地址也可填写。不要填聊天网页地址或 <code>/responses</code> 地址。</dd></div>
+              <div><dt>模型</dt><dd>填写服务商控制台中可用的准确模型 ID，注意大小写与前缀。不要只填产品昵称。</dd></div>
+              <div><dt>API Key</dt><dd>填写该服务的密钥。本机无鉴权服务可留空；已有密钥时留空会保留原值。需要移除时点击「清除密钥」。</dd></div>
+            </dl><p>远程地址须使用 HTTPS。本机服务可以使用 HTTP，例如 <code>http://127.0.0.1:端口/v1</code>，请把端口替换为实际值。</p></li>
+            <li><h3>保存配置，发送一条测试消息</h3><p>点击「保存配置」，在助手底部选择刚才保存的 API，再发送「解释一下 LaTeX 中 cite 和 ref 的区别」。收到回复即完成验证；保存配置本身不代表接口已经连接成功。</p></li>
+          </ol>
+          <p class="help-note">桌面版使用系统加密保存密钥；系统加密不可用时仅在本次运行保留。AI 请求会把相关文稿作为上下文发送到所选服务，服务权限与额度由对应账户管理。</p>
+        </section>
+        <section id="troubleshooting" class="help-section">
+          <p class="section-kicker">04 / 常见问题</p><h2>连接不顺利？从这里检查。</h2>
+          <div class="help-faq">
+            <details><summary>提示 EACCES，或选择了 ChatGPT.app 后无法连接</summary><p>选中的通常是应用包或无执行权限的文件。重新运行上面的路径查找命令，选择 CLI 可执行文件。Mac 上的 <code>/Applications/ChatGPT.app</code> 不能直接作为 CLI 启动；不要为了连接而修改整个应用包的权限。</p></details>
+            <details><summary>终端里可以运行，Texite 却提示找不到程序</summary><p>桌面程序与终端的程序搜索路径可能不同。在「选择 Agent CLI」中填写完整文件路径，安装或升级 CLI 后重启 Texite。Windows 需要实际的 <code>codex.exe</code>；Mac 使用 <code>command -v codex</code> 的输出。</p></details>
+            <details><summary>提示未登录，或连接后没有可用模型</summary><p>先在同一系统账户下的终端确认 CLI 可以正常使用。Codex 可运行 <code>codex login status</code> 检查，再运行 <code>codex login</code> 登录。其他 CLI 需完成各自的认证与模型配置，随后回到 Texite 刷新连接。</p></details>
+            <details><summary>API 返回 401 / 403 / 404 / 429</summary><p><strong>401 / 403：</strong>检查密钥、模型权限及服务商访问限制。<strong>404：</strong>检查基础地址、接口路径和模型 ID。<strong>429：</strong>检查额度与速率限制，稍后重试。具体原因以服务商返回的信息为准。</p></details>
+            <details><summary>API 没有返回文本，或提示流式数据无效</summary><p>确认服务支持 Chat Completions，且所选模型支持文本回复与流式输出。仅兼容 Responses、原生 Messages 等协议的服务不能直接填写；需要提供 Chat Completions 兼容端点。</p></details>
+            <details><summary>配置了 API，为什么不能自动改文件？</summary><p>自定义 API 属于对话模式。要让助手直接修改项目，请切换到 Agent 模式并连接本机 CLI。API Key 配置不会自动安装或登录 CLI。</p></details>
+          </div>
+        </section>
+        <div class="help-ending"><p>连接完成，把注意力放回文稿。</p><a class="button" href="index.html#ai">看看 AI 助手演示 <span aria-hidden="true">↗</span></a></div>
+      </div>
+    </div>
+  </main>
+  <footer><a class="brand" href="index.html"><img src="assets/icon.svg" width="28" height="28" alt="">Texite</a><span>功能帮助 · AI 连接</span><nav><a href="guide.html">使用说明</a><a href="https://github.com/Mclarenlife/Texite" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav></footer>
+  <span class="help-sr-only" id="copy-status" role="status" aria-live="polite"></span>
+</body>
+</html>

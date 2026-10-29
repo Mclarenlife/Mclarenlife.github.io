@@ -113,3 +113,11 @@ dialog p { font-size:var(--site-body); line-height:1.8; }
 @media(prefers-reduced-motion:reduce) { #theme svg { transition:none; } #theme:hover svg { transform:none; } }
 
 .download-meta > [data-release-version] { margin:0; }
+
+/* Four navigation items keep their own row on compact screens. */
+@media (min-width:701px) and (max-width:800px) {
+  html { scroll-padding-top:8rem; }
+  .site-header nav { order:3; width:100%; justify-content:center; gap:1.5rem; }
+  .header-actions { margin-left:auto; }
+  .experience-column { top:8rem; }
+}
