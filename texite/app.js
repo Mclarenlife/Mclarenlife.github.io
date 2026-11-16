@@ -5,7 +5,7 @@ function icons(){ $$('[data-icon]').forEach(e=>e.innerHTML=icon(e.dataset.icon))
 icons();
 
 const frame=$('#workbench-frame');let ready=false,playing=false,scene='write';
-const names={write:'01 / 编辑与编译',tools:'02 / 右键与行内 AI',search:'03 / 项目搜索',references:'04 / 快捷引用',history:'05 / 历史与备份',ai:'06 / AI 助手',settings:'07 / 设置'};
+const names={write:'01 / 编辑与编译',tools:'02 / 右键与行内 AI',search:'03 / 项目搜索',references:'04 / 快捷引用',history:'05 / 历史与备份',ai:'06 / AI 助手',settings:'07 / 设置',literature:'08 / 参考文献智能检索'};
 const say=text=>$('#demo-caption').textContent=text;
 const send=(command,data={})=>frame.contentWindow?.postMessage({type:'texite-demo-command',command,...data},location.origin);
 function setScene(next,sendCommand=true){scene=next;$('#scene-label').textContent=names[next];if(sendCommand&&ready)send('scene',{scene:next});}
@@ -31,3 +31,17 @@ window.addEventListener('message',event=>{
 });
 let scheduled=false;window.addEventListener('scroll',()=>{if(scheduled||playing||$('#experience').classList.contains('is-expanded'))return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;const target=innerWidth>700&&innerWidth<=950?Math.min(innerHeight-35,$('#experience').getBoundingClientRect().bottom+85):innerHeight*.5;let next='write';for(const section of $$('.story-section'))if(section.getBoundingClientRect().top<=target)next=section.dataset.scene;if(next!==scene)setScene(next);});},{passive:true});
 frame.addEventListener('error',()=>say('工作区载入失败，请刷新或确认通过 START.cmd 打开网站。'));
+
+// HTTPS Pages visitors first open the official HTTP download page. Browsers
+// can then download the selected installer from that page's own origin.
+for (const link of document.querySelectorAll('[data-download-platform]')) {
+  const direct = new URL(link.href);
+  if (location.protocol === 'https:' && direct.protocol === 'http:') {
+    const entry = new URL('/texite/', direct.origin);
+    entry.searchParams.set('download', link.dataset.downloadPlatform);
+    entry.hash = 'download';
+    link.href = entry.href;
+  } else if (new URLSearchParams(location.search).get('download') === link.dataset.downloadPlatform) {
+    link.focus({ preventScroll: true });
+  }
+}
