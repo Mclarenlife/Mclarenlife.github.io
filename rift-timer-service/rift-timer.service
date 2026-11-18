@@ -1,0 +1,19 @@
+[Unit]
+Description=Rift Timer shared rooms
+After=network.target
+
+[Service]
+User=rift-timer
+Group=rift-timer
+WorkingDirectory=/var/lib/rift-timer
+ExecStart=/usr/bin/python3 /opt/rift-timer/rooms.py
+Restart=on-failure
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
+
