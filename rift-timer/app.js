@@ -117,12 +117,21 @@
     if (state.settings.voice) speak(speech.join('。'));
   }
   let slotNodes = [];
+  const effectiveSeconds=(index)=>Math.ceil(E.durationMs(state.slots[index].spellId,state.loadout?.[index>>1]||0)/1000);
+  const options=['明朗之靴 · +10','猩红明朗（升级明朗之靴）· +20','星界洞悉 · +18','启封的秘籍 · 仅影响置换'];
+  const inputs=options.map((name,i)=>{const label=document.createElement('label'),input=document.createElement('input');input.type='checkbox';label.append(input,' '+name);$('haste-options').append(label);return input;});
+  let editedRole=0;
+  const selectedMask=()=>inputs.reduce((sum,el,i)=>sum+(el.checked?1<<i:0),0);
+  function preview(){const mask=selectedMask();$('haste-preview').textContent='召唤师技能急速 '+E.haste(mask)+' · 闪现 '+(E.durationMs('SummonerFlash',mask)/1000).toFixed(2)+' 秒';}
+  inputs.forEach((el,i)=>el.onchange=()=>{if(i<2&&el.checked)inputs[1-i].checked=false;preview();});
+  function openHaste(role){editedRole=role;inputs.forEach((el,i)=>el.checked=Boolean((state.loadout?.[role]||0)&(1<<i)));$('haste-title').textContent=E.roles[role].name+' · 召唤师技能急速';preview();$('haste-dialog').showModal();}
+  $('haste-form').onsubmit=async event=>{event.preventDefault();const role=editedRole,mask=selectedMask();if(await rooms.edit(()=>{E.configure(state,role,mask,rooms.clock());save();buildBoard();tick();}))$('haste-dialog').close();};
   function buildBoard() {
     $('role-grid').innerHTML = E.roles.map((role, roleIndex) => `<article class="role-card" aria-label="${role.name}">
-      <div class="role-header"><div class="role-emblem"><img src="assets/lol/${role.icon}.svg" alt="${role.name}位置图标"></div><div><h3>${role.name}</h3><small>${role.en}</small></div></div>
+      <div class="role-header"><div class="role-emblem"><img src="assets/lol/${role.icon}.svg" alt="${role.name}位置图标"></div><div><h3>${role.name}</h3><small>${role.en}</small></div><button class="haste-key" data-haste="${roleIndex}" aria-label="${role.name}召唤师技能急速">急速 ${E.haste(state.loadout?.[roleIndex]||0)}</button></div>
       ${[0, 1].map(slotIndex => {
         const index = roleIndex * 2 + slotIndex; const spell = E.findSpell(state.slots[index].spellId);
-        return `<div class="spell-slot" data-slot="${index}"><button class="spell-picker" data-select="${index}" aria-label="更换${role.name}技能${slotIndex + 1}：${spell.name}" aria-haspopup="dialog"><img src="${spellImage(spell.id)}" alt=""><span><strong>${spell.name}</strong><small>${spell.en}</small></span><span class="chevron">${icon('chevron')}</span></button><div class="timer-line"><span class="timer-value">${E.format(spell.seconds)}</span><button class="adjust-time" data-adjust="${index}" aria-label="调整${role.name}${spell.name}的剩余时间" title="扣减计时">${icon('arrow')}</button></div><div class="timer-caption">${spell.note || '基础冷却'} ${spell.seconds} 秒</div><div class="progress" aria-hidden="true"><span></span></div><div class="timer-actions"><button class="start-timer" data-start="${index}" aria-label="开始${role.name}${spell.name}计时">${icon('play')}<span>开始计时</span></button><button class="reset-timer" data-reset="${index}" aria-label="重置${role.name}${spell.name}计时" title="重置此计时">${icon('reset')}</button></div></div>`;
+        return `<div class="spell-slot" data-slot="${index}"><button class="spell-picker" data-select="${index}" aria-label="更换${role.name}技能${slotIndex + 1}：${spell.name}" aria-haspopup="dialog"><img src="${spellImage(spell.id)}" alt=""><span><strong>${spell.name}</strong><small>${spell.en}</small></span><span class="chevron">${icon('chevron')}</span></button><div class="timer-line"><span class="timer-value">${E.format(spell.seconds)}</span><button class="adjust-time" data-adjust="${index}" aria-label="调整${role.name}${spell.name}的剩余时间" title="扣减计时">${icon('arrow')}</button></div><div class="timer-caption">${spell.note || '实际冷却'} ${effectiveSeconds(index)} 秒</div><div class="progress" aria-hidden="true"><span></span></div><div class="timer-actions"><button class="start-timer" data-start="${index}" aria-label="开始${role.name}${spell.name}计时">${icon('play')}<span>开始计时</span></button><button class="reset-timer" data-reset="${index}" aria-label="重置${role.name}${spell.name}计时" title="重置此计时">${icon('reset')}</button></div></div>`;
       }).join('')}</article>`).join('');
     slotNodes = Array.from(document.querySelectorAll('.spell-slot')).map(el => ({ el, time: el.querySelector('.timer-value'), progress: el.querySelector('.progress>span'), start: el.querySelector('.start-timer'), startLabel: el.querySelector('.start-timer>span'), reset: el.querySelector('.reset-timer') }));
     updateDisplay(rooms.clock());
@@ -134,9 +143,9 @@
       const left = E.remaining(slot, now); const running = left > 0;
       const soon = running && left <= 60;
       node.el.classList.toggle('running', running); node.el.classList.toggle('soon', soon);
-      const shownTime = E.format(running ? left : spell.seconds);
+      const shownTime = E.format(running ? left : effectiveSeconds(index));
       if (node.time.textContent !== shownTime) node.time.textContent = shownTime;
-      node.progress.style.width = `${!running ? 100 : Math.min(100, left / spell.seconds * 100)}%`;
+      node.progress.style.width = `${!running ? 100 : Math.min(100, left / effectiveSeconds(index) * 100)}%`;
       node.start.disabled = running; node.startLabel.textContent = running ? '计时中' : '开始计时';
       node.reset.disabled = !running;
       if (running) { active++; if (!next || left < next.left) next = { left, index, spell }; }
@@ -157,6 +166,7 @@
   }
   $('role-grid').addEventListener('click', event => {
     const button = event.target.closest('button'); if (!button) return;
+    if (button.hasAttribute('data-haste')) openHaste(Number(button.dataset.haste));
     if (button.hasAttribute('data-select')) openSpell(Number(button.dataset.select));
     if (button.hasAttribute('data-adjust')) {
       adjustIndex = Number(button.dataset.adjust);
@@ -164,7 +174,7 @@
       $('adjust-info').textContent = E.roles[Math.floor(adjustIndex / 2)].name + ' · ' + E.findSpell(slot.spellId).name + (E.remaining(slot, rooms.clock()) ? '，立即扣减剩余时间。' : '，从扣减后的时间开始计时。');
       $('adjust-dialog').showModal();
     }
-    if (button.hasAttribute('data-start')) { unlockAudio(); rooms.edit(() => { E.start(state.slots[Number(button.dataset.start)], rooms.clock()); save(); tick(); }); }
+    if (button.hasAttribute('data-start')) { unlockAudio(); rooms.edit(() => { E.record(state,Number(button.dataset.start),rooms.clock()); save(); tick(); }); }
     if (button.hasAttribute('data-reset')) { rooms.edit(() => { E.reset(state.slots[Number(button.dataset.reset)]); save(); tick(); }); }
   });
   $('adjust-dialog').addEventListener('click', event => {
@@ -175,7 +185,7 @@
     rooms.edit(() => {
       const now = rooms.clock();
       const slot = state.slots[index];
-      if (!E.remaining(slot, now)) E.start(slot, now);
+      if (!E.remaining(slot, now)) E.record(state,index,now);
       slot.endAt = Math.max(now, slot.endAt - Number(button.dataset.seconds) * 1000);
       save(); tick();
     });
@@ -197,6 +207,7 @@
   }
   function openSettings() {
     const lead = state.settings.lead;
+    $('auto-deduct').value=state.settings.autoDeduct||0;
     document.querySelector(`input[name="lead"][value="${[0, 30, 60].includes(lead) ? lead : 'custom'}"]`).checked = true;
     $('custom-seconds').value = [0, 30, 60].includes(lead) ? 90 : lead;
     $('sound-setting').checked = state.settings.sound; $('voice-setting').checked = state.settings.voice;
@@ -208,7 +219,7 @@
     event.preventDefault(); const value = new FormData(event.currentTarget).get('lead');
     const lead = Number(value === 'custom' ? $('custom-seconds').value : value);
     if (!Number.isInteger(lead) || lead < 0 || lead > 600) return;
-    if (!await rooms.edit(() => { state.settings = { lead, sound: $('sound-setting').checked, voice: $('voice-setting').checked }; })) return;
+    if (!await rooms.edit(() => { state.settings = { lead, autoDeduct:Number($('auto-deduct').value), sound: $('sound-setting').checked, voice: $('voice-setting').checked }; })) return;
     unlockAudio(); save(); renderSettingsSummary(); $('settings-dialog').close();
     toast(storageWorks ? '设置已保存' : '设置已应用，当前浏览器无法保存', '新的提醒时间已应用到尚未提醒的计时。'); tick();
   });
@@ -245,7 +256,7 @@
     const i=state.slots.findIndex((slot,index)=>Math.floor(index/2)===cmd.role&&slot.spellId===cmd.id);
     if(i<0){toast('该位置没有配置这个技能');return;}
     if(E.remaining(state.slots[i],rooms.clock())>0){toast('该技能正在计时');return;}
-    const ok=await rooms.edit(()=>{E.start(state.slots[i],rooms.clock());save();tick();});
+    const ok=await rooms.edit(()=>{E.record(state,i,rooms.clock());save();tick();});
     if(ok)$('mic-status').textContent='听到 '+text+' · 已开始计时';
   });
   buildBoard(); renderSettingsSummary(); renderHistory(); save(); tick();

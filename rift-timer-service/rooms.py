@@ -13,7 +13,7 @@ DURATIONS = {"SummonerFlash": 300, "SummonerTeleport": 300, "SummonerDot": 180,
              "SummonerExhaust": 240, "SummonerBoost": 240, "SummonerHaste": 240}
 
 
-def validate(state, now):
+def validate(state, now, previous=None):
     slots = state["slots"]
     settings = state["settings"]
     if not isinstance(slots, list) or len(slots) != 10:
@@ -21,6 +21,13 @@ def validate(state, now):
     if type(settings["lead"]) != int or not 0 <= settings["lead"] <= 600:
         raise ValueError()
     if any(type(settings[k]) != bool for k in ("sound", "voice")):
+        raise ValueError()
+    previous = previous or {}
+    mask = state.get("loadout", previous.get("loadout", [0]*5))
+    debit = settings.get("autoDeduct", previous.get("settings", {}).get("autoDeduct", 0))
+    if not isinstance(mask, list) or len(mask) != 5 or any(type(m) != int or not 0 <= m <= 15 or (m & 3) == 3 for m in mask):
+        raise ValueError()
+    if type(debit) != int or not 0 <= debit <= 300:
         raise ValueError()
     result = []
     for i, slot in enumerate(slots):
@@ -31,10 +38,10 @@ def validate(state, now):
         if end is not None:
             if type(end) != int or end > now + DURATIONS[spell] * 1000 + 2000:
                 raise ValueError()
-            if end <= now:
+            if end < now - 30000:
                 end = None
         result.append({"spellId": spell, "endAt": end, "alerted": False})
-    return {"version": 1, "slots": result, "settings": {k: settings[k] for k in ("lead", "sound", "voice")}}
+    return {"version": 1, "slots": result, "loadout": mask, "settings": dict({k: settings[k] for k in ("lead", "sound", "voice")}, autoDeduct=debit)}
 
 
 def process(msg):
@@ -52,7 +59,11 @@ def process(msg):
                     for slot in msg["state"]["slots"]:
                         if slot["endAt"] is not None:
                             slot["endAt"] += shift
-                state = json.dumps(validate(msg["state"], now), separators=(",", ":"))
+                previous = None
+                if action == "write":
+                    row = conn.execute("SELECT state FROM rooms WHERE code=? AND rev=?", (code, msg["rev"])).fetchone()
+                    previous = json.loads(row[0]) if row else None
+                state = json.dumps(validate(msg["state"], now, previous), separators=(",", ":"))
                 if action == "create":
                     try:
                         conn.execute("INSERT INTO rooms VALUES (?, 1, ?)", (code, state))

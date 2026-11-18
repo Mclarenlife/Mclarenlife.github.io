@@ -20,11 +20,13 @@
   ];
   const findSpell = id => spells.find(spell => spell.id === id);
   const freshSlot = spellId => ({ spellId, endAt: null, alerted: false });
-  const defaults = () => ({ version: 1, settings: { lead: 0, sound: true, voice: false }, slots: roles.flatMap(role => [freshSlot('SummonerFlash'), freshSlot(role.second)]) });
+  const defaults = () => ({ version: 1, loadout: [0,0,0,0,0], settings: { autoDeduct: 0, lead: 0, sound: true, voice: false }, slots: roles.flatMap(role => [freshSlot('SummonerFlash'), freshSlot(role.second)]) });
   function restore(raw, now = Date.now()) {
     const state = defaults();
     if (!raw || raw.version !== 1) return state;
+    if (Array.isArray(raw.loadout) && raw.loadout.length===5) state.loadout=raw.loadout.map(mask=>Number.isInteger(mask)&&mask>=0&&mask<=15&&(mask&3)!==3?mask:0);
     if (raw.settings) {
+      if(Number.isInteger(raw.settings.autoDeduct)&&raw.settings.autoDeduct>=0&&raw.settings.autoDeduct<=300)state.settings.autoDeduct=raw.settings.autoDeduct;
       if (Number.isInteger(raw.settings.lead) && raw.settings.lead >= 0 && raw.settings.lead <= 600) state.settings.lead = raw.settings.lead;
       for (const k of ['sound', 'voice']) if (typeof raw.settings[k] === 'boolean') state.settings[k] = raw.settings[k];
     }
@@ -41,9 +43,16 @@
     return state;
   }
   function remaining(slot, now) { return slot.endAt === null ? 0 : Math.max(0, Math.ceil((slot.endAt - now) / 1000)); }
-  function start(slot, now) {
+  function haste(mask){return ((mask&2)?20:(mask&1)?10:0)+((mask&4)?18:0);}
+  function durationMs(id,mask){return id==='SummonerSmite'?15000:Math.round(findSpell(id).seconds*100000/(100+haste(mask)));}
+  function record(state,index,now){return start(state.slots[index],now,state.loadout?.[index>>1]||0,state.settings.autoDeduct||0);}
+  function configure(state,role,mask,now){
+    if(!state.loadout)state.loadout=[0,0,0,0,0];const old=state.loadout[role];state.loadout[role]=mask;
+    for(let i=role*2;i<role*2+2;i++){const slot=state.slots[i];if(remaining(slot,now)>0)slot.endAt=Math.max(now,slot.endAt+durationMs(slot.spellId,mask)-durationMs(slot.spellId,old));}
+  }
+  function start(slot, now, mask=0, debit=0) {
     if (remaining(slot, now) > 0) return false;
-    slot.endAt = now + findSpell(slot.spellId).seconds * 1000;
+    slot.endAt = now + Math.max(0,durationMs(slot.spellId,mask)-debit*1000);
     slot.alerted = false;
     return true;
   }
@@ -64,7 +73,7 @@
     return events;
   }
   const format = seconds => `${String(Math.floor(Math.max(0, seconds) / 60)).padStart(2, '0')}:${String(Math.max(0, seconds) % 60).padStart(2, '0')}`;
-  const api = { spells, roles, findSpell, defaults, restore, remaining, start, reset, select, advance, format };
+  const api = { haste,durationMs,record,configure,spells, roles, findSpell, defaults, restore, remaining, start, reset, select, advance, format };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.TimerEngine = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -42,7 +42,7 @@ function connectRooms({ getState, setState, tell, onLeave }) {
       const old = getState();
       data.state.slots.forEach((slot, i) => {
         const previous = old.slots[i];
-        if (!force && slot.spellId === previous.spellId && slot.endAt === previous.endAt)
+        if (!force && slot.spellId === previous.spellId && (slot.endAt === previous.endAt || (previous.endAt > clock() && slot.endAt && data.state.loadout?.[i>>1] !== old.loadout?.[i>>1])))
           slot.alerted = previous.alerted;
         else if (slot.endAt && slot.endAt <= clock()) slot.alerted = true;
       });
