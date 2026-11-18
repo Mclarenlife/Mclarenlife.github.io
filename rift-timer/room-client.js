@@ -91,7 +91,7 @@ function connectRooms({ getState, setState, tell, onLeave }) {
     const input = element('room-code').value;
     mode = form.elements.mode.value;
     if (!hosted) {
-      const target = new URL('http://47.106.192.155/rift-timer/');
+      const target = new URL('https://47.106.192.155/rift-timer/');
       target.hash = encodeURIComponent(JSON.stringify({code:input, mode, state:getState()}));
       location.assign(target.href);
       return;
