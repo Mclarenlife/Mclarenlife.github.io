@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="styles.css">
   <script src="timer-engine.js" defer></script>
   <script src="room-client.js" defer></script>
+  <script src="voice.js" defer></script>
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -18,6 +19,7 @@
     <div class="header-right"><span class="local-state"><i></i><span id="storage-status">本地自动保存</span></span><button class="button settings-trigger" data-open-settings><span data-icon="settings"></span>全局设置</button></div>
   </header>
   <main>
+    <div class="voice-bar"><button class="button" id="mic-toggle" aria-pressed="false">开启语音</button><span id="mic-status" role="status">说「上单闪现」开始计时</span></div>
     <section class="intro" aria-labelledby="page-title">
       <div><h1 id="page-title"><button id="room-open" class="room-open"><span id="room-label">对局码设置</span><span data-icon="chevron"></span></button></h1><p id="room-status">单人模式</p></div>
       <div class="overview"><div><span class="metric-label">冷却中</span><strong><span id="active-count">0</span><small> / 10</small></strong></div><div class="next-metric"><span class="metric-label">下一个就绪</span><strong id="next-time">--:--</strong><span id="next-label">等待开始计时</span></div></div>

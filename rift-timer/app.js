@@ -66,7 +66,9 @@
       return true;
     } catch { return false; }
   }
+  let voiceMuteUntil=0;
   function speak(message) {
+    voiceMuteUntil=Date.now()+4500;
     if (!('speechSynthesis' in window)) return false;
     const utterance = new SpeechSynthesisUtterance(message);
     utterance.lang = 'zh-CN'; utterance.rate = 1.05;
@@ -237,6 +239,15 @@
   });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
   window.addEventListener('pageshow', () => tick());
+  RiftVoice.attach($('mic-toggle'), $('mic-status'), async text => {
+    if(window.speechSynthesis?.speaking || Date.now()<voiceMuteUntil)return;
+    const cmd=RiftVoice.parse(text);if(!cmd)return;
+    const i=state.slots.findIndex((slot,index)=>Math.floor(index/2)===cmd.role&&slot.spellId===cmd.id);
+    if(i<0){toast('该位置没有配置这个技能');return;}
+    if(E.remaining(state.slots[i],rooms.clock())>0){toast('该技能正在计时');return;}
+    const ok=await rooms.edit(()=>{E.start(state.slots[i],rooms.clock());save();tick();});
+    if(ok)$('mic-status').textContent='听到 '+text+' · 已开始计时';
+  });
   buildBoard(); renderSettingsSummary(); renderHistory(); save(); tick();
   setInterval(tick, 250);
 })();

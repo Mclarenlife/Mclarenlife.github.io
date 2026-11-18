@@ -13,3 +13,5 @@
 .adjust-time svg{transform:rotate(-45deg)}.adjust-choices,.room-modes{display:flex;gap:12px}.room-modes{margin:18px 0}
 #room-code{display:block;width:100%;padding:12px;background:var(--bg);border:1px solid var(--line);border-radius:5px;color:var(--text);font:22px var(--mono);margin-top:6px}
 #room-error{color:var(--danger);margin-top:10px}#room-leave{margin-top:15px}
+
+.voice-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:20px;color:var(--muted);font-size:.86rem}.voice-bar button{border-color:#607d68}.voice-bar button[aria-pressed=true]{color:#9cebc3;background:#193b2b}.mic-panel{max-width:440px;margin:5vh auto;padding:24px}.mic-panel p{margin:20px 0;color:var(--muted);line-height:1.7}
