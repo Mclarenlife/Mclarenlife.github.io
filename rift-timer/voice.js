@@ -1,7 +1,7 @@
 'use strict';
 const RiftVoice = (() => {
   const roles = [['上单','上路'],['打野'],['中单','中路'],['射手','下路','AD','ADC'],['辅助']];
-  const names = [['闪现','闪'],['传送','TP'],['引燃','点燃'],['惩戒'],['治疗术','治疗'],['屏障'],['虚弱'],['净化'],['幽灵疾步','疾跑']];
+  const names = [['闪现','闪'],['传送','TP'],['引燃','点燃'],['惩戒'],['治疗'],['屏障'],['虚弱'],['净化'],['疾跑']];
   const ids = ['SummonerFlash','SummonerTeleport','SummonerDot','SummonerSmite','SummonerHeal','SummonerBarrier','SummonerExhaust','SummonerBoost','SummonerHaste'];
   const phrases = new Map();
   roles.forEach((aliases, role) => aliases.forEach(lane => names.forEach((variants, i) => variants.forEach(name => phrases.set(lane+name,{role,id:ids[i]})))));
@@ -12,7 +12,7 @@ const RiftVoice = (() => {
       if (!window.Vosk) await new Promise((resolve,reject) => {
         const script = document.createElement('script'); script.src='assets/speech/vosk.js'; script.onload=resolve; script.onerror=()=>reject(Error('识别库下载失败'));document.head.append(script);
       });
-      const response=await fetch('assets/speech/commands.json'); if(!response.ok)throw Error('口令词表下载失败');
+      const response=await fetch('assets/speech/commands.json?v=2.2.5'); if(!response.ok)throw Error('口令词表下载失败');
       const grammar=await response.text();
       const model=await Vosk.createModel(new URL('assets/speech/cn-022.tar.gz',location.href).href,-1);
       return {model,grammar};
@@ -61,7 +61,7 @@ const RiftVoice = (() => {
       if(window.isSecureContext&&navigator.mediaDevices){mic.start();return;}
       if(location.protocol!=='http:'){display(false,'请从 HTTPS 网址或 localhost 打开');return;}
       token=Array.from(crypto.getRandomValues(new Uint32Array(4))).join('-');
-      peer=window.open(secureOrigin+'/rift-timer/microphone.html?v=2.2.0#'+new URLSearchParams({token,origin:location.origin}),'_blank','popup,width=440,height=420');
+      peer=window.open(secureOrigin+'/rift-timer/microphone.html?v=2.2.5#'+new URLSearchParams({token,origin:location.origin}),'_blank','popup,width=440,height=420');
       if(!peer){display(false,'请允许打开语音窗口');return;}
       display(true,'在语音窗口中点击开启');watch=setInterval(()=>{if(peer?.closed)close();},600);
     };

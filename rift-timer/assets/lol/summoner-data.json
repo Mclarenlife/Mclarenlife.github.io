@@ -1356,7 +1356,7 @@
     },
     "SummonerHaste": {
       "id": "SummonerHaste",
-      "name": "幽灵疾步",
+      "name": "疾跑",
       "description": "在期间内获得移动速度并无视单位的碰撞体积。",
       "tooltip": "获得<speed>{{ movespeedmod }}移动速度</speed>并进入<keyword>幽灵状态</keyword>，持续{{ duration }}秒。<br /><br /><keyword>幽灵</keyword>：无视其它单位的碰撞体积。",
       "maxrank": 1,
@@ -1461,8 +1461,8 @@
     },
     "SummonerHaste_Jade": {
       "id": "SummonerHaste_Jade",
-      "name": "幽灵疾步",
-      "description": "期间获得移动速度并无视单位的碰撞体积。召唤师的愤怒：【幽灵疾步】提供的额外移动速度得到提升。",
+      "name": "疾跑",
+      "description": "期间获得移动速度并无视单位的碰撞体积。召唤师的愤怒：【疾跑】提供的额外移动速度得到提升。",
       "tooltip": "获得<speed>{{ movespeedmodfinal }}移动速度</speed>并进入<keyword>幽灵状态</keyword>，持续{{ duration }}秒。<br /><br /><keyword>幽灵</keyword>：无视其它单位的碰撞体积。<br /><br />",
       "maxrank": 1,
       "cooldown": [
@@ -1545,9 +1545,9 @@
     },
     "SummonerHeal": {
       "id": "SummonerHeal",
-      "name": "治疗术",
+      "name": "治疗",
       "description": "为你和目标友军英雄回复生命值，并为你和目标友军英雄提供移动速度。",
-      "tooltip": "为你和目标友军英雄回复<healing>{{ totalheal }}生命值</healing>并提供持续{{ movespeedduration }}秒的<speed>{{ movespeed*100 }}%移动速度</speed>。<br /><br /><rules>如果在无目标状态下施放，就会作用于范围内伤势最重的一位友军英雄。<br />若目标近期已受到过其它【治疗术】的影响，则这次的治疗量减半。</rules>",
+      "tooltip": "为你和目标友军英雄回复<healing>{{ totalheal }}生命值</healing>并提供持续{{ movespeedduration }}秒的<speed>{{ movespeed*100 }}%移动速度</speed>。<br /><br /><rules>如果在无目标状态下施放，就会作用于范围内伤势最重的一位友军英雄。<br />若目标近期已受到过其它【治疗】的影响，则这次的治疗量减半。</rules>",
       "maxrank": 1,
       "cooldown": [
         240
@@ -1649,7 +1649,7 @@
     },
     "SummonerHeal_Jade": {
       "id": "SummonerHeal_Jade",
-      "name": "治疗术",
+      "name": "治疗",
       "description": "为你的英雄及附近的友军回复生命值。召唤师的决断：每级获得5生命值。",
       "tooltip": "为你的英雄及附近的友军回复{{ totalheal }}生命值。<br /><br />",
       "maxrank": 1,

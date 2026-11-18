@@ -5,11 +5,11 @@
     { id: 'SummonerTeleport', name: '传送', en: 'TELEPORT', seconds: 300 },
     { id: 'SummonerDot', name: '引燃', en: 'IGNITE', seconds: 180 },
     { id: 'SummonerSmite', name: '惩戒', en: 'SMITE', seconds: 15, note: '两次施放间隔' },
-    { id: 'SummonerHeal', name: '治疗术', en: 'HEAL', seconds: 240 },
+    { id: 'SummonerHeal', name: '治疗', en: 'HEAL', seconds: 240 },
     { id: 'SummonerBarrier', name: '屏障', en: 'BARRIER', seconds: 180 },
     { id: 'SummonerExhaust', name: '虚弱', en: 'EXHAUST', seconds: 240 },
     { id: 'SummonerBoost', name: '净化', en: 'CLEANSE', seconds: 240 },
-    { id: 'SummonerHaste', name: '幽灵疾步', en: 'GHOST', seconds: 240 },
+    { id: 'SummonerHaste', name: '疾跑', en: 'GHOST', seconds: 240 },
   ];
   const roles = [
     { name: '上单', en: 'TOP', icon: 'top', second: 'SummonerTeleport' },
