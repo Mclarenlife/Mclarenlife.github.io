@@ -7,11 +7,11 @@
   <meta name="description" content="英雄联盟召唤师技能计时工具。五个位置独立倒计时、自定义提前提醒、本地保存。">
   <title>RIFT TIMER · 召唤师技能计时</title>
   <link rel="icon" href="assets/lol/SummonerFlash.png">
-  <link rel="stylesheet" href="styles.css?v=2.2.2">
-  <script src="timer-engine.js?v=2.2.2" defer></script>
-  <script src="room-client.js?v=2.2.2" defer></script>
-  <script src="voice.js?v=2.2.2" defer></script>
-  <script src="app.js?v=2.2.2" defer></script>
+  <link rel="stylesheet" href="styles.css?v=2.2.3">
+  <script src="timer-engine.js?v=2.2.3" defer></script>
+  <script src="room-client.js?v=2.2.3" defer></script>
+  <script src="voice.js?v=2.2.3" defer></script>
+  <script src="app.js?v=2.2.3" defer></script>
 </head>
 <body>
   <header class="site-header">
@@ -19,7 +19,7 @@
     <div class="header-right"><span class="local-state"><i></i><span id="storage-status">本地自动保存</span></span><button class="button settings-trigger" data-open-settings><span data-icon="settings"></span>全局设置</button></div>
   </header>
   <main>
-    <div class="voice-bar"><button class="button" id="mic-toggle" aria-pressed="false">开启语音</button><span id="mic-status" role="status">说「上单闪现」开始计时</span></div>
+    <div class="voice-bar"><button class="button" id="mic-toggle" aria-pressed="false">开启语音</button><span id="mic-status" role="status">开启麦克风后，说「上单闪现」开始计时</span></div>
     <section class="intro" aria-labelledby="page-title">
       <div><h1 id="page-title"><button id="room-open" class="room-open"><span id="room-label">对局码设置</span><span data-icon="chevron"></span></button></h1><p id="room-status">单人模式</p></div>
       <div class="overview"><div><span class="metric-label">冷却中</span><strong><span id="active-count">0</span><small> / 10</small></strong></div><div class="next-metric"><span class="metric-label">下一个就绪</span><strong id="next-time">--:--</strong><span id="next-label">等待开始计时</span></div></div>
@@ -30,7 +30,7 @@
     </section>
     <section class="reminder-strip" aria-label="提醒设置摘要"><div class="reminder-symbol" data-icon="bell"></div><div class="reminder-copy"><h2 id="reminder-summary">技能就绪时提醒</h2><p id="reminder-detail">页面提醒 · 提示音开启</p></div><button class="text-button gold" data-open-settings>调整提醒<span data-icon="arrow"></span></button></section>
     <section class="activity-section" aria-label="最近提醒"><div class="activity-heading"><h2>最近提醒 <span id="alert-count">0</span></h2><button id="clear-alerts" class="text-button">清空记录</button></div><div id="alert-list"><p class="empty-alert">暂无提醒。技能进入提醒时间后，记录会显示在这里。</p></div></section>
-    <footer><div>RIFT TIMER <span>独立制作 · 非 Riot Games 官方产品</span></div><button class="text-button" id="about-button">基础冷却 · 数据说明 <span data-icon="info"></span></button></footer>
+    <footer><div>RIFT TIMER <span>独立制作 · 非 Riot Games 官方产品</span></div><a class="text-button" href="https://github.com/Mclarenlife/LOL-Timer/releases/latest">下载 Windows / Android 版</a><button class="text-button" id="about-button">基础冷却 · 数据说明 <span data-icon="info"></span></button></footer>
   </main>
   <div id="toasts" class="toasts" role="status" aria-live="polite" aria-atomic="false"></div>
   <dialog id="spell-dialog" aria-labelledby="spell-title"><div class="dialog-header"><div><h2 id="spell-title">选择召唤师技能</h2></div><button class="icon-button" data-close="spell-dialog" aria-label="关闭技能选择"><span data-icon="close"></span></button></div><p id="spell-context" class="dialog-description"></p><div id="spell-options" class="spell-options"></div><p class="dialog-footnote">更换技能将重置该技能的倒计时；同一位置不能重复选择。</p></dialog>
