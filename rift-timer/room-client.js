@@ -6,7 +6,8 @@ function connectRooms({ getState, setState, tell, onLeave }) {
   const label = element('room-label');
   const status = element('room-status');
   const errorText = element('room-error');
-  const hosted = location.hostname === '47.106.192.155';
+  const hosted = location.hostname === '47.106.192.155' ||
+    (['127.0.0.1', 'localhost'].includes(location.hostname) && location.port === '4317');
   let code = '';
   let revision = 0;
   let offset = 0;
@@ -18,6 +19,7 @@ function connectRooms({ getState, setState, tell, onLeave }) {
   const showMode = () => {
     label.textContent = code ? '对局码 ' + code : '对局码设置';
     status.textContent = code ? '正在同步' : '单人模式';
+    element('storage-status').textContent = code ? '服务器对局' : '本地自动保存';
     element('room-leave').hidden = !code;
     form.hidden = Boolean(code);
   };
@@ -28,6 +30,7 @@ function connectRooms({ getState, setState, tell, onLeave }) {
       body: JSON.stringify({ action, code:roomCode, ...extra }),
       signal: AbortSignal.timeout(8000), cache:'no-store'
     });
+    if (response.status === 429) throw new Error('操作频繁，请稍后重试');
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || '对局服务暂不可用');
     return { ...data, offset:data.now - Math.round((start + Date.now()) / 2) };
