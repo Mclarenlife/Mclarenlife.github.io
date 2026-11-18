@@ -6,8 +6,11 @@ function connectRooms({ getState, setState, tell, onLeave }) {
   const label = element('room-label');
   const status = element('room-status');
   const errorText = element('room-error');
-  const hosted = location.hostname === '47.106.192.155' ||
-    (['127.0.0.1', 'localhost'].includes(location.hostname) && location.port === '4317');
+  const hosted = /^https?:$/.test(location.protocol) && !location.hostname.endsWith('.github.io');
+  const service = element('room-service');
+  element('room-service-field').hidden = hosted;
+  service.required = !hosted;
+  try { service.value = localStorage.getItem('rift-room-service') || ''; } catch {}
   let code = '';
   let revision = 0;
   let offset = 0;
@@ -92,8 +95,14 @@ function connectRooms({ getState, setState, tell, onLeave }) {
     const input = element('room-code').value;
     mode = form.elements.mode.value;
     if (!hosted) {
-      const transfer = {code:input, mode, state:getState()};
-      location.assign('http://47.106.192.155/rift-timer/#' + encodeURIComponent(JSON.stringify(transfer)));
+      try {
+        const target = new URL(service.value.trim());
+        if (!/^https?:$/.test(target.protocol) || target.username || target.password || target.search || target.hash) throw new Error();
+        if (!target.pathname.endsWith('/')) target.pathname += '/';
+        try { localStorage.setItem('rift-room-service', target.href); } catch {}
+        target.hash = encodeURIComponent(JSON.stringify({code:input, mode, state:getState()}));
+        location.assign(target.href);
+      } catch { errorText.textContent = '请输入完整的对局网站地址'; }
       return;
     }
     element('room-submit').disabled = true;

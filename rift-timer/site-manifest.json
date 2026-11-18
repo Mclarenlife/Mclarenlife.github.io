@@ -1,0 +1,30 @@
+{
+  "files": {
+    "app.js": "5f1f4a33fe0c534b89de3373dd2f7996a5fa8c159ac7643241ea5490dd6d5cd6",
+    "room-client.js": "7b16cf7da529772597fde9c7a233f05302a3e8a9a5ca0f979ee0454e026d5c5e",
+    "voice.js": "854bc8be16f6b012c751d5fbc15212676d9365a545c0e94b884fcd33cd61a492",
+    "timer-engine.js": "b1d0de9427becf53c186982861ac87d1383c48ef6d9e28ae5e35bdfd2d7b476b",
+    "styles.css": "4bee11759b6ea96965281fa9864b164c78fbc48d21f111dd13b4579607bcd2a2",
+    "microphone.html": "b08208e4d69e883863043235f1e487c150e8436da15904890673ce7ba2df8229",
+    "index.html": "60e3d2af2f030caac7aeca22eaa01808a35707e47b39be0536061c057121ef8f",
+    "assets/lol/bottom.svg": "9dea7d76a5bc9f3464be9c94323263b17ce100c88f1ffde962bc6d0e7c2034ce",
+    "assets/lol/jungle.svg": "716a24677acf184b1b99e84bb59891e24e661872747507584b1b6d2b0573c7bd",
+    "assets/lol/middle.svg": "793fef1b580451133eb976cf3d74a091e57618393557e47cd7b81268d23fe8b6",
+    "assets/lol/summoner-data.json": "5380fc329be61d26da0b2cffb9f51d2894f3cd38ac9acb9d91aed4aac864c1ef",
+    "assets/lol/SummonerBarrier.png": "a0cf7b08cdd6d852d325bc9124e05f0e2c55aac340e50665c385755dfa86fbc0",
+    "assets/lol/SummonerBoost.png": "9498d4983effb29f0c11a0fa605f39f6381f9708150a111cb2156b0287c80702",
+    "assets/lol/SummonerDot.png": "958db3407c83a9499a5e464c2e37df59c6544590dcd3d822965a83740303b9af",
+    "assets/lol/SummonerExhaust.png": "ad513e510391d7c8fc604d16e239f430f1a10dde563ae7cf237eb87b1f0de722",
+    "assets/lol/SummonerFlash.png": "1272fe7b3275c0afc872a6aaa6b65e27d41572d57f9ce19b9ed81b79aa5eb2aa",
+    "assets/lol/SummonerHaste.png": "9ce3605a1480f16453ff8230fa61e87cedca91e8a5c6217445c82eaf53884484",
+    "assets/lol/SummonerHeal.png": "ccebc4b0554572a041b2b5014f25a84d7265c371e97448a516765aaad651dc55",
+    "assets/lol/SummonerSmite.png": "f07e92e0ded6fae182b1d66191a62dcaf5fcf207a0d9622105e00c39c27a0a28",
+    "assets/lol/SummonerTeleport.png": "9b86d0c879504d7ad22815084efb0c59521a40edf5bc6bf85031db9f5e2e976f",
+    "assets/lol/top.svg": "eaf07792df396508e1fc47b6037742382ed78735a25af54187e58d24f4a1695b",
+    "assets/lol/utility.svg": "c420cad60b78bb22ae29a19f74bb371514fd5134090f5a3eb924daacac7347a3",
+    "assets/speech/capture.js": "b6384c537ee2570482a94b438f8ff6a4745862af42463eb6b68c34fcaa54dc26",
+    "assets/speech/cn-022.tar.gz": "b1a66a93be79ef0a35b0932eaef77d8c09e1cfedb20023dc9bb5763f247f2c2f",
+    "assets/speech/commands.json": "50d59fb0d4f27f53382b5f28783f1d7b585aff3c8b86bef76b2fa402e7aa8db2",
+    "assets/speech/vosk.js": "11530c83271c57b68a8e274d46e085c8c9f7d0f3907c1d304604da773be2ee86"
+  }
+}

@@ -51,7 +51,7 @@ const RiftVoice = (() => {
     }
     return {start,stop,active:()=>!!session};
   }
-  const secureOrigin='https://mclarenlife.github.io', roomOrigin='http://47.106.192.155';
+  const secureOrigin='https://mclarenlife.github.io';
   function attach(button,status,command){
     const display=(on,message)=>{button.textContent=on?'关闭语音':'开启语音';button.setAttribute('aria-pressed',String(on));status.textContent=message;};
     const mic=microphone(display,command);let peer,token,watch;
@@ -59,9 +59,9 @@ const RiftVoice = (() => {
     button.onclick=()=>{
       if(peer||mic.active()){close();return;}
       if(window.isSecureContext&&navigator.mediaDevices){mic.start();return;}
-      if(location.origin!==roomOrigin){display(false,'请从 HTTPS 网址或 localhost 打开');return;}
+      if(location.protocol!=='http:'){display(false,'请从 HTTPS 网址或 localhost 打开');return;}
       token=Array.from(crypto.getRandomValues(new Uint32Array(4))).join('-');
-      peer=window.open(secureOrigin+'/rift-timer/microphone.html#'+token,'_blank','popup,width=440,height=420');
+      peer=window.open(secureOrigin+'/rift-timer/microphone.html?v=2.2.0#'+new URLSearchParams({token,origin:location.origin}),'_blank','popup,width=440,height=420');
       if(!peer){display(false,'请允许打开语音窗口');return;}
       display(true,'在语音窗口中点击开启');watch=setInterval(()=>{if(peer?.closed)close();},600);
     };
@@ -73,8 +73,11 @@ const RiftVoice = (() => {
     window.addEventListener('pagehide',close);
   }
   function companion(button,status) {
-    const token=location.hash.slice(1);const parent=window.opener;
-    if(!parent||!/^(\d+-){3}\d+$/.test(token)){button.disabled=true;status.textContent='从对局页面点击「开启语音」进入';return;}
+    const params=new URLSearchParams(location.hash.slice(1)), token=params.get('token'), roomOrigin=params.get('origin');
+    const parent=window.opener;
+    let valid=false;try{const url=new URL(roomOrigin);valid=/^https?:$/.test(url.protocol)&&url.origin===roomOrigin&&(!document.referrer||new URL(document.referrer).origin===roomOrigin);}catch{}
+    if(valid)status.textContent='启用后，将向 '+roomOrigin+' 发送识别出的计时指令。';
+    if(!parent||!valid||!/^(\d+-){3}\d+$/.test(token)){button.disabled=true;status.textContent='从对局页面点击「开启语音」进入';return;}
     const send=(type,text)=>parent.postMessage({type,text,token},roomOrigin);
     const mic=microphone((on,text)=>{status.textContent=text;button.textContent=on?'关闭麦克风':'开启麦克风';send('status',text);},text=>{status.textContent='听到 '+text;send('command',text);});
     button.onclick=()=>mic.active()?mic.stop():mic.start();
